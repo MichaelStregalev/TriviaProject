@@ -1,0 +1,54 @@
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Build results
+x64/
+x86/
+ARM/
+ARM64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio 2022 cache and temporary files
+.vs/
+.vscode/
+.vscode/**
+
+# Visual Studio database files
+*.VC.db
+*.VC.opendb
+
+# CMake generated files (if using CMake)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CMakeLists.txt.user
+CMakeScripts/
+Testing/
+CTestTestfile.cmake
+Testing/Temporary/
+
+# Build configuration folders
+/[Dd]ebug/
+/[Rr]elease/
+/[Rr]eleases/
+/[Dd]ebugPublic/
+
+# Project and solution files
+*.VC.db
+*.VC.opendb
+*.ipch
+*.tlog
+*1.tlog
+
+# Hmmm again?
+# Add any specific files or folders still being tracked here
