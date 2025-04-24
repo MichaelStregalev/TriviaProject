@@ -5,8 +5,8 @@ class LoginRequestHandler : public IRequestHandler
 {
 public:
 
-	LoginRequestHandler();
-	~LoginRequestHandler();
+	LoginRequestHandler() = default;
+	~LoginRequestHandler() = default;
 
 private:
 
