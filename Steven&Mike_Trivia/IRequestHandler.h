@@ -4,8 +4,8 @@ class IRequestHandler
 {
 public:
 
-	IRequestHandler();
-	~IRequestHandler();
+	IRequestHandler() = default;
+	~IRequestHandler() = default;
 
 private:
 
