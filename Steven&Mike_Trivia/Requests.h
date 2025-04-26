@@ -3,10 +3,18 @@
 #include "IRequestHandler.h"
 #include "Byte.h"
 #include <ctime>
+#include <string>
+
+/*
+				RESPONSES
+	This header includes all of the
+	different types of requests a user can make,
+	and their structures.
+*/
 
 struct RequestInfo
 {
-	int RequestId;
+	int requestId;
 	time_t receivalTime;
 	Byte::Buffer buffer;
 };
