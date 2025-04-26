@@ -8,6 +8,9 @@
 	different handlers for each type of reuqest a user can make.
 */
 
+struct RequestInfo;
+struct RequestResult;
+
 class IRequestHandler
 {
 public:

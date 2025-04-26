@@ -5,6 +5,8 @@
 #include <ctime>
 #include <string>
 
+class IRequestHandler;
+
 /*
 				RESPONSES
 	This header includes all of the
