@@ -26,7 +26,7 @@ Byte::Byte(int value)
 }
 
 // CONSTRUCTOR BY BINARY CODE
-Byte::Byte(std::string binary)
+Byte::Byte(const std::string& binary)
 {
 	_value = binaryToByte(binary);
 }
@@ -50,7 +50,7 @@ void Byte::setValue(int value)
 }
 
 // SETTER BY BINARY CODE
-void Byte::setValue(std::string binary)
+void Byte::setValue(const std::string& binary)
 {
 	_value = binaryToByte(binary);
 }
@@ -117,7 +117,7 @@ bool Byte::operator==(int value) const
 	return _value == static_cast<unsigned char>(value);
 }
 
-bool Byte::operator==(std::string binary) const
+bool Byte::operator==(const std::string& binary) const
 {
 	return binaryCode() == binary;
 }
@@ -127,28 +127,29 @@ bool Byte::operator==(char asciiChar) const
 	return _value == static_cast<unsigned char>(asciiChar);
 }
 
-Byte::Buffer Byte::separateBinary(std::string binary)
+Byte::Buffer Byte::separateBinary(const std::string& binary)
 {
 	Buffer buffer;
+	std::string tempBinary = binary;
 
 	// Make sure the binary string length is a multiple of 8
-	while (binary.length() % BITS_IN_BYTE != 0) 
+	while (tempBinary.length() % BITS_IN_BYTE != 0)
 	{
-		binary = BIT_OFF + binary;  // pad the string with leading zeros
+		tempBinary += BIT_OFF;  // pad the string with leading zeros
 	}
 
 	// Split the binary string into bytes (8 bits each), and cast each part to a byte
-	for (int i = 0; i < binary.length(); i += BITS_IN_BYTE) 
+	for (int i = 0; i < tempBinary.length(); i += BITS_IN_BYTE)
 	{
-		std::string byteBinary = binary.substr(i, BITS_IN_BYTE);	// get a byte (8 bits)
-		Byte byte(byteBinary);										// convert the binary to a Byte object
-		buffer.push_back(byte);										// add it to the buffer
+		std::string byteBinary = tempBinary.substr(i, BITS_IN_BYTE);	// get a byte (8 bits)
+		Byte byte(byteBinary);											// convert the binary to a Byte object
+		buffer.push_back(byte);											// add it to the buffer
 	}
 
 	return buffer;
 }
 
-int Byte::calculateDecimalValue(std::string binary)
+int Byte::calculateDecimalValue(const std::string& binary)
 {
 	int decimalValue = 0;
 
@@ -164,7 +165,7 @@ int Byte::calculateDecimalValue(std::string binary)
 	return decimalValue;
 }
 
-std::string Byte::deserializeBytesToString(Buffer bytes)
+std::string Byte::deserializeBytesToString(const Buffer& bytes)
 {
 	std::string result;
 
@@ -176,8 +177,36 @@ std::string Byte::deserializeBytesToString(Buffer bytes)
 	return result;
 }
 
+Byte::Buffer Byte::intToBuffer(int number)
+{
+	Buffer buffer;
+
+	// An int has 4 bytes, so we will make a buffer with 4 bytes that represent the number!
+
+	for (int i = 3; i >= 0; i--) // 4 bytes for int
+	{
+		// Using this bit manipulation, we are harvesting a single byte at a time from the number,
+		// by using AND binary with 0xFF (11111111) we will replicate the last byte of the number.
+		buffer.push_back(Byte((number >> (BITS_IN_BYTE * i)) & 0xFF));
+	}
+
+	return buffer;
+}
+
+Byte::Buffer Byte::stringToBuffer(const std::string& content)
+{
+	Buffer buffer;
+
+	for (char c : content)
+	{
+		buffer.push_back(Byte(static_cast<unsigned char>(c)));
+	}
+
+	return buffer;
+}
+
 // STATIC HELPER METHOD - BINARY CODE TO BYTE VALUE (unsigned char)
-unsigned char Byte::binaryToByte(std::string binary)
+unsigned char Byte::binaryToByte(const std::string& binary)
 {
 	// First, we will need to check that the string represents a binary code at first,
 	// and then we will need to make sure it is a byte by being 8 bits long.
@@ -211,7 +240,7 @@ unsigned char Byte::binaryToByte(std::string binary)
 }
 
 // IS A STRING REPRESENTING BINARY CODE?
-bool Byte::isBinaryCode(std::string binary)
+bool Byte::isBinaryCode(const std::string& binary)
 {
 	if (binary.empty())
 	{
