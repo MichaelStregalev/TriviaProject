@@ -29,15 +29,15 @@ public:
 	using Buffer = std::vector<Byte>;
 
 	// <-- CONSTRUCTORS -->
-	Byte();						// default - sets to 0
-	Byte(unsigned char value);	// by byte value
-	Byte(int value);			// by int value
-	Byte(std::string binary);	// by binary code
+	Byte();								// default - sets to 0
+	Byte(unsigned char value);			// by byte value
+	Byte(int value);					// by int value
+	Byte(const std::string& binary);	// by binary code
 
 	// <-- SETTERS -->
 	void setValue(unsigned char value);
 	void setValue(int value);
-	void setValue(std::string binary);
+	void setValue(const std::string& binary);
 
 	// <-- METHODS -->
 	std::string binaryCode() const;		// Returns a string representing the binary code of the byte
@@ -47,18 +47,22 @@ public:
 	// <-- OPERATORS -->
 	bool operator==(const Byte& other) const;
 	bool operator==(int value) const;
-	bool operator==(std::string binary) const;
+	bool operator==(const std::string& binary) const;
 	bool operator==(char asciiChar) const;
 
 	// <-- STATIC METHODS -->
 	// This function is responsible for getting a binary code, and seperating each byte and returning them all as
 	// a buffer - a vector of all the bytes.
-	static Buffer separateBinary(std::string binary);
+	static Buffer separateBinary(const std::string& binary);
 	// This function is responsible for calculating the int value of a larger than usual binary code sequence,
 	// will help us when figuring out the data length in the serialization.
-	static int calculateDecimalValue(std::string binary);
+	static int calculateDecimalValue(const std::string& binary);
 	// This function will help us serialize a buffer of bytes onto a string by translating each byte onto an ascii character.
-	static std::string deserializeBytesToString(Buffer bytes);
+	static std::string deserializeBytesToString(const Buffer& bytes);
+	// This function will get a number, and return a buffer that represents all the bytes that together make up the number.
+	static Buffer intToBuffer(int number);
+	// This function will get a string, and return a buffer that represents all of the bytes that together make up the string!
+	static Buffer stringToBuffer(const std::string& content);
 
 private:
 
@@ -67,7 +71,7 @@ private:
 
 	// <-- PRIVATE HELPER METHODS -->
 	// This function will help us translate binary code onto a byte - unsigned char.
-	static unsigned char binaryToByte(std::string binary);
+	static unsigned char binaryToByte(const std::string& binary);
 	// This function makes sure that the string given to us represents a binary code.
-	static bool isBinaryCode(std::string binary);
+	static bool isBinaryCode(const std::string& binary);
 };
