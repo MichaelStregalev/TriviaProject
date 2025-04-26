@@ -89,8 +89,11 @@ void Server::acceptClient()
 		
 	std::cout << "Client accepted. Server and client can speak" << std::endl;
 
+	// Protect the clientSockets map with a lock
+	std::lock_guard<std::mutex> lock(_clientMutex);
+
 	// Add the client's socket onto the map of clientSockets
-	clientSockets.insert({"", client_socket});
+	_clientSockets.insert({"", client_socket});
 	LoginRequestHandler LRH;
 
 	// Create a thread for the specific client, and handle the client's requests
@@ -112,8 +115,7 @@ void Server::clientHandler(SOCKET clientSocket)
 
 	int bytesNum = 5;
 
-	char* data = readFromSocket(clientSocket, bytesNum, 0);
-	message = std::string(data);
+	message = readFromSocket(clientSocket, bytesNum, 0);
 
 	std::cout << message << std::endl;
 
@@ -121,11 +123,11 @@ void Server::clientHandler(SOCKET clientSocket)
 }
 
 // READ FROM SOCKET - READ DATA FROM THE SOCKET GIVEN
-char* Server::readFromSocket(SOCKET sc, int bytesNum, int flags)
+std::string Server::readFromSocket(SOCKET sc, int bytesNum, int flags)
 {
 	if (bytesNum == 0)
 	{
-		return (char*)"";
+		return "";
 	}
 
 	char* data = new char[bytesNum + 1];
@@ -139,5 +141,8 @@ char* Server::readFromSocket(SOCKET sc, int bytesNum, int flags)
 	}
 
 	data[bytesNum] = 0;
-	return data;
+	std::string result(data);	// Convert char array to std::string
+	delete[] data;				// Don't forget to delete the dynamically allocated memory
+
+	return result;
 }

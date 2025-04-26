@@ -1,9 +1,11 @@
+#pragma comment(lib, "ws2_32.lib")
 #pragma once
 
 #include <WinSock2.h>
 #include <Windows.h>
 #include <map>
 #include <string>
+#include <mutex>
 #include "LoginRequestHandler.h"
 #include "IRequestHandler.h"
 
@@ -36,11 +38,13 @@ private:
 	// The server socket
 	SOCKET _serverSocket;
 	// The map of all client sockets in the server
-	std::map<std::string, SOCKET> clientSockets;
+	std::map<std::string, SOCKET> _clientSockets;
+	// The mutex of clientSockets
+	std::mutex _clientMutex;
 	
 	// <-- PRIVATE METHODS -->
 
-	void acceptClient();									// Makes sure the client is accepted (fully connected to the server)
-	void clientHandler(SOCKET clientSocket);				// Handles the client, its requests and anything else that the client needs.
-	char* readFromSocket(SOCKET sc, int bytesNum, int flags);	// Reads data from the socket
+	void acceptClient();											// Makes sure the client is accepted (fully connected to the server)
+	void clientHandler(SOCKET clientSocket);						// Handles the client, its requests and anything else that the client needs.
+	std::string readFromSocket(SOCKET sc, int bytesNum, int flags);	// Reads data from the socket
 };
