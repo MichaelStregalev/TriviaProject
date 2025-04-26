@@ -3,15 +3,12 @@
 #include "Byte.h"
 #include "json.hpp"
 #include "Responses.h"
+#include "Codes.h"
 
 // DEFINES
 
 #define ERROR_MESSAGE_FIELD		"message"
 #define STATUS_FIELD			"status"
-
-#define ERROR_RESPONSE_CODE		0
-#define SIGNUP_RESPONSE_CODE	11
-#define LOGIN_RESPONSE_CODE		21
 
 /*
 					JsonResponsePacketSerializer

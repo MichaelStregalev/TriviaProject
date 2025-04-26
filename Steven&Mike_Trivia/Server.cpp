@@ -11,6 +11,9 @@
 #include <condition_variable>
 #include "Server.h"
 
+// DEFINE
+#define MAX_BUFFER_SIZE	1024
+
 // CONSTRUCTOR
 Server::Server()
 {
@@ -104,21 +107,11 @@ void Server::acceptClient()
 // CLIENT HANDLER - WILL HANDLE EACH A CLIENT'S REQUESTS
 void Server::clientHandler(SOCKET clientSocket)
 {
-	std::string message = "Hello";
-
-	const char* helloMsg = message.c_str();
-
-	if (send(clientSocket, helloMsg, message.size(), 0) == INVALID_SOCKET)
-	{
-		throw std::exception("Error while sending message to client");
-	}
-
-	int bytesNum = 5;
-
-	message = readFromSocket(clientSocket, bytesNum, 0);
-
+	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
 	std::cout << message << std::endl;
 
+	RequestInfo requestData = messageToRequestInfo(message);
+	std::cout << "Goodbye :)" << std::endl;
 	closesocket(clientSocket);
 }
 
@@ -143,6 +136,42 @@ std::string Server::readFromSocket(SOCKET sc, int bytesNum, int flags)
 	data[bytesNum] = 0;
 	std::string result(data);	// Convert char array to std::string
 	delete[] data;				// Don't forget to delete the dynamically allocated memory
+
+	return result;
+}
+
+RequestInfo Server::messageToRequestInfo(const std::string& binaryMessage) const
+{
+	RequestInfo result;
+	
+	// Getting the arrival time
+	time_t timeStamp;
+	time(&timeStamp);
+	result.receivalTime = timeStamp; // Inserting into Struct
+
+	Byte::Buffer buffer = Byte::separateBinary(binaryMessage);
+	
+	// Getting the Request ID
+	Byte codeRequest(buffer[REQUEST_ID_IN_BUFFER]);
+	result.requestId = codeRequest.decimalValue(); // Inserting into Struct
+
+	std::string dataLengthBin; // This will be a binary string representing the data length
+	int i = 0;
+	for (i = DATA_LENGTH_START; i <= DATA_LENGTH_END; i++)
+	{
+		dataLengthBin += buffer[i].binaryCode();
+	}
+
+	int dataLength = Byte::calculateDecimalValue(dataLengthBin); // Getting the decimal data length
+
+	// Getting the message itself into the buffer
+	Byte::Buffer message;
+	for (int i = DATA_START; i < DATA_START + dataLength; i++)
+	{
+		message.push_back(buffer[i]);
+	}
+
+	result.buffer = message; //Inserting into the struct the message buffer (which only contains the JSON data)
 
 	return result;
 }

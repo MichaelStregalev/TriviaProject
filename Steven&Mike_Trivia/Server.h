@@ -8,6 +8,7 @@
 #include <mutex>
 #include "LoginRequestHandler.h"
 #include "IRequestHandler.h"
+#include "Codes.h"
 
 /*
 							SERVER
@@ -44,7 +45,8 @@ private:
 	
 	// <-- PRIVATE METHODS -->
 
-	void acceptClient();											// Makes sure the client is accepted (fully connected to the server)
-	void clientHandler(SOCKET clientSocket);						// Handles the client, its requests and anything else that the client needs.
-	std::string readFromSocket(SOCKET sc, int bytesNum, int flags);	// Reads data from the socket
+	void acceptClient();																// Makes sure the client is accepted (fully connected to the server)
+	void clientHandler(SOCKET clientSocket);											// Handles the client, its requests and anything else that the client needs.
+	std::string readFromSocket(SOCKET sc, int bytesNum, int flags);						// Reads data from the socket
+	RequestInfo messageToRequestInfo(const std::string& binaryMessage) const;			// Turns a message to RequestInfo Struct
 };
