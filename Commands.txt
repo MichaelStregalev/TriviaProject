@@ -1,0 +1,5 @@
+INSERT INTO USERS('UserName', 'PassWord', 'Gmail') VALUES('X', 'Y', 'Z');
+
+SELECT COUNT(*) FROM USERS WHERE UserName = 'X';
+
+SELECT PassWord FROM USERS WHERE UserName = 'X';
