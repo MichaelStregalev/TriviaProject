@@ -8,7 +8,7 @@
 class IRequestHandler;
 
 /*
-				RESPONSES
+					REQUESTS
 	This header includes all of the
 	different types of requests a user can make,
 	and their structures.

@@ -1,4 +1,4 @@
-#pragma comment (lib, "ws2_32.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 #include "Server.h"
 #include <iostream>

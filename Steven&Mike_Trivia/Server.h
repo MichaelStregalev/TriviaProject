@@ -1,4 +1,3 @@
-#pragma comment(lib, "ws2_32.lib")
 #pragma once
 
 #include <thread>
@@ -8,7 +7,7 @@
 
 // <-- DEFINE CONSTS -->
 #define SUCCESS 0
-#define ERROR 1
+#define ERROR_CODE 1
 
 /*
 							SERVER

@@ -1,4 +1,3 @@
-#pragma comment(lib, "ws2_32.lib")
 #pragma once
 
 #include <WinSock2.h>
@@ -22,9 +21,12 @@
 class Communicator
 {
 public:
+	
+	// No need to write a constructor if we don't need any important initializations.
+	// But - we do need to write the deconstructor as we have dynamically allocated some information.
+	~Communicator();
 
-	Communicator();
-	void startHandleRequests();
+	void startHandleRequests();	// This function will let us start handling requests from clients!
 
 private:
 
@@ -39,11 +41,11 @@ private:
 
 	// <-- PRIVATE METHDOS -->
 
-	void bindAndListen();
+	void bindAndListen();	// Binding the socket and listening for clients..
 
 	void handleNewClient(SOCKET clientSocket);
 	std::string readFromSocket(SOCKET sc, int bytesNum, int flags);						// Reads data from the socket
 	RequestInfo messageToRequestInfo(const std::string& binaryMessage) const;			// Turns a message to RequestInfo Struct
-	void acceptClient();
+	void acceptClient();										// Accepting each client and calling for a thread to handle them
 
 };
