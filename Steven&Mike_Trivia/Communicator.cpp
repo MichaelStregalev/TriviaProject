@@ -108,6 +108,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		throw std::exception("Error while sending message to client");
 	}
 
+	//Reading from Socket
 	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
 	std::cout << message << std::endl;
 
@@ -121,20 +122,26 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 	std::cout << std::endl;
 
+	//Sending to Socket
 	LoginRequestHandler loginRequest;
 	RequestResult result;
 
 	if (loginRequest.isRequestRelevant(requestData))
 	{
 		result = loginRequest.handleRequest(requestData);
-	}
+		std::string resultSTR;
+		std::cout << "Response: " << std::endl;
+		for (int i = 0; i < (result.response).size(); i++)
+		{
+			resultSTR += (result.response)[i].asciiChar();
+		}
+		std::cout << resultSTR << std::endl;
 
-	std::cout << "Response: " << std::endl;
-	for (int i = 0; i < (result.response).size(); i++)
-	{
-		std::cout << (result.response)[i].asciiChar();
+		if (send(clientSocket, resultSTR.c_str(), resultSTR.size(), 0) == INVALID_SOCKET)
+		{
+			throw std::exception("Error while sending message to client");
+		}
 	}
-	std::cout << std::endl;
 
 	std::cout << "Goodbye :)" << std::endl;
 	closesocket(clientSocket);
