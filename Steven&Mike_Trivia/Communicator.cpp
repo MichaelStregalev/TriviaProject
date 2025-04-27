@@ -123,12 +123,14 @@ void Communicator::acceptClient()
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
 	//Reading from Socket
+
 	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
 	RequestInfo requestData = messageToRequestInfo(message);
 
 	//Sending to Socket
 	LoginRequestHandler loginRequest;
 
+	// If the request is a login or signup...
 	if (loginRequest.isRequestRelevant(requestData))
 	{
 		RequestResult result = loginRequest.handleRequest(requestData);
