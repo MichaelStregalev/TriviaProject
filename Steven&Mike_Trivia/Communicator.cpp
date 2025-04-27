@@ -14,9 +14,32 @@
 // DEFINE
 #define MAX_BUFFER_SIZE	1024
 
-Communicator::Communicator()
+Communicator::~Communicator()
 {
-	
+	// Lock the mutex to safely access the m_clients map
+	std::lock_guard<std::mutex> lock(m_clientMutex);
+
+	// Iterate over all the clients
+	for (auto& pair : m_clients)
+	{
+		SOCKET clientSocket = pair.first;
+		IRequestHandler* handler = pair.second;
+
+		// Close the client socket
+		closesocket(clientSocket);
+
+		// Delete the dynamically allocated handler
+		delete handler;
+	}
+
+	// Clear the map
+	m_clients.clear();
+
+	// Also close the server socket if it's valid
+	if (m_serverSocket != INVALID_SOCKET)
+	{
+		closesocket(m_serverSocket);
+	}
 }
 
 void Communicator::startHandleRequests()
@@ -66,7 +89,7 @@ void Communicator::bindAndListen()
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "[Thread Exception] Server failed: " << e.what() << std::endl;
+		std::cerr << "Server failed: " << e.what() << std::endl;
 	}
 }
 
@@ -116,28 +139,19 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 	std::cout << requestData.requestId << std::endl;
 	std::cout << requestData.receivalTime << std::endl;
-	for (int i = 0; i < (requestData.buffer).size(); i++)
-	{
-		std::cout << (requestData.buffer)[i].asciiChar();
-	}
-	std::cout << std::endl;
+
+	std::cout << Byte::deserializeBytesToString(requestData.buffer) << std::endl;
 
 	//Sending to Socket
 	LoginRequestHandler loginRequest;
-	RequestResult result;
 
 	if (loginRequest.isRequestRelevant(requestData))
 	{
-		result = loginRequest.handleRequest(requestData);
-		std::string resultSTR;
-		std::cout << "Response: " << std::endl;
-		for (int i = 0; i < (result.response).size(); i++)
-		{
-			resultSTR += (result.response)[i].asciiChar();
-		}
-		std::cout << resultSTR << std::endl;
+		RequestResult result = loginRequest.handleRequest(requestData);
+		std::string resultString = Byte::deserializeBytesToString(result.response);
+		std::cout << "Response: " << resultString << std::endl;
 
-		if (send(clientSocket, resultSTR.c_str(), resultSTR.size(), 0) == INVALID_SOCKET)
+		if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
 		{
 			throw std::exception("Error while sending message to client");
 		}
