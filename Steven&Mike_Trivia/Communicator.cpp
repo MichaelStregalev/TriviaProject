@@ -122,16 +122,7 @@ void Communicator::acceptClient()
 
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
-	std::string messageS = "Hello";
-
-	const char* helloMsg = messageS.c_str();
-
-	if (send(clientSocket, helloMsg, messageS.size(), 0) == INVALID_SOCKET)
-	{
-		throw std::exception("Error while sending message to client");
-	}
-
-	//Reading from Socket
+	// Reading from Socket - Excepting a request from the client
 	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
 	std::cout << message << std::endl;
 
@@ -140,11 +131,12 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	std::cout << requestData.requestId << std::endl;
 	std::cout << requestData.receivalTime << std::endl;
 
-	std::cout << Byte::deserializeBytesToString(requestData.buffer) << std::endl;
+	std::cout << "Request: " << Byte::deserializeBytesToString(requestData.buffer) << std::endl;	// printing the user's request
 
-	//Sending to Socket
+	// Sending to Socket - Sending the response to the client
 	LoginRequestHandler loginRequest;
 
+	// If the request is a login or signup...
 	if (loginRequest.isRequestRelevant(requestData))
 	{
 		RequestResult result = loginRequest.handleRequest(requestData);
