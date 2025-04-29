@@ -67,21 +67,6 @@ int SqliteDatabase::doesPasswordMatch(std::string userName, std::string passWord
 
 int SqliteDatabase::addNewUser(std::string userName, std::string passWord, std::string email)
 {
-	int result = 0;
-	/*
-	TO DO:
-	Add requiments:
-	Username (8 letters and above, atleast one upper case, blah blah blah)
-	Password (8 letters blah blah blah)
-	Email (Must have @gmail.com)
-	Each one returns another number
-	for example:
-	SignUp successfull (0)
-	invalid userName (1)
-	invalid Password (2)
-	invalid Email (3)
-	*/
-
 	//Username (8 letters and above, atleast one upper case)
 	if (!(userName.length() >= 8) || !(hasUpperCase(userName)))
 	{

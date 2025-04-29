@@ -19,6 +19,13 @@ bool LoginManager::signup(std::string userName, std::string passWord, std::strin
 
 bool LoginManager::login(std::string userName, std::string passWord)
 {
+    if (m_database->doesUserExist(userName)) //If user exists, check the password
+    {
+        if (m_database->doesPasswordMatch(userName, passWord)) //If passWord match, Login was successfull
+        {
+            return true;
+        }
+    }
     return false;
 }
 

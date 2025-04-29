@@ -31,7 +31,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 		std::string password = loginRequest.password;
 
 		// here we will check if the login has been successful or not...
-		if (!(lm.login(username, password)))
+		if (lm.login(username, password))
 		{
 			// if successful...
 			LoginResponse response{ SUCCESSFUL_LOGIN };
@@ -59,7 +59,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 
 		// here we will check if the login has been successful or not...
 		//If 0 is returned, SignUp was succesfull
-		if (!(lm.signup(username, password, email)))
+		if (lm.signup(username, password, email))
 		{
 			// if successful...
 			SignupResponse response{ SUCCESSFUL_SIGNUP };
@@ -69,6 +69,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 		else
 		{
 			// if unsuccessful..
+			// --------------------------------- We can now choose a more detalied response ---------------------------------
 			ErrorResponse response{ "User already exists with that username!" };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);
 			result.newHandler = nullptr;
