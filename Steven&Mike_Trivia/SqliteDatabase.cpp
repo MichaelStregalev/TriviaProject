@@ -67,27 +67,61 @@ int SqliteDatabase::doesPasswordMatch(std::string userName, std::string passWord
 
 int SqliteDatabase::addNewUser(std::string userName, std::string passWord, std::string email)
 {
+	int result = 0;
 	/*
 	TO DO:
-	Add requiments: 
+	Add requiments:
 	Username (8 letters and above, atleast one upper case, blah blah blah)
 	Password (8 letters blah blah blah)
-	Email (Must have @)
+	Email (Must have @gmail.com)
 	Each one returns another number
 	for example:
-	invalid userName (0)
-	invalid Password (1)
-	invalid Email (2)
+	SignUp successfull (0)
+	invalid userName (1)
+	invalid Password (2)
+	invalid Email (3)
 	*/
-	int result = 0;
+
+	//Username (8 letters and above, atleast one upper case)
+	if (!(userName.length() >= 8) || !(hasUpperCase(userName)))
+	{
+		return 1;
+	}
+
+	//Password (8 letters)
+	if (!(passWord.length() >= 8))
+	{
+		return 2;
+	}
+
+	//Email (Must have @gmail.com)
+	if (!(email.find("@gmail.com") != std::string::npos))
+	{
+		return 3;
+	}
+
+	//No problem was found, add new user
 	std::string statment = "INSERT INTO USERS('UserName', 'PassWord', 'Gmail') VALUES('" + userName + "', '" + passWord + "', '" + email + "');";
 
 	const char* sqlStatment = statment.c_str();
 	char* errMessage = nullptr;
-	int res = sqlite3_exec(db, sqlStatment, callbackCount, &result, &errMessage);
+	int res = sqlite3_exec(db, sqlStatment, nullptr, nullptr, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		std::cerr << "Command is INVALID" << std::endl;
 	}
-	return 1;
+	return 0; //SignUp Successfull
+}
+
+//Custom functions
+bool SqliteDatabase::hasUpperCase(const std::string& str)
+{
+	for (char c : str)
+	{
+		if (isupper(c))
+		{
+			return true;
+		}
+	}
+	return false;
 }

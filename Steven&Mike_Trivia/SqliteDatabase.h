@@ -6,7 +6,7 @@ const std::string DB_Path = "TriviaDB.db";
 static sqlite3* db;
 
 class SqliteDatabase : public IDatabase
-{	
+{
 public:
 
 	virtual bool open() override;
@@ -17,5 +17,6 @@ public:
 
 private:
 
+	bool hasUpperCase(const std::string& str);
 
 };

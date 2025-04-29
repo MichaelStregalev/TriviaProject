@@ -125,19 +125,19 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	//Reading from Socket
 
 	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
-	RequestInfo requestData = messageToRequestInfo(message);
+	RequestInfo requestInfo = messageToRequestInfo(message);
 
 	//Sending to Socket
 	LoginRequestHandler loginRequest;
 
 	// If the request is a login or signup...
-	if (loginRequest.isRequestRelevant(requestData))
+	if (loginRequest.isRequestRelevant(requestInfo))
 	{
-		RequestResult result = loginRequest.handleRequest(requestData);
-		std::string requestString = Byte::deserializeBytesToString(requestData.buffer);
+		RequestResult result = loginRequest.handleRequest(requestInfo);
+		std::string requestString = Byte::deserializeBytesToString(requestInfo.buffer);
 		std::cout << requestString << std::endl;
 		std::string resultString = Byte::deserializeBytesToString(result.response);
-		std::cout <<  resultString << std::endl;
+		std::cout << resultString << std::endl;
 
 		if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
 		{

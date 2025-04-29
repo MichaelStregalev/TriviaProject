@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Requests.h"
+#include "Responses.h"
 
 /*
 						IRequestHandler
