@@ -5,12 +5,12 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "JsonResponsePacketSerializer.h"
 
-bool LoginRequestHandler::isRequestRelevant(const RequestInfo& request)
+bool LoginRequestHandler::isRequestRelevant(const RequestInfo& request) const
 {
 	return request.requestId == LOGIN_REQUEST_CODE || request.requestId == SIGNUP_REQUEST_CODE;
 }
 
-RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request) const
 {
 	// The result of the request..
 	RequestResult result;

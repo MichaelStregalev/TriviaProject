@@ -18,10 +18,10 @@ int callbackCount(void* data, int len, char** values, char** columns)
 
 bool SqliteDatabase::open()
 {
-	int res = sqlite3_open(DB_Path.c_str(), &db);
+	int res = sqlite3_open(DB_PATH, &_db);
 	if (res != SQLITE_OK)
 	{
-		db = nullptr;
+		_db = nullptr;
 		std::cout << "Failed to open DB" << std::endl;
 		return false;
 	}
@@ -30,19 +30,19 @@ bool SqliteDatabase::open()
 
 bool SqliteDatabase::close()
 {
-	sqlite3_close(db);
-	db = nullptr;
+	sqlite3_close(_db);
+	_db = nullptr;
 	return true;
 }
 
-int SqliteDatabase::doesUserExist(std::string userName)
+int SqliteDatabase::doesUserExist(const std::string& username) const
 {
 	int result = 0;
-	std::string statment = "SELECT COUNT(*) FROM USERS WHERE UserName = '" + userName + "';";
+	std::string statment = "SELECT COUNT(*) FROM USERS WHERE UserName = '" + username + "';";
 
 	const char* sqlStatment = statment.c_str();
 	char* errMessage = nullptr;
-	int res = sqlite3_exec(db, sqlStatment, callbackCount, &result, &errMessage);
+	int res = sqlite3_exec(_db, sqlStatment, callbackCount, &result, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		std::cerr << "Command is INVALID" << std::endl;
@@ -50,14 +50,14 @@ int SqliteDatabase::doesUserExist(std::string userName)
 	return result;
 }
 
-int SqliteDatabase::doesPasswordMatch(std::string userName, std::string passWord)
+int SqliteDatabase::doesPasswordMatch(const std::string& username, const std::string& password) const
 {
 	int result = 0;
-	std::string statment = "SELECT COUNT(*) FROM USERS WHERE UserName = '" + userName + "' AND PassWord = '" + passWord + "';";
+	std::string statment = "SELECT COUNT(*) FROM USERS WHERE UserName = '" + username + "' AND PassWord = '" + password + "';";
 
 	const char* sqlStatment = statment.c_str();
 	char* errMessage = nullptr;
-	int res = sqlite3_exec(db, sqlStatment, callbackCount, &result, &errMessage);
+	int res = sqlite3_exec(_db, sqlStatment, callbackCount, &result, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		std::cerr << "Command is INVALID" << std::endl;
@@ -65,7 +65,7 @@ int SqliteDatabase::doesPasswordMatch(std::string userName, std::string passWord
 	return result;
 }
 
-int SqliteDatabase::addNewUser(std::string userName, std::string passWord, std::string email)
+int SqliteDatabase::addNewUser(const std::string& username, const std::string& password, const std::string& email)
 {
 	/*
 	TO DO:
@@ -80,11 +80,11 @@ int SqliteDatabase::addNewUser(std::string userName, std::string passWord, std::
 	invalid Email (2)
 	*/
 	int result = 0;
-	std::string statment = "INSERT INTO USERS('UserName', 'PassWord', 'Gmail') VALUES('" + userName + "', '" + passWord + "', '" + email + "');";
+	std::string statment = "INSERT INTO USERS('UserName', 'PassWord', 'Gmail') VALUES('" + username + "', '" + password + "', '" + email + "');";
 
 	const char* sqlStatment = statment.c_str();
 	char* errMessage = nullptr;
-	int res = sqlite3_exec(db, sqlStatment, callbackCount, &result, &errMessage);
+	int res = sqlite3_exec(_db, sqlStatment, callbackCount, &result, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		std::cerr << "Command is INVALID" << std::endl;

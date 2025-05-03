@@ -17,8 +17,8 @@ public:
 
 	// METHODS
 
-	virtual bool isRequestRelevant(const RequestInfo& request) override;		// Is the request relevant?
-	virtual RequestResult handleRequest(const RequestInfo& request) override;	// Handle the request!
+	virtual bool isRequestRelevant(const RequestInfo& request) const override;			// Is the request relevant?
+	virtual RequestResult handleRequest(const RequestInfo& request) const override;		// Handle the request!
 
 private:
 
