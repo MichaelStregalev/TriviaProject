@@ -142,6 +142,7 @@
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
+    <ClCompile Include="TriviaExceptions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Byte.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDatabase.h" />
     <ClInclude Include="TriviaExceptions.h" />
+    <ClInclude Include="UserValidity.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <functional>
 #include "Communicator.h"
+#include "IDatabase.h"
+#include "RequestHandlerFactory.h"
 
 // <-- DEFINE CONSTS -->
 #define SUCCESS 0
@@ -24,6 +26,9 @@ class Server
 {
 public:
 
+	// CONSTRUCTOR
+	Server(IDatabase* db);
+
 	// SERVING METHOD - HOW THE SERVER WORKS
 	void run();
 
@@ -31,4 +36,6 @@ private:
 
 	// <-- FIELDS -->
 	Communicator m_communicator;
+	IDatabase* m_database;
+	RequestHandlerFactory m_handlerFactory;
 };
