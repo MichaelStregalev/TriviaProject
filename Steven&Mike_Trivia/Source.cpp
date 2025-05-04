@@ -12,9 +12,12 @@ int main()
 {
 
 	SqliteDatabase db;
+	db.open();				// Open the database
 
 	Server server(&db);
 	server.run();
+
+	db.close();
 
 	return 0;
 }

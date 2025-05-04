@@ -57,7 +57,7 @@ bool SqliteDatabase::close()
 
 int SqliteDatabase::doesUserExist(const std::string& username) const
 {
-	const std::string query = "SELECT 1 FROM Users WHERE username = ?";
+	const std::string query = "SELECT 1 FROM Users WHERE username = ?;";
 	std::vector<std::string> params = { username };
 
 	// Use executeQuery helper with isSelectQuery = true to check if the user exists
@@ -66,7 +66,7 @@ int SqliteDatabase::doesUserExist(const std::string& username) const
 
 int SqliteDatabase::doesPasswordMatch(const std::string& username, const std::string& password) const
 {
-	const std::string query = "SELECT 1 FROM Users WHERE username = ? AND password = ?";
+	const std::string query = "SELECT 1 FROM Users WHERE username = ? AND password = ?;";
 	std::vector<std::string> params = { username, password };
 
 	// Use executeQuery helper with isSelectQuery = true to check if the password matches
@@ -75,7 +75,7 @@ int SqliteDatabase::doesPasswordMatch(const std::string& username, const std::st
 
 int SqliteDatabase::addNewUser(const std::string& username, const std::string& password, const std::string& email)
 {
-	const std::string query = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
+	const std::string query = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?);";
 	std::vector<std::string> params = { username, password, email };
 
 	// Use executeQuery helper with isSelectQuery = false to add the new user
@@ -84,6 +84,11 @@ int SqliteDatabase::addNewUser(const std::string& username, const std::string& p
 
 int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std::string>& params, bool isSelectQuery) const
 {
+	if (!_db)
+	{
+		throw std::runtime_error("Database connection is null.");
+	}
+
 	sqlite3_stmt* stmt;
 
 	// Prepare the query

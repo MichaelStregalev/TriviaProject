@@ -10,6 +10,7 @@
 #include <sstream>
 #include <condition_variable>
 #include "Communicator.h"
+#include "Responses.h"
 
 // DEFINE
 #define MAX_BUFFER_SIZE	1024
@@ -134,15 +135,14 @@ void Communicator::acceptClient()
 
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
-	//Reading from Socket
-
-	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
-	RequestInfo requestData = messageToRequestInfo(message);
-
 	while (true)
 	{
 		try
 		{
+			//Reading from Socket
+			std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
+			RequestInfo requestData = messageToRequestInfo(message);
+
 			if (m_clients[clientSocket]->isRequestRelevant(requestData))
 			{
 				RequestResult result = m_clients[clientSocket]->handleRequest(requestData);
@@ -153,7 +153,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 				if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
 				{
-					throw std::exception("Error while sending message to client");
+					throw std::runtime_error("Error while sending message to client");
 				}
 
 				if (m_clients[clientSocket] != result.newHandler)
@@ -167,8 +167,13 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 				throw std::exception("REQUEST NOT RELEVANT");
 			}
 		}
+		catch (const std::runtime_error& e)
+		{
+			break;
+		}
 		catch (const std::exception& e)
 		{
+			// TODO: send the error as a protocol message :)
 			send(clientSocket, e.what(), std::strlen(e.what()), 0);
 		}
 	}
