@@ -24,7 +24,6 @@ public:
 	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const = 0;
 	// Add a new user to the database
 	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) = 0;
-	
 
 private:
 };
