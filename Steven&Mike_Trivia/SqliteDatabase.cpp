@@ -94,7 +94,7 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 	}
 
 	// Bind parameters to the prepared query
-	for (size_t i = 0; i < params.size(); ++i)
+	for (int i = 0; i < params.size(); ++i)
 	{
 		sqlite3_bind_text(stmt, i + 1, params[i].c_str(), -1, SQLITE_STATIC);
 	}

@@ -1,5 +1,7 @@
 #pragma once
 #include "IRequestHandler.h"
+#include "LoginManager.h"
+#include "RequestHandlerFactory.h"
 
 /*
 						LoginRequestHandler
@@ -12,7 +14,7 @@ class LoginRequestHandler : public IRequestHandler
 public:
 	
 	// CONSTRUCTOR & DECONSTRUCTOR
-	LoginRequestHandler() = default;
+	LoginRequestHandler(RequestHandlerFactory& handler);
 	~LoginRequestHandler() = default;
 
 	// METHODS
@@ -21,5 +23,14 @@ public:
 	virtual RequestResult handleRequest(const RequestInfo& request) const override;		// Handle the request!
 
 private:
+
+	// <-- FIELDS -->
+
+	RequestHandlerFactory& m_handlerFactory;
+
+	// <-- PRIVATE METHODS -->
+
+	RequestResult signup(const RequestInfo& request) const;
+	RequestResult login(const RequestInfo& request) const;
 
 };

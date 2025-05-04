@@ -7,7 +7,7 @@ RequestHandlerFactory::RequestHandlerFactory(IDatabase* db)
 
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
-	return new LoginRequestHandler();
+	return new LoginRequestHandler(*this);
 }
 
 MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()
