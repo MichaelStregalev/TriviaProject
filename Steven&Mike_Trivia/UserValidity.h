@@ -1,0 +1,23 @@
+#pragma once
+
+/*
+				USERVALIDITY
+	This header includes all of the rules of
+	validity a user needs to pass in order to be deemed
+	valid in the server.
+*/
+
+// <-- ENUMS -->
+
+enum usernameValidity { USERNAME_VALID = 0, USERNAME_EMPTY, LENGTH_INVALID, DOESNT_START_LETTER, NO_UPPER_CASE, SYMBOLS, USERNAME_SPACES };
+enum passwordValidity { PASSWORD_VALID = 0, PASSWORD_EMPTY, SHORT_LENGTH, NO_UPPERCASE, NO_LOWERCASE, NO_DIGIT, NO_SPECIAL, PASSWORD_SPACES, CONTAINS_USERNAME };
+enum emailValidity { EMAIL_VALID = 0, EMAIL_EMPTY, NO_AT_SIGN, NO_DOT, EMAIL_SPACES, INVALID_FORMAT };
+
+// <-- DEFINES -->
+
+#define MINIMUM_LENGTH_USERNAME		5
+#define MAXIMUM_LENGTH_USERNAME		13
+#define INDEX_OF_FIRST_CHAR			0
+
+#define MINIMUM_LENGTH_PASSWORD		8
+#define MAXIMUM_LENGTH_PASSWORD		20

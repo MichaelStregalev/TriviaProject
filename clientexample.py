@@ -77,7 +77,7 @@ def user_login_or_signup():
     while True:
         try:
             choice = int(input("Choose an option:\n1. Sign Up\n2. Log In\nEnter choice: ").strip())
-            if choice in [SIGNUP_CODE, LOGIN_CODE]:
+            if choice in [SIGNUP_CODE, LOGIN_CODE] or choice == 999:
                 return choice
             print("Choose a valid option!")
         except ValueError:
@@ -181,12 +181,15 @@ def main():
     validate_port(SERVER_PORT)
     client_socket = create_socket()
     connect_to_server(client_socket, SERVER_ADDRESS, SERVER_PORT)
-
-    choice = user_login_or_signup()
-    user_details = get_user_details(choice)
-    protocol_message = create_protocol_message(choice, user_details)
     
-    send_receive_message(client_socket, protocol_message)
+    choice = 0
+    
+    while choice != 999:
+        choice = user_login_or_signup()
+        user_details = get_user_details(choice)
+        protocol_message = create_protocol_message(choice, user_details)
+    
+        send_receive_message(client_socket, protocol_message)
 
     client_socket.close()
     print("Connection closed.")
