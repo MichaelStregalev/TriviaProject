@@ -3,6 +3,8 @@
 #include "LoginManager.h"
 #include "RequestHandlerFactory.h"
 
+class RequestHandlerFactory;
+
 /*
 						LoginRequestHandler
 	LoginRequestHandler is a child class of IRequestHandler,
@@ -20,7 +22,7 @@ public:
 	// METHODS
 
 	virtual bool isRequestRelevant(const RequestInfo& request) const override;			// Is the request relevant?
-	virtual RequestResult handleRequest(const RequestInfo& request) const override;		// Handle the request!
+	virtual RequestResult handleRequest(const RequestInfo& request) override;		// Handle the request!
 
 private:
 
@@ -30,7 +32,7 @@ private:
 
 	// <-- PRIVATE METHODS -->
 
-	RequestResult signup(const RequestInfo& request) const;
-	RequestResult login(const RequestInfo& request) const;
+	RequestResult signup(const RequestInfo& request);
+	RequestResult login(const RequestInfo& request);
 
 };

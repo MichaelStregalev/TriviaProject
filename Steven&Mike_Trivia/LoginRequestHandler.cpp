@@ -14,7 +14,7 @@ bool LoginRequestHandler::isRequestRelevant(const RequestInfo& request) const
 	return request.requestId == LOGIN_REQUEST_CODE || request.requestId == SIGNUP_REQUEST_CODE;
 }
 
-RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request) const
+RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 {
 	// The result of the request..
 	RequestResult result;
@@ -31,7 +31,7 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request) con
 	return result;
 }
 
-RequestResult LoginRequestHandler::signup(const RequestInfo& request) const
+RequestResult LoginRequestHandler::signup(const RequestInfo& request)
 {
 	RequestResult result;
 
@@ -48,14 +48,14 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& request) const
 			// Building the successful signup response
 			SignupResponse response { SUCCESSFUL_SIGNUP };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = new MenuRequestHandler();		// The new handler will be the menu request handler!
+			result.newHandler = m_handlerFactory.createMenuRequestHandler();		// The new handler will be the menu request handler!
 		}
 		else
 		{
 			// Building the unsuccessful signup response
 			ErrorResponse response { "User with the username " + signupRequest.userName + " already exists!"};
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = new LoginRequestHandler(m_handlerFactory);	// The new handler will be a login request handler, once again since an error occurred!
+			result.newHandler = this;	// The new handler will be a login request handler, once again since an error occurred!
 		}
 	}
 	catch (const std::exception& e)
@@ -63,14 +63,14 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& request) const
 		// Building the unsuccessful signup response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-		result.newHandler = new LoginRequestHandler(m_handlerFactory);	// The new handler will be a login request handler, once again since an error occurred!
+		result.newHandler = this;	// The new handler will be a login request handler, once again since an error occurred!
 	}
 
 
 	return result;
 }
 
-RequestResult LoginRequestHandler::login(const RequestInfo& request) const
+RequestResult LoginRequestHandler::login(const RequestInfo& request)
 {
 	RequestResult result;
 
@@ -87,14 +87,14 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request) const
 			// Building the successful login response
 			LoginResponse response{ SUCCESSFUL_LOGIN };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = new MenuRequestHandler();		// The new handler will be the menu request handler!
+			result.newHandler = m_handlerFactory.createMenuRequestHandler();		// The new handler will be the menu request handler!
 		}
 		else
 		{
 			// Building the unsuccessful login response
 			ErrorResponse response{ "Login was unsuccessful! Check that username and password are correct, or that the user isn't already connected." };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = new LoginRequestHandler(m_handlerFactory);	// The new handler will be a login request handler, once again since an error occurred!
+			result.newHandler = this;	// The new handler will be a login request handler, once again since an error occurred!
 		}
 	}
 	catch (const std::exception& e)
@@ -102,7 +102,7 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request) const
 		// Building the unsuccessful login response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-		result.newHandler = new LoginRequestHandler(m_handlerFactory);	// The new handler will be a login request handler, once again since an error occurred!
+		result.newHandler = this;			// The new handler will be a login request handler, once again since an error occurred!
 	}
 	
 	return result;

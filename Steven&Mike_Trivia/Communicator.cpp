@@ -122,7 +122,7 @@ void Communicator::acceptClient()
 		// Protect the clientSockets map with a lock
 		std::lock_guard<std::mutex> lock(m_clientMutex);
 
-		LoginRequestHandler* handler = new LoginRequestHandler();
+		LoginRequestHandler* handler = m_handlerFactory.createLoginRequestHandler();
 		// Add the client's socket onto the map of clientSockets
 		m_clients.insert({ client_socket, handler });
 	}
@@ -139,24 +139,40 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
 	RequestInfo requestData = messageToRequestInfo(message);
 
-	//Sending to Socket
-	LoginRequestHandler loginRequest;
-
-	// If the request is a login or signup...
-	if (loginRequest.isRequestRelevant(requestData))
+	while (true)
 	{
-		RequestResult result = loginRequest.handleRequest(requestData);
-		std::string requestString = Byte::deserializeBytesToString(requestData.buffer);
-		std::cout << requestString << std::endl;
-		std::string resultString = Byte::deserializeBytesToString(result.response);
-		std::cout <<  resultString << std::endl;
-
-		if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
+		try
 		{
-			throw std::exception("Error while sending message to client");
+			if (m_clients[clientSocket]->isRequestRelevant(requestData))
+			{
+				RequestResult result = m_clients[clientSocket]->handleRequest(requestData);
+				std::string requestString = Byte::deserializeBytesToString(requestData.buffer);
+				std::cout << requestString << std::endl;
+				std::string resultString = Byte::deserializeBytesToString(result.response);
+				std::cout << resultString << std::endl;
+
+				if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
+				{
+					throw std::exception("Error while sending message to client");
+				}
+
+				if (m_clients[clientSocket] != result.newHandler)
+				{
+					delete m_clients[clientSocket];
+					m_clients[clientSocket] = result.newHandler;
+				}
+			}
+			else
+			{
+				throw std::exception("REQUEST NOT RELEVANT");
+			}
+		}
+		catch (const std::exception& e)
+		{
+			send(clientSocket, e.what(), std::strlen(e.what()), 0);
 		}
 	}
-
+	
 	std::cout << "Goodbye :)" << std::endl;
 	closesocket(clientSocket);
 }

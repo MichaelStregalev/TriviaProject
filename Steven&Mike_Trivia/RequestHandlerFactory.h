@@ -5,6 +5,8 @@
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
 
+class LoginRequestHandler;
+
 /*
 						RequestHandlerFactory
 	RequestHandlerFactory is a class that will help us centerize all of our classes into

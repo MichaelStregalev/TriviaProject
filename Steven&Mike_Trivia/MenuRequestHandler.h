@@ -10,8 +10,8 @@ public:
 	virtual ~MenuRequestHandler() = default;
 
 
-	virtual bool isRequestRelevant(const RequestInfo& request) const;				// Is the request relevant?
-	virtual RequestResult handleRequest(const RequestInfo& request) const;			// Handle the request
+	bool isRequestRelevant(const RequestInfo& request) const override;				// Is the request relevant?
+	RequestResult handleRequest(const RequestInfo& request) override;			// Handle the request
 
 private:
 
