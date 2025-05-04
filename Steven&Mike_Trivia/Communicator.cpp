@@ -14,6 +14,26 @@
 // DEFINE
 #define MAX_BUFFER_SIZE	1024
 
+Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory)
+{
+	// Before using Winsock functions like socket(), we must call WSAStartup() exactly once in our program.
+	// If it hasn't been done - Winsock won't work and socket() will always return INVALID_SOCKET.
+	WSADATA wsaData;
+	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0)
+	{
+		std::cerr << "WSAStartup failed: " << iResult << std::endl;
+	}
+
+	// this server uses TCP. that why SOCK_STREAM & IPPROTO_TCP
+	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	if (m_serverSocket == INVALID_SOCKET)
+	{
+		throw std::exception("Failed to create a socket.");
+	}
+}
+
 Communicator::~Communicator()
 {
 	// Lock the mutex to safely access the m_clients map
@@ -44,14 +64,6 @@ Communicator::~Communicator()
 
 void Communicator::startHandleRequests()
 {
-	// this server uses TCP. that why SOCK_STREAM & IPPROTO_TCP
-	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	if (m_serverSocket == INVALID_SOCKET)
-	{
-		throw std::exception("Failed to create a socket.");
-	}
-
 	Communicator::bindAndListen();
 }
 

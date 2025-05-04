@@ -1,22 +1,6 @@
 #include "SqliteDatabase.h"
 #include <exception>
 
-//----------------------- CallBacks -----------------------
-
-int callbackCount(void* data, int len, char** values, char** columns)
-{
-	auto check = (int*)data;
-
-	for (int i = 0; i < len; i++)
-	{
-		(*check) = std::stoi(values[i]);
-	}
-
-	return SQLITE_OK;
-}
-
-//----------------------- Class Functions -----------------------
-
 bool SqliteDatabase::open()
 {
 	// Try and open/create the database (will create in case it doesn't exist)
