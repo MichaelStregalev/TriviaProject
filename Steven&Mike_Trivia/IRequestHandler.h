@@ -21,6 +21,6 @@ public:
 
 	// METHODS
 
-	virtual bool isRequestRelevant(const RequestInfo& request) = 0;			// Is the request relevant?
-	virtual RequestResult handleRequest(const RequestInfo& request) = 0;	// Handle the request
+	virtual bool isRequestRelevant(const RequestInfo& request) const = 0;			// Is the request relevant?
+	virtual RequestResult handleRequest(const RequestInfo& request) = 0;			// Handle the request
 };

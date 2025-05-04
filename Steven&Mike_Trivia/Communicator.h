@@ -9,6 +9,8 @@
 #include "LoginRequestHandler.h"
 #include "IRequestHandler.h"
 #include "Codes.h"
+#include "RequestHandlerFactory.h"
+#include "IDatabase.h"
 
 #define SERVER_PORT 8876
 
@@ -22,8 +24,10 @@ class Communicator
 {
 public:
 	
-	// No need to write a constructor if we don't need any important initializations.
-	// But - we do need to write the deconstructor as we have dynamically allocated some information.
+	// CONSTRUCTOR
+	Communicator(RequestHandlerFactory& factory);
+
+	// DECONSTRUCTOR
 	~Communicator();
 
 	void startHandleRequests();	// This function will let us start handling requests from clients!
@@ -38,6 +42,8 @@ private:
 	std::map<SOCKET, IRequestHandler*> m_clients;
 	// The mutex of clientSockets
 	std::mutex m_clientMutex;
+	// Factory handler
+	RequestHandlerFactory& m_handlerFactory;
 
 	// <-- PRIVATE METHDOS -->
 
