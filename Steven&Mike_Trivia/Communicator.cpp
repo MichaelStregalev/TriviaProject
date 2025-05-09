@@ -61,6 +61,8 @@ Communicator::~Communicator()
 	{
 		closesocket(m_serverSocket);
 	}
+
+	WSACleanup();	// Clean the WinSock
 }
 
 void Communicator::startHandleRequests()
@@ -178,6 +180,20 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		}
 	}
 	
+	// Since the conversation ended here - remove the client from the m_clients, and delete the dynamically allocated handler
+
+	{
+		// Protect the clientSockets map with a lock
+		std::lock_guard<std::mutex> lock(m_clientMutex);
+
+		// Delete the handler
+		delete m_clients[clientSocket];
+
+		// Remove the client from m_clients
+		m_clients.erase(clientSocket);
+	}
+
+
 	std::cout << "Goodbye :)" << std::endl;
 	closesocket(clientSocket);
 }
