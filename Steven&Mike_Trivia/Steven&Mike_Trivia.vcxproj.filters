@@ -63,7 +63,7 @@
     <ClCompile Include="TriviaExceptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Structs.h">
+    <ClCompile Include="Question.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="StatisticManager.cpp">
