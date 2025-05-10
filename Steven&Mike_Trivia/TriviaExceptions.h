@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+// <-- DOWN BELOW YOU CAN SEE THE HIERARCHY OF ALL THE EXCEPTIONS -->
+
 /*
 						TRIVIAEXCEPTIONS
 	This header contains all of the different custom exceptions
@@ -236,3 +238,136 @@ public:
 protected:
 	std::string _email;
 };
+
+// USER DOES NOT EXIST EXCEPTION
+class UserDoesNotExistException : public SignupException
+{
+public:
+	UserDoesNotExistException() : SignupException("User does not exist in the server.") {}
+};
+
+/*
+								DATABASEEXCEPTION
+		DatabaseException is the father class of all exceptions that are involved with
+		the database, whether it is queries - or errors of setting up the database itself.
+
+		USED IN SQLITEDATABASE.CPP
+*/
+
+class DatabaseException : public ProjectException
+{
+public:
+	DatabaseException(const std::string& message) : ProjectException(message) {}
+};
+
+/*
+							DATABASECONNECTIONEXCEPTION
+		DatabaseConnectionException includes all kinds of exceptions that may come
+		along when dealing with the connection to the database, or its setup.
+*/
+
+class DatabaseConnectionException : public DatabaseException
+{
+public:
+	DatabaseConnectionException(const std::string& error) : DatabaseException("Database Connection Error: " + error) {}
+};
+
+// DATABASE NOT OPEN EXCEPTION
+class DatabaseNotOpenException : public DatabaseConnectionException
+{
+public:
+	DatabaseNotOpenException() : DatabaseConnectionException("Database not open.") {}
+};
+
+// FAILED SETUP OF DATABASE EXCEPTION
+class DatabaseSetupErrorException : public DatabaseConnectionException
+{
+public:
+	DatabaseSetupErrorException() : DatabaseConnectionException("Failed to setup the database.") {}
+};
+
+// OPEN DATABASE ERROR EXCEPTION
+class OpenDatabaseErrorException : public DatabaseConnectionException
+{
+public:
+	OpenDatabaseErrorException() : DatabaseConnectionException("Failed to open the database.") {}
+};
+
+/*
+							QUERYEXCEPTION
+		QueryException includes all kinds of exceptions that may come
+				along when dealing with database queries.
+*/
+
+class QueryException : public DatabaseException
+{
+public:
+	QueryException(const std::string& message, const std::string& query) : DatabaseException(message + query) {}
+};
+
+// FAILED PREPARATION OF QUERY EXCEPTION
+class FailedPreparationQueryException : public QueryException
+{
+public:
+	FailedPreparationQueryException(const std::string& query) : QueryException("Failed to prepare SQL query: ", query) {}
+};
+
+
+// <-- HIERARCHY -->
+
+/*
+
+std::exception
+|
++-- ProjectException
+	|
+	+-- ByteException
+	|   |
+	|   +-- InvalidByteValueException
+	|   +-- BinaryStringException
+	|       |
+	|       +-- InvalidBinaryStringFormatException
+	|       +-- InvalidBinaryStringLengthException
+	|
+	+-- SocketException
+	|   |
+	|   +-- SocketSetupException
+	|   |   |
+	|   |   +-- SocketCreationErrorException
+	|   |   +-- SocketBindingErrorException
+	|   |   +-- SocketListeningErrorException
+	|   |
+	|   +-- WSAException
+	|   |   |
+	|   |   +-- WSASetUpErrorException
+	|   |
+	|   +-- SocketCommunicationException
+	|   |   |
+	|   |   +-- UserConnectionErrorException
+	|   |   +-- SendingMessageErrorException
+	|   |   +-- ReceivingMessageErrorException
+	|   |
+	|   +-- RequestException
+	|       |
+	|       +-- RequestNotRelevantException
+	|
+	+-- SignupException
+	|   |
+	|   +-- UsernameInvalidException
+	|   +-- PasswordInvalidException
+	|   +-- EmailInvalidException
+	|   +-- UserDoesNotExistException
+	|
+	+-- DatabaseException
+		|
+		+-- DatabaseConnectionException
+		|   |
+		|   +-- DatabaseNotOpenException
+		|   +-- DatabaseSetupErrorException
+		|   +-- OpenDatabaseErrorException
+		|
+		+-- QueryException
+			|
+			+-- FailedPreparationQueryException
+
+*/
