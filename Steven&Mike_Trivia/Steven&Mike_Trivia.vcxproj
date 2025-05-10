@@ -143,7 +143,7 @@
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDatabase.cpp" />
     <ClCompile Include="StatisticManager.cpp" />
-    <ClCompile Include="Structs.h" />
+    <ClCompile Include="Question.h" />
     <ClCompile Include="TriviaExceptions.cpp" />
   </ItemGroup>
   <ItemGroup>
