@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IDatabase.h"
-#include <vector>
 
 // DEFINE CONSTS
 #define DB_PATH "TriviaDB.db"
@@ -25,6 +24,14 @@ public:
 	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const override;
 	// Add a new user to the database!
 	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) override;
+	// Get Questions
+	virtual std::list<Question> getQuestions(int num) override;
+	virtual float getPlayerAverageAnswerTime(std::string userName) override;
+	virtual int getNumOfCorrectAnswers(std::string userName) override;
+	virtual int getNumOfTotalAnswers(std::string userName) override;
+	virtual int getNumOfPlayerGames(std::string userName) override;
+	virtual int getPlayerScore(std::string userName) override;
+	virtual std::map<std::string, int> getHighScores() override;
 
 private:
 

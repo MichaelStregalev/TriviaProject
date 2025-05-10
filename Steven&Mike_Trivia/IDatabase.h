@@ -2,6 +2,10 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+#include <map>
+#include <vector>
+#include "Structs.h"
 #include "sqlite3.h"
 
 /*
@@ -24,6 +28,14 @@ public:
 	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const = 0;
 	// Add a new user to the database
 	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) = 0;
+	// Get Questions
+	virtual std::list<Question> getQuestions(int num) = 0;
+	virtual float getPlayerAverageAnswerTime(std::string userName) = 0;
+	virtual int getNumOfCorrectAnswers(std::string userName) = 0;
+	virtual int getNumOfTotalAnswers(std::string userName) = 0;
+	virtual int getNumOfPlayerGames(std::string userName) = 0;
+	virtual int getPlayerScore(std::string userName) = 0;
+	virtual std::map<std::string, int> getHighScores() = 0;
 
 private:
 };
