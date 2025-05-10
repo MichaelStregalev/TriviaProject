@@ -1,5 +1,5 @@
 #include "SqliteDatabase.h"
-#include <exception>
+#include "TriviaExceptions.h"
 
 //Helper functions
 std::vector<std::string> splitStringByComma(const std::string& string) 
@@ -102,8 +102,7 @@ bool SqliteDatabase::open()
 	int result = sqlite3_open(DB_PATH, &_db);
 	if (result != SQLITE_OK)	// If the database couldn't open...
 	{
-		std::cerr << "Can't open database: " << sqlite3_errmsg(_db) << std::endl;
-		return false;
+		throw OpenDatabaseErrorException();
 	}
 
 	// Always attempt to create the database, will work in case the tables do not exist in the database.
@@ -121,9 +120,7 @@ bool SqliteDatabase::open()
 
 	if (result != SQLITE_OK)	// If an error occurred during the execution of the creation of the users table..
 	{
-		std::cerr << "SQL error during table creation: " << errMsg << std::endl;
-		sqlite3_free(errMsg);
-		return false;
+		throw DatabaseSetupErrorException();
 	}
 
 	// Always attempt to create the database, will work in case the tables do not exist in the database.
@@ -342,7 +339,7 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 {
 	if (!_db)
 	{
-		throw std::runtime_error("Database connection is null.");
+		throw DatabaseNotOpenException();
 	}
 
 	sqlite3_stmt* stmt;
@@ -350,8 +347,7 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 	// Prepare the query
 	if (sqlite3_prepare_v2(_db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK)
 	{
-		std::string errorMessage = "Failed to prepare the query: " + query;
-		throw std::runtime_error(errorMessage);
+		throw FailedPreparationQueryException(query);
 	}
 
 	// Bind parameters to the prepared query

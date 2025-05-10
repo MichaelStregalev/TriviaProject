@@ -8,7 +8,7 @@
 class LoginRequestHandler;
 
 /*
-						RequestHandlerFactory
+								RequestHandlerFactory
 	RequestHandlerFactory is a class that will help us centerize all of our classes into
 	a single class, letting the design of the project be a lot more cleaner and comfortable.
 */
@@ -19,12 +19,14 @@ public:
 	// CONSTRUCTOR
 	RequestHandlerFactory(IDatabase* db);
 
+	// METHODS
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler();
 	LoginManager& getLoginManager();
 
 private:
 
+	// <-- FIELDS -->
 	LoginManager m_loginManager;
 	IDatabase* m_database;
 

@@ -27,11 +27,9 @@ public:
 private:
 
 	// <-- FIELDS -->
-
 	RequestHandlerFactory& m_handlerFactory;
 
 	// <-- PRIVATE METHODS -->
-
 	RequestResult signup(const RequestInfo& request);
 	RequestResult login(const RequestInfo& request);
 

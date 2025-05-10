@@ -1,5 +1,5 @@
 #include "Byte.h"
-#include <stdexcept>
+#include "TriviaExceptions.h"
 
 // DEFAULT CONSTRUCTOR
 Byte::Byte() :
@@ -19,7 +19,7 @@ Byte::Byte(int value)
 	// A byte can only hold values between 0-255
 	if (value > MAX_BYTE_VALUE || value < MIN_BYTE_VALUE)
 	{
-		throw std::invalid_argument("A byte can only hold values between 0-255!");
+		throw InvalidByteValueException();
 	}
 
 	_value = static_cast<unsigned char>(value);
@@ -43,7 +43,7 @@ void Byte::setValue(int value)
 	// A byte can only hold values between 0-255
 	if (value > MAX_BYTE_VALUE || value < MIN_BYTE_VALUE)
 	{
-		throw std::invalid_argument("A byte can only hold values between 0-255!");
+		throw InvalidByteValueException();
 	}
 
 	_value = static_cast<unsigned char>(value);
@@ -213,11 +213,11 @@ unsigned char Byte::binaryToByte(const std::string& binary)
 
 	if (!isBinaryCode(binary))
 	{
-		throw std::invalid_argument("Invalid arugment! Must be a string that represents a binary code.");
+		throw InvalidBinaryStringFormatException();
 	}
 	else if (binary.length() != BITS_IN_BYTE)
 	{
-		throw std::invalid_argument("Invalid argument! A byte contains 8 bits.");
+		throw InvalidBinaryStringLengthException();
 	}
 
 	unsigned char value = 0;

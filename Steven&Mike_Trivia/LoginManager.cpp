@@ -32,7 +32,7 @@ bool LoginManager::login(std::string username, std::string password)
     // First we will check that the user does exist in the database..
     if (!m_database->doesUserExist(username))
     {
-        throw std::exception("The user does not exist in the database!");
+        throw UserDoesNotExistException();
     }
     
     // We will need to make sure that the password matches the user's password in the database!

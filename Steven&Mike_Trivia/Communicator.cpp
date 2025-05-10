@@ -1,16 +1,15 @@
 #include <map>
 #include <functional> //For std::bind
 #include <mutex>
-#include <exception>
 #include <iostream>
 #include <string>
 #include <thread>
 #include <format>
 #include <fstream>
 #include <sstream>
-#include <condition_variable>
 #include "Communicator.h"
 #include "Responses.h"
+#include "TriviaExceptions.h"
 
 // DEFINE
 #define MAX_BUFFER_SIZE	1024
@@ -23,15 +22,16 @@ Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(fa
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0)
 	{
-		std::cerr << "WSAStartup failed: " << iResult << std::endl;
+		throw WSASetUpErrorException();
 	}
 
 	// this server uses TCP. that why SOCK_STREAM & IPPROTO_TCP
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
+	// If an error occurred while creating the socket..
 	if (m_serverSocket == INVALID_SOCKET)
 	{
-		throw std::exception("Failed to create a socket.");
+		throw SocketCreationErrorException();
 	}
 }
 
@@ -61,6 +61,8 @@ Communicator::~Communicator()
 	{
 		closesocket(m_serverSocket);
 	}
+
+	WSACleanup();	// Clean the WinSock
 }
 
 void Communicator::startHandleRequests()
@@ -81,15 +83,12 @@ void Communicator::bindAndListen()
 	{
 		if (bind(m_serverSocket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR)
 		{
-			//throw std::runtime_error("Failed to bind the socket and the configuration.");
-			int err = WSAGetLastError();
-			std::cerr << "bind() failed, error code: " << err << std::endl;
-			throw std::runtime_error("Failed to bind the socket and the configuration.");
+			throw SocketBindingErrorException();
 		}
 
 		if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
 		{
-			throw std::runtime_error("Failed to listen for incoming requests.");
+			throw SocketListeningErrorException();
 		}
 
 		std::cout << "Listening on port " << SERVER_PORT << std::endl;
@@ -100,9 +99,13 @@ void Communicator::bindAndListen()
 			acceptClient();
 		}
 	}
+	catch (const SocketException& e)
+	{
+		std::cerr << "Server failed[" << e.what() << "]" << std::endl;
+	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "Server failed: " << e.what() << std::endl;
+		std::cerr << "An error occurred: " << e.what() << std::endl;
 	}
 }
 
@@ -114,7 +117,7 @@ void Communicator::acceptClient()
 	SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
 	if (client_socket == INVALID_SOCKET)
 	{
-		throw std::exception("The user has failed to connect to the server.");
+		throw UserConnectionErrorException();
 	}
 
 	std::cout << "Client accepted. Server and client can speak" << std::endl;
@@ -153,7 +156,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 				if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
 				{
-					throw std::runtime_error("Error while sending message to client");
+					throw SendingMessageErrorException();
 				}
 
 				if (m_clients[clientSocket] != result.newHandler)
@@ -164,11 +167,13 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			}
 			else
 			{
-				throw std::exception("REQUEST NOT RELEVANT");
+				throw RequestNotRelevantException();
 			}
 		}
-		catch (const std::runtime_error& e)
+		catch (const RequestNotRelevantException& e)
 		{
+			// If we catch a non-relevant request, we will just continue...
+			std::cerr << "Non-relevant request." << std::endl;
 			break;
 		}
 		catch (const std::exception& e)
@@ -178,6 +183,20 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		}
 	}
 	
+	// Since the conversation ended here - remove the client from the m_clients, and delete the dynamically allocated handler
+
+	{
+		// Protect the clientSockets map with a lock
+		std::lock_guard<std::mutex> lock(m_clientMutex);
+
+		// Delete the handler
+		delete m_clients[clientSocket];
+
+		// Remove the client from m_clients
+		m_clients.erase(clientSocket);
+	}
+
+
 	std::cout << "Goodbye :)" << std::endl;
 	closesocket(clientSocket);
 }
@@ -195,9 +214,7 @@ std::string Communicator::readFromSocket(SOCKET sc, int bytesNum, int flags)
 
 	if (res == INVALID_SOCKET)
 	{
-		std::string s = "Error while recieving from socket: ";
-		s += std::to_string(sc);
-		throw std::exception(s.c_str());
+		throw ReceivingMessageErrorException();
 	}
 
 	data[res] = 0;
