@@ -1,6 +1,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "RoomManager.h"
+#include "TriviaExceptions.h"
 
 // CONSTRUCTOR
 RoomManager::RoomManager()
@@ -19,8 +20,7 @@ RoomStatus RoomManager::getRoomState(int roomId) const
     }
     else
     {
-        std::cout << "Room with ID " << roomId << " does not exist." << std::endl;
-        return RoomStatus(0);
+        throw RoomDoesNotExistException(roomId);
     }
 }
 
@@ -52,7 +52,7 @@ Room* RoomManager::getRoom(int roomId) const
 
     // If the room has not been found, throw an exception
 
-    throw std::exception("The room does not exist.");
+    throw RoomDoesNotExistException(roomId);
 }
 
 void RoomManager::createRoom(const LoggedUser& user, RoomData& data)
@@ -76,7 +76,7 @@ void RoomManager::deleteRoom(int roomId)
     }
     else 
     {
-        std::cout << "Room with ID " << roomId << " does not exist." << std::endl;
+        throw RoomDoesNotExistException(roomId);
     }
 }
 

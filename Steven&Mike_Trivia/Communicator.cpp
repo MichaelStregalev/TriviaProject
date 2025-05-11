@@ -184,8 +184,10 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		}
 		catch (const std::exception& e)
 		{
-			// TODO: send the error as a protocol message :)
-			send(clientSocket, e.what(), std::strlen(e.what()), 0);
+			// If an exception had been thrown and no once catched it - 
+			// it means an error occurred, we will close the connection.
+			std::cout << "ERROR OCCURRED " << e.what() << std::endl;
+			break;
 		}
 	}
 	
@@ -203,7 +205,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 
 
-	std::cout << "Goodbye :)" << std::endl;
+	std::cout << "USER CONNECTION GONE" << std::endl;
 	closesocket(clientSocket);
 }
 

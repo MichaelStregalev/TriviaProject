@@ -170,7 +170,7 @@ std::list<Question> SqliteDatabase::getQuestions(int num) const
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return questions;
@@ -191,7 +191,7 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) co
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;
@@ -211,7 +211,7 @@ int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;
@@ -231,7 +231,7 @@ int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;
@@ -251,7 +251,7 @@ int SqliteDatabase::getNumOfPlayerGames(const std::string& username) const
 	
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;
@@ -271,7 +271,7 @@ int SqliteDatabase::getPlayerScore(const std::string& username) const
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;
@@ -314,7 +314,7 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 
 	if (res != SQLITE_OK)
 	{
-		std::cerr << "Command is INVALID" << std::endl;
+		throw FailedExecutionQueryException(query);
 	}
 
 	return result;

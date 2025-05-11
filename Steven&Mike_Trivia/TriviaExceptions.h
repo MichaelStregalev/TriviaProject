@@ -312,6 +312,32 @@ public:
 	FailedPreparationQueryException(const std::string& query) : QueryException("Failed to prepare SQL query: ", query) {}
 };
 
+// FAILED EXECUTION OF QUERY EXCEPTION
+class FailedExecutionQueryException : public QueryException
+{
+public:
+	FailedExecutionQueryException(const std::string& query) : QueryException("Failed to execute SQL query: ", query) {}
+};
+
+/*
+									ROOMEXCEPTION
+		RoomException is the father class of all exceptions that are involved with
+							the rooms in our server.
+
+		USED IN ROOMMANAGER.CPP
+*/
+
+class RoomException : public ProjectException
+{
+public:
+	RoomException(const std::string& message) : ProjectException(message) {}
+};
+
+class RoomDoesNotExistException : public RoomException
+{
+public:
+	RoomDoesNotExistException(int roomId) : RoomException("Room with id " + std::to_string(roomId) + " does not exist!") {}
+};
 
 // <-- HIERARCHY -->
 
@@ -359,15 +385,19 @@ std::exception
 	|   +-- UserDoesNotExistException
 	|
 	+-- DatabaseException
+	|	|
+	|	+-- DatabaseConnectionException
+	|	|   |
+	|	|   +-- DatabaseNotOpenException
+	|	|   +-- DatabaseSetupErrorException
+	|	|   +-- OpenDatabaseErrorException
+	|	|
+	|	+-- QueryException
+	|		|
+	|		+-- FailedPreparationQueryException
+	|		+-- FailedExecutionQueryException
+	|
+	+-- RoomException
 		|
-		+-- DatabaseConnectionException
-		|   |
-		|   +-- DatabaseNotOpenException
-		|   +-- DatabaseSetupErrorException
-		|   +-- OpenDatabaseErrorException
-		|
-		+-- QueryException
-			|
-			+-- FailedPreparationQueryException
-
+		+-- RoomDoesNotExistException
 */

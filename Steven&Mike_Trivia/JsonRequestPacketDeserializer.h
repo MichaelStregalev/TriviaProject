@@ -18,7 +18,7 @@
 
 
 /*
-					JsonResponsePacketDeerializer
+					JsonRequestPacketDeserializer
 	This namespace will allow us to deserialize any type of requests users
 	have sent us, and parse them onto data requests that we can examine.
 */
