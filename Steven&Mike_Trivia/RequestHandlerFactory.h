@@ -4,6 +4,8 @@
 #include "IDatabase.h"
 #include "LoginRequestHandler.h"
 #include "MenuRequestHandler.h"
+#include "StatisticManager.h"
+#include "RoomManager.h"
 
 class LoginRequestHandler;
 
@@ -19,15 +21,22 @@ public:
 	// CONSTRUCTOR
 	RequestHandlerFactory(IDatabase* db);
 
-	// METHODS
+	// GETTERS
+	LoginManager& getLoginManager();
+	RoomManager& getRoomManager();
+	StatisticManager& getStatisticManager();
+
+	// <-- METHODS -->
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler();
-	LoginManager& getLoginManager();
-
+	
 private:
 
 	// <-- FIELDS -->
 	LoginManager m_loginManager;
 	IDatabase* m_database;
+	RoomManager m_roomManager;
+	StatisticManager m_statisticsManager;
+
 
 };
