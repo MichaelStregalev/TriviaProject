@@ -17,21 +17,19 @@ public:
 	
 	// CONSTRUCTOR & DECONSTRUCTOR
 	LoginRequestHandler(RequestHandlerFactory& handler);
-	~LoginRequestHandler() = default;
+	virtual ~LoginRequestHandler() = default;
 
 	// METHODS
 
-	virtual bool isRequestRelevant(const RequestInfo& request) const override;			// Is the request relevant?
-	virtual RequestResult handleRequest(const RequestInfo& request) override;		// Handle the request!
+	bool isRequestRelevant(const RequestInfo& request) const override;			// Is the request relevant?
+	RequestResult handleRequest(const RequestInfo& request) override;			// Handle the request!
 
 private:
 
 	// <-- FIELDS -->
-
 	RequestHandlerFactory& m_handlerFactory;
 
 	// <-- PRIVATE METHODS -->
-
 	RequestResult signup(const RequestInfo& request);
 	RequestResult login(const RequestInfo& request);
 

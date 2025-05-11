@@ -2,6 +2,10 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+#include <map>
+#include <vector>
+#include "Question.h"
 #include "sqlite3.h"
 
 /*
@@ -24,6 +28,23 @@ public:
 	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const = 0;
 	// Add a new user to the database
 	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) = 0;
+
+	// <-- STATISTIC MANAGER FUNCTIONS -->
+
+	// Get Questions
+	virtual std::list<Question> getQuestions(int num) const = 0;
+	// Get player's average answer time
+	virtual float getPlayerAverageAnswerTime(const std::string& username) const = 0;
+	// Get the player's number of correct answers
+	virtual int getNumOfCorrectAnswers(const std::string& username) const = 0;
+	// Get the total amount of questions the player answered
+	virtual int getNumOfTotalAnswers(const std::string& username) const = 0;
+	// Get the total amount of games the player played
+	virtual int getNumOfPlayerGames(const std::string& username) const = 0;
+	// Get the player's score
+	virtual int getPlayerScore(const std::string& username) const = 0;
+	// Get the high scores
+	virtual std::map<std::string, int> getHighScores() const = 0;
 
 private:
 };

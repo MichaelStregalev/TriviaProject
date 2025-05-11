@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IDatabase.h"
-#include <vector>
 
 // DEFINE CONSTS
 #define DB_PATH "TriviaDB.db"
@@ -15,16 +14,36 @@ class SqliteDatabase : public IDatabase
 {	
 public:
 
+	// DECONSTRUCTOR
+	virtual ~SqliteDatabase() = default;
+
 	// Open the database
-	virtual bool open() override;
+	bool open() override;
 	// Close the database
-	virtual bool close() override;
+	bool close() override;
 	// Does the user exist in the Database?
-	virtual int doesUserExist(const std::string& username) const override;
+	int doesUserExist(const std::string& username) const override;
 	// Does the password match for the userame in the database?
-	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const override;
+	int doesPasswordMatch(const std::string& username, const std::string& password) const override;
 	// Add a new user to the database!
-	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) override;
+	int addNewUser(const std::string& username, const std::string& password, const std::string& email) override;
+
+	// <-- STATISTIC MANAGER FUNCTIONS -->
+
+	// Get Questions
+	std::list<Question> getQuestions(int num) const override;
+	// Get player's average answer time
+	float getPlayerAverageAnswerTime(const std::string& username) const override;
+	// Get the player's number of correct answers
+	int getNumOfCorrectAnswers(const std::string& username) const override;
+	// Get the total amount of questions the player answered
+	int getNumOfTotalAnswers(const std::string& username) const override;
+	// Get the total amount of games the player played
+	int getNumOfPlayerGames(const std::string& username) const override;
+	// Get the player's score
+	int getPlayerScore(const std::string& username) const override;
+	// Get the high scores
+	std::map<std::string, int> getHighScores() const override;
 
 private:
 
@@ -38,4 +57,11 @@ private:
 	// In case it is a select query - it will return whether the query resulted in at least one row - meaning, it will help us
 	// with any functions that include checking if anything exists in the database.
 	int executeQuery(const std::string& query, const std::vector<std::string>& params, bool isSelectQuery) const;
+
+	// This function is responsible for getting a string, and splitting it onto a vector of strings - where each
+	// element in the vector is the parts of the original string - as they are separated by a comma.
+	static std::vector<std::string> splitStringByComma(const std::string& string);
+
+	// Callback function for integer results in the database
+	static int callbackIntValue(void* data, int len, char** values, char** columns);
 };
