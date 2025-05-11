@@ -9,14 +9,11 @@
 
 // <-- RESPONSE CODES -->
 
-#define ERROR_RESPONSE_CODE		0
-#define SIGNUP_RESPONSE_CODE	11
-#define LOGIN_RESPONSE_CODE		21
+enum ResponseCodes { ERROR_RESPONSE_CODE = 0, SIGNUP_RESPONSE_CODE = 11, LOGIN_RESPONSE_CODE = 21 };
 
 // <-- REQUEST CODES -->
 
-#define SIGNUP_REQUEST_CODE		1
-#define LOGIN_REQUEST_CODE		2
+enum RequestCodes { SIGNUP_REQUEST_CODE = 1, LOGIN_REQUEST_CODE = 2 };
 
 // <-- HANDLERS & LOGIN MANAGER -->
 
@@ -25,7 +22,11 @@
 
 // <-- INDEXES IN BUFFER -->
 
-#define REQUEST_ID_IN_BUFFER 0
-#define DATA_LENGTH_START 1
-#define DATA_LENGTH_END 4
-#define DATA_START 5
+#define REQUEST_ID_IN_BUFFER	0
+#define DATA_LENGTH_START		1
+#define DATA_LENGTH_END			4
+#define DATA_START				5
+
+// <-- ROOM CODES -->
+
+enum RoomStatus { ROOM_OPEN = 200 };
