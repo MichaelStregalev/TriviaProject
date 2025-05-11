@@ -5,10 +5,13 @@
 #include "Responses.h"
 #include "Codes.h"
 
-// DEFINES
+// <-- DEFINE CONSTS FOR FIELDS
 
 #define ERROR_MESSAGE_FIELD		"message"
 #define STATUS_FIELD			"status"
+#define ROOMS_FIELD				"rooms"
+#define PLAYERS_FIELD			"players"
+#define STATISTICS_FIELD		"statistics"
 
 /*
 					JsonResponsePacketSerializer
@@ -21,6 +24,19 @@ namespace JsonResponsePacketSerializer
 	Byte::Buffer serializeResponse(const SignupResponse& response);
 	Byte::Buffer serializeResponse(const LoginResponse& response);
 
-	// HELPER METHOD - BASE SERIALIZATION
+	Byte::Buffer serializeResponse(const LogoutResponse& response);
+	Byte::Buffer serializeResponse(const GetRoomsResponse& response);
+	Byte::Buffer serializeResponse(const GetPlayersInRoomResponse& response);
+	Byte::Buffer serializeResponse(const JoinRoomResponse& response);
+	Byte::Buffer serializeResponse(const CreateRoomResponse& response);
+	Byte::Buffer serializeResponse(const GetHighScoreResponse& response);
+	Byte::Buffer serializeResponse(const GetStatisticsResponse& response);
+
+	// <-- HELPER METHODS -->
+
+	// Base serialization - will do the serialization of the data, given the data and the code for the serialization
 	Byte::Buffer baseSerialization(int code, const std::string& data);
+
+	// Convert room data to Json
+	nlohmann::json roomDataToJson(const RoomData& room);
 }
