@@ -139,7 +139,9 @@
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
     <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomAdminRequestHandler.cpp" />
     <ClCompile Include="RoomManager.cpp" />
+    <ClCompile Include="RoomMemberRequestHandler.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Server.h" />
     <ClCompile Include="Source.cpp" />
@@ -166,8 +168,10 @@
     <ClInclude Include="Requests.h" />
     <ClInclude Include="Responses.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomAdminRequestHandler.h" />
     <ClInclude Include="RoomData.h" />
     <ClInclude Include="RoomManager.h" />
+    <ClInclude Include="RoomMemberRequestHandler.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDatabase.h" />
     <ClInclude Include="StatisticManager.h" />

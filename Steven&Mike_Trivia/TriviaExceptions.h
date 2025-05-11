@@ -243,7 +243,7 @@ protected:
 class UserDoesNotExistException : public SignupException
 {
 public:
-	UserDoesNotExistException() : SignupException("User does not exist in the server.") {}
+	UserDoesNotExistException(const std::string& username) : SignupException("User " + username + " does not exist in the server.") {}
 };
 
 /*

@@ -113,7 +113,7 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetHighScoreR
 {
     nlohmann::json j;
     j[STATUS_FIELD] = response.status;
-    j[STATISTICS_FIELD] = response.statistics;
+    j[SCORES_FIELD] = response.scores;
 
     std::string data = j.dump();    // Get the JSON as a string
 

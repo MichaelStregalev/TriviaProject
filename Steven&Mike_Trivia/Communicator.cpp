@@ -174,6 +174,12 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		{
 			// If we catch a non-relevant request, we will just continue...
 			std::cerr << "Non-relevant request." << std::endl;
+			continue;
+		}
+		catch (const SendingMessageErrorException& e)
+		{
+			// If there has occurred an error with sending a message to the socket - 
+			// it means it was closed, and we need to close the socket.
 			break;
 		}
 		catch (const std::exception& e)

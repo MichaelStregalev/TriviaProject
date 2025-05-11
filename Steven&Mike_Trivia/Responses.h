@@ -44,7 +44,7 @@ struct GetPlayersInRoomResponse
 struct GetHighScoreResponse
 {
 	unsigned int status;
-	std::vector<double> statistics;
+	std::vector<int> scores;
 } typedef GetHighScoreResponse;
 
 struct GetStatisticsResponse

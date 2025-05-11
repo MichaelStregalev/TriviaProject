@@ -178,6 +178,11 @@ std::list<Question> SqliteDatabase::getQuestions(int num) const
 
 float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) const
 {
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
 	// Query to find the average time of the user
 	std::string query = "SELECT averageTime FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "');";
 	float result = 0;
@@ -194,6 +199,11 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) co
 
 int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
 {
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
 	std::string query = "SELECT correctAnswers FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
@@ -209,6 +219,11 @@ int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
 
 int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
 {
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
 	std::string query = "SELECT totalQuestions FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
@@ -224,6 +239,11 @@ int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
 
 int SqliteDatabase::getNumOfPlayerGames(const std::string& username) const
 {
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
 	std::string query = "SELECT totalGames FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
@@ -239,6 +259,11 @@ int SqliteDatabase::getNumOfPlayerGames(const std::string& username) const
 
 int SqliteDatabase::getPlayerScore(const std::string& username) const
 {
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
 	std::string query = "SELECT score FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 

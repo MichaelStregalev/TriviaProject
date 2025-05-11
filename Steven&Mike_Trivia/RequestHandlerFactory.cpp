@@ -20,13 +20,22 @@ StatisticManager& RequestHandlerFactory::getStatisticManager()
 	return m_statisticsManager;
 }
 
-
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
 	return new LoginRequestHandler(*this);
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler()
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user)
 {
-	return new MenuRequestHandler();
+	return new MenuRequestHandler(user, *this);
+}
+
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler()
+{
+	return new RoomAdminRequestHandler();
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler()
+{
+	return new RoomMemberRequestHandler();
 }
