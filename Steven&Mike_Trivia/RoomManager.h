@@ -33,7 +33,7 @@ public:
 
 	// <-- METHODS -->
 
-	void createRoom(const LoggedUser& user, const RoomData& data);
+	void createRoom(const LoggedUser& user, RoomData& data);
 	void deleteRoom(int roomId);
 
 private:

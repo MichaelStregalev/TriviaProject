@@ -12,6 +12,7 @@
 #define ROOMS_FIELD				"rooms"
 #define PLAYERS_FIELD			"players"
 #define STATISTICS_FIELD		"statistics"
+#define SCORES_FIELD			"scores"
 
 /*
 					JsonResponsePacketSerializer

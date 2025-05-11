@@ -19,13 +19,18 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 	// The result of the request..
 	RequestResult result;
 
-	if (request.requestId == LOGIN_REQUEST_CODE)
+	switch (request.requestId)
 	{
+	case LOGIN_REQUEST_CODE:
 		result = login(request);
-	}
-	else if (request.requestId == SIGNUP_REQUEST_CODE)
-	{
+		break;
+
+	case SIGNUP_REQUEST_CODE:
 		result = signup(request);
+		break;
+
+	default:	// Shouldn't happen, as we check before if the request is relevant.
+		break;
 	}
 
 	return result;
@@ -48,7 +53,8 @@ RequestResult LoginRequestHandler::signup(const RequestInfo& request)
 			// Building the successful signup response
 			SignupResponse response { SUCCESSFUL_SIGNUP };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = m_handlerFactory.createMenuRequestHandler();		// The new handler will be the menu request handler!
+			result.newHandler = m_handlerFactory.createMenuRequestHandler(LoggedUser(signupRequest.userName));		
+			// The new handler will be the menu request handler!
 		}
 		else
 		{
@@ -87,7 +93,8 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request)
 			// Building the successful login response
 			LoginResponse response{ SUCCESSFUL_LOGIN };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-			result.newHandler = m_handlerFactory.createMenuRequestHandler();		// The new handler will be the menu request handler!
+			result.newHandler = m_handlerFactory.createMenuRequestHandler(LoggedUser(loginRequest.userName));		
+			// The new handler will be the menu request handler!
 		}
 		else
 		{

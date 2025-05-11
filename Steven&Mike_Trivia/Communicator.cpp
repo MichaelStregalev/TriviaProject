@@ -174,12 +174,20 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		{
 			// If we catch a non-relevant request, we will just continue...
 			std::cerr << "Non-relevant request." << std::endl;
+			continue;
+		}
+		catch (const SendingMessageErrorException& e)
+		{
+			// If there has occurred an error with sending a message to the socket - 
+			// it means it was closed, and we need to close the socket.
 			break;
 		}
 		catch (const std::exception& e)
 		{
-			// TODO: send the error as a protocol message :)
-			send(clientSocket, e.what(), std::strlen(e.what()), 0);
+			// If an exception had been thrown and no once catched it - 
+			// it means an error occurred, we will close the connection.
+			std::cout << "ERROR OCCURRED " << e.what() << std::endl;
+			break;
 		}
 	}
 	
@@ -197,7 +205,7 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	}
 
 
-	std::cout << "Goodbye :)" << std::endl;
+	std::cout << "USER CONNECTION GONE" << std::endl;
 	closesocket(clientSocket);
 }
 
