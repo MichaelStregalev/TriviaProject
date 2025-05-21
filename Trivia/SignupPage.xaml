@@ -1,0 +1,52 @@
+﻿<Page x:Class="Trivia.SignupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Trivia"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SignupPage"
+      Background="LightBlue">
+
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="350">
+
+            <!-- Username -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <TextBlock Text="Username:" 
+                           VerticalAlignment="Center" 
+                           Width="80"
+                           FontWeight="SemiBold"/>
+                <TextBox x:Name="UsernameInput" Width="180" TextChanged="Input_TextChanged"/>
+                <Image x:Name="UsernameValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+                <Image x:Name="UsernameInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+            </StackPanel>
+
+            <!-- Password -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Password:" 
+                           VerticalAlignment="Center" 
+                           Width="80"
+                           FontWeight="SemiBold"/>
+                <PasswordBox x:Name="PasswordInput" Width="180" PasswordChanged="Input_TextChanged"/>
+                <Image x:Name="PasswordValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+                <Image x:Name="PasswordInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+            </StackPanel>
+
+            <!-- Email -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Email:" 
+               VerticalAlignment="Center" 
+               Width="80"
+               FontWeight="SemiBold"/>
+                <TextBox x:Name="EmailInput" Width="180" TextChanged="Input_TextChanged"/>
+                <Image x:Name="EmailValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+                <Image x:Name="EmailInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+            </StackPanel>
+
+            <Button Content="Sign up" Click="Signup_Click" Height="40" Margin="0,20,0,0" />
+
+        </StackPanel>
+    </Grid>
+</Page>
