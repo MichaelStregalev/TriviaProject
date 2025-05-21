@@ -8,9 +8,10 @@ namespace BackendTrivia
 {
     internal class Menu
     {
+        private Communicator mCom;
         public Menu(Communicator c) 
-        { 
-        
+        {
+            mCom = c;
         }
 
 

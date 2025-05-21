@@ -8,5 +8,13 @@ namespace BackendTrivia
 {
     internal class Room
     {
+        private Communicator mCom;
+        public Room(Communicator c)
+        {
+            mCom = c;
+        }
+
+
+
     }
 }

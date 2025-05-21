@@ -14,8 +14,9 @@ namespace BackendTrivia
         //Private variables
         private Socket mClient = null;
         private int mPort = 8876;
+        private string mIP = "127.0.0.1";
 
-        public Communicator(string ip, int port)
+        public Communicator()
         {
             Console.WriteLine("(っ◕‿◕)っ Starting Trivia client...");
 
@@ -27,7 +28,7 @@ namespace BackendTrivia
                                             ProtocolType.Tcp);
 
                 // Server address and port
-                IPAddress ipAddress = IPAddress.Parse("127.0.0.1"); // Change to server IP
+                IPAddress ipAddress = IPAddress.Parse(mIP); // Change to server IP
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, mPort); // Change port as needed
 
                 // Connect to the server
