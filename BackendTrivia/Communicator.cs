@@ -96,25 +96,24 @@ namespace BackendTrivia
             public byte[] ToByte()
             {
                 // Convert message to bytes
-                byte[] dataBytes = Encoding.UTF8.GetBytes(mJson);
-                int dataLength = dataBytes.Length;
+                int dataLength = mJson.Length;
 
-                // Create buffer: 1Byte code + 4Byte length + LengthByte data
-                byte[] packet = new byte[1 + 4 + dataLength];
-
-                // Set message code
-                packet[0] = (byte)mCode;
+                byte[] len = new byte[4];
 
                 // Set data length
-                packet[1] = (byte)(dataLength >> 24);
-                packet[2] = (byte)(dataLength >> 16);
-                packet[3] = (byte)(dataLength >> 8);
-                packet[4] = (byte)dataLength;
+                len[0] = (byte)(dataLength >> 24);
+                len[1] = (byte)(dataLength >> 16);
+                len[2] = (byte)(dataLength >> 8);
+                len[3] = (byte)dataLength;
 
-                // Copy message data
-                Buffer.BlockCopy(dataBytes, 0, packet, 5, dataLength);
+                List<byte> dataBYtes = new List<byte>();
+                dataBYtes.Add((byte)mCode);
+                dataBYtes.AddRange(BitConverter.GetBytes(mJson.Length));
+                dataBYtes.AddRange(Encoding.UTF8.GetBytes(mJson));
 
-                return packet;
+                Console.WriteLine(mJson);
+
+                return dataBYtes.ToArray();
             }
         }
     }

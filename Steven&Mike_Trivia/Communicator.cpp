@@ -229,6 +229,8 @@ std::string Communicator::readFromSocket(SOCKET sc, int bytesNum, int flags)
 	std::string result(data);	// Convert char array to std::string
 	delete[] data;				// Don't forget to delete the dynamically allocated memory
 
+	std::cout << result << std::endl;
+
 	return result;
 }
 

@@ -13,9 +13,9 @@ namespace BackendTrivia
     internal class Login
     {
         private Communicator mCom;
-        public Login(Communicator c) 
+        public Login() 
         {
-            mCom = c;
+            mCom = new Communicator();
         }
 
         public Menu LoginAcc(string Username, string Password)
@@ -38,7 +38,7 @@ namespace BackendTrivia
                 return new Menu(mCom);
             }
 
-            return null;
+            throw new Exception();
         }
         public Menu signup(string Username, string Password, string Email)
         {
@@ -61,7 +61,7 @@ namespace BackendTrivia
                 return new Menu(mCom);
             }
 
-            return null;
+            throw new Exception();
         }
     }
 }
