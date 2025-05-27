@@ -8,4 +8,28 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Cursors\Magnifying.cur" />
+    <None Remove="Cursors\Pointer.cur" />
+    <None Remove="Cursors\QuestionMark.cur" />
+    <None Remove="Cursors\Select.cur" />
+    <None Remove="Fonts\AnomaliaBold.otf" />
+    <None Remove="Fonts\AnomaliaMedium.otf" />
+    <None Remove="Images\invalid.png" />
+    <None Remove="Images\valid.png" />
+    <None Remove="Images\WelcomeBackground.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Cursors\Magnifying.cur" />
+    <Resource Include="Cursors\Pointer.cur" />
+    <Resource Include="Cursors\QuestionMark.cur" />
+    <Resource Include="Cursors\Select.cur" />
+    <Resource Include="Fonts\AnomaliaBold.otf" />
+    <Resource Include="Fonts\AnomaliaMedium.otf" />
+    <Resource Include="Images\invalid.png" />
+    <Resource Include="Images\valid.png" />
+    <Resource Include="Images\WelcomeBackground.png" />
+  </ItemGroup>
+
 </Project>

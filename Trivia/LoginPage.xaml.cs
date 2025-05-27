@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,65 +20,79 @@ namespace Trivia
     /// </summary>
     public partial class LoginPage : Page
     {
-        private Frame mainFrame;
+        // <-- Custom Cursors -->
+        private Cursor SelectCursor;
+        private Cursor questionMarkCursor;      // Question mark cursor
+        private Cursor pointerCursor;           // Pointer cursor - default
 
-        public LoginPage(Frame frame)
+        // <-- Validity Icons -->
+        private BitmapImage valid;
+        private BitmapImage invalid;
+        public LoginPage()
         {
             InitializeComponent();
-            mainFrame = frame;
+
+            valid = new BitmapImage(new Uri("pack://application:,,,/Images/valid.png"));
+            invalid = new BitmapImage(new Uri("pack://application:,,,/Images/invalid.png"));
+
+            SelectCursor = new Cursor(Application.GetResourceStream(
+                new Uri("pack://application:,,,/Cursors/Select.cur")).Stream);
+
+            questionMarkCursor = new Cursor(Application.GetResourceStream(
+                new Uri("pack://application:,,,/Cursors/QuestionMark.cur")).Stream);
+
+            pointerCursor = new Cursor(Application.GetResourceStream(
+                new Uri("pack://application:,,,/Cursors/Pointer.cur")).Stream);
+
+            // Default cursor - the pointer cursor
+            this.Cursor = pointerCursor;
+
+            this.Focus();
         }
 
-        private void Input_TextChanged(object sender, RoutedEventArgs e)
+        private void TextBox_MouseEnter(object sender, MouseEventArgs e)
         {
-            ValidateInputs();
+            ((TextBox)sender).Cursor = SelectCursor;
         }
 
-        private void ValidateInputs()
+        private void TextBox_MouseLeave(object sender, MouseEventArgs e)
         {
-            ValidateInput(UsernameInput.Text, UsernameValidIcon, UsernameInvalidIcon);
-            ValidateInput(!string.IsNullOrEmpty(PasswordInput.Password), PasswordValidIcon, PasswordInvalidIcon);
+            ((TextBox)sender).Cursor = pointerCursor;
         }
 
-        private void ValidateInput(string text, Image validIcon, Image invalidIcon)
+        private void PasswordBox_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                validIcon.Visibility = Visibility.Visible;
-                invalidIcon.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                validIcon.Visibility = Visibility.Collapsed;
-                invalidIcon.Visibility = Visibility.Visible;
-            }
+            ((PasswordBox)sender).Cursor = SelectCursor;
         }
 
-        private void ValidateInput(bool isValid, Image validIcon, Image invalidIcon)
+        private void PasswordBox_MouseLeave(object sender, MouseEventArgs e)
         {
-            if (isValid)
-            {
-                validIcon.Visibility = Visibility.Visible;
-                invalidIcon.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                validIcon.Visibility = Visibility.Collapsed;
-                invalidIcon.Visibility = Visibility.Visible;
-            }
+            ((PasswordBox)sender).Cursor = pointerCursor;
         }
 
-        private void Login_Click(object sender, RoutedEventArgs e)
+        private void ExitButton_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(UsernameInput.Text) && !string.IsNullOrEmpty(PasswordInput.Password))
+            ExitButton.Cursor = questionMarkCursor;
+        }
+
+        private void ExitButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ExitButton.Cursor = pointerCursor;
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
+        }
+
+        private void Page_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             {
-                // For now, proceed to menu
-                mainFrame.Navigate(new MenuPage(mainFrame));
-            }
-            else
-            {
-                MessageBox.Show("Please fill in all fields correctly.");
+                //ValidateFields();
+                MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //NavigationService.Navigate(new MenuPage());
             }
         }
     }
-
 }

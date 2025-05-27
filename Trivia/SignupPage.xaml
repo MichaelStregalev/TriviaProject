@@ -6,47 +6,99 @@
       xmlns:local="clr-namespace:Trivia"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="SignupPage"
-      Background="LightBlue">
+      Title="Signup"
+      Background="{StaticResource SunnySideup}"
+      KeyDown="Page_KeyDown" 
+      Focusable="True" 
+      KeyUp="Page_KeyDown">
 
     <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="350">
 
-            <!-- Username -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                <TextBlock Text="Username:" 
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
+
+            <!-- Title -->
+            <TextBlock Text="Sign-up"
+                       FontSize="80"
+                       Foreground="{StaticResource HotPink}"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold" />
+            
+            <!-- Username Field -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+
+                <TextBlock Text="Username"
+                           Width="180" 
                            VerticalAlignment="Center" 
-                           Width="80"
-                           FontWeight="SemiBold"/>
-                <TextBox x:Name="UsernameInput" Width="180" TextChanged="Input_TextChanged"/>
-                <Image x:Name="UsernameValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
-                <Image x:Name="UsernameInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+                           FontSize="30" 
+                           FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+                           Foreground="{StaticResource MidnightPurple}"/>
+
+                <TextBox Name="UsernameInput" Width="300" Height="40" Style="{StaticResource RoundedTextBoxStyle}"
+                         MouseEnter="TextBox_MouseEnter"
+                         MouseLeave="TextBox_MouseLeave"/>
+
+                <Image Name="UsernameValidIcon" Width="25" Height="25" Margin="10" />
+                
             </StackPanel>
 
-            <!-- Password -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="Password:" 
-                           VerticalAlignment="Center" 
-                           Width="80"
-                           FontWeight="SemiBold"/>
-                <PasswordBox x:Name="PasswordInput" Width="180" PasswordChanged="Input_TextChanged"/>
-                <Image x:Name="PasswordValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
-                <Image x:Name="PasswordInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
-            </StackPanel>
+            <!-- Password Field -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
 
-            <!-- Email -->
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="Email:" 
+                <TextBlock Text="Password"
+               Width="180" 
                VerticalAlignment="Center" 
-               Width="80"
-               FontWeight="SemiBold"/>
-                <TextBox x:Name="EmailInput" Width="180" TextChanged="Input_TextChanged"/>
-                <Image x:Name="EmailValidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
-                <Image x:Name="EmailInvalidIcon" Width="20" Height="20" Margin="5,0,0,0" Visibility="Collapsed" />
+               FontSize="30" 
+               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+               Foreground="{StaticResource MidnightPurple}"/>
+
+                <PasswordBox Name="PasswordInput" Width="300" Height="40" Style="{StaticResource RoundedPasswordBoxStyle}" 
+                             MouseEnter="PasswordBox_MouseEnter"
+                             MouseLeave="PasswordBox_MouseLeave"/>
+
+                <Image Name="PasswordValidIcon" Width="25" Height="25" Margin="10" />
+
             </StackPanel>
 
-            <Button Content="Sign up" Click="Signup_Click" Height="40" Margin="0,20,0,0" />
+            <!-- Email Field -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,20">
+
+                <TextBlock Text="Email"
+               Width="180" 
+               VerticalAlignment="Center" 
+               FontSize="30" 
+               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+               Foreground="{StaticResource MidnightPurple}"/>
+
+                <TextBox Name="EmailInput" Width="300" Height="40" Style="{StaticResource RoundedTextBoxStyle}" 
+                         MouseEnter="TextBox_MouseEnter"
+                         MouseLeave="TextBox_MouseLeave"/>
+
+                <Image Name="EmailValidIcon" Width="25" Height="25" Margin="10" />
+
+            </StackPanel>
+
+            <!-- Message Area -->
+            <TextBlock Text="" 
+                       Name="ValidityMessageBlock" 
+                       FontSize="20"
+                       Foreground="{StaticResource HotPink}"
+                       FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- Exit Button (Go back to MainPage) -->
+            <Button Content="Exit"
+                    Name="ExitButton"
+                    Width="130"
+                    Height="50"
+                    Click="ExitButton_Click"
+                    MouseEnter="ExitButton_MouseEnter"
+                    MouseLeave="ExitButton_MouseLeave"
+                    Style="{StaticResource RoundedButtonStyle}"/>
 
         </StackPanel>
+
     </Grid>
+    
 </Page>

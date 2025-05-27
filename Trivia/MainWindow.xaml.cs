@@ -11,15 +11,12 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new MainPage(MainFrame));
+            MainFrame.Navigate(new WelcomePage());
         }
     }
 }
