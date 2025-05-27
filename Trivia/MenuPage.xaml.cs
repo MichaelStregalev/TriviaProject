@@ -15,19 +15,23 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    public partial class WelcomePage : Page
+    /// <summary>
+    /// Interaction logic for MenuPage.xaml
+    /// </summary>
+    public partial class MenuPage : Page
     {
         // <-- Custom Cursors -->
-        private Cursor magnifyingCursor;
         private Cursor questionMarkCursor;      // Question mark cursor
         private Cursor pointerCursor;           // Pointer cursor - default
 
-        public WelcomePage()
+        // <-- Username of the user -->
+        private string username;
+        public MenuPage(string username)
         {
             InitializeComponent();
 
-            magnifyingCursor = new Cursor(Application.GetResourceStream(
-                new Uri("pack://application:,,,/Cursors/Magnifying.cur")).Stream);
+            this.username = username;
+            UsernameBlock.Text = "Welcome, " + username;
 
             questionMarkCursor = new Cursor(Application.GetResourceStream(
                 new Uri("pack://application:,,,/Cursors/QuestionMark.cur")).Stream);
@@ -49,27 +53,32 @@ namespace Trivia
             ((Button)sender).Cursor = pointerCursor;
         }
 
-        private void NewHereInfoBlock_MouseEnter(object sender, MouseEventArgs e)
+        private void ButtonClicked(object sender, RoutedEventArgs e)
         {
-            NewHereInfoBlock.Cursor = magnifyingCursor;
-        }
-
-        private void NewHereInfoBlock_MouseLeave(object sender, MouseEventArgs e)
-        {
-            NewHereInfoBlock.Cursor = pointerCursor;
-        }
-
-        private void NavigateToPage(object sender, RoutedEventArgs e)
-        {
-            Button btn = (Button)sender;
-
-            if (btn.Name == "SignupButton")
+            if (sender is Button btn)
             {
-                NavigationService.Navigate(new SignupPage());
-            }
-            else if (btn.Name == "LoginButton")
-            {
-                NavigationService.Navigate(new LoginPage());
+                switch (btn.Name)
+                {
+                    case "CreateRoomButton":
+                        NavigationService.Navigate(new CreateRoomPage(this.username));
+                        break;
+
+                    case "JoinRoomButton":
+                        //NavigationService.Navigate(new JoinRoomPage());
+                        break;
+
+                    case "StatisticsButton":
+                        //NavigationService.Navigate(new StatisticsPage());
+                        break;
+
+                    case "ExitButton":
+                        NavigationService.GoBack();
+                        break;
+
+                    default:
+                        // Nothing happens
+                        break;
+                }
             }
         }
     }

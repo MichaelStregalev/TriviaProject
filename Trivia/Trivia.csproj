@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.7.25104.5739" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Cursors\Magnifying.cur" />
     <Resource Include="Cursors\Pointer.cur" />
     <Resource Include="Cursors\QuestionMark.cur" />

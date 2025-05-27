@@ -32,12 +32,12 @@
                 <Button Name="LoginButton" Content="Login" Margin="0,0,0,30" Style="{StaticResource RoundedButtonStyle}" 
                         MouseEnter="Button_MouseEnter"
                         MouseLeave="Button_MouseLeave"
-                        Click="LoginNavigation"/>
+                        Click="NavigateToPage"/>
 
                 <Button Name="SignupButton" Content="Signup" Style="{StaticResource RoundedButtonStyle}" 
                         MouseEnter="Button_MouseEnter"
                         MouseLeave="Button_MouseLeave"
-                        Click="SignupNavigation"/>
+                        Click="NavigateToPage"/>
                 
             </StackPanel>
 

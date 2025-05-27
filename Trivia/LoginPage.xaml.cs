@@ -92,6 +92,7 @@ namespace Trivia
                 //ValidateFields();
                 MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 //NavigationService.Navigate(new MenuPage());
+                NavigationService.Navigate(new MenuPage(UsernameInput.Text));
             }
         }
     }
