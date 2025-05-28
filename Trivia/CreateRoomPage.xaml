@@ -8,8 +8,69 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Create Room"
-      Background="{StaticResource SunnySideup}">
+      Background="{StaticResource SunnySideup}"
+      KeyDown="Page_KeyDown" 
+      Focusable="True" 
+      KeyUp="Page_KeyDown">
 
+    <Page.Resources>
+
+        <!-- IntegerUpDown custom! -->
+        <Style TargetType="{x:Type xctk:IntegerUpDown}" x:Key="RoundedIntegerUpDownStyle">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Background" Value="{StaticResource Eggshell}"/>
+            <Setter Property="Foreground" Value="{StaticResource MidnightPurple}"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OrangeSoda}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type xctk:IntegerUpDown}">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8"
+                                Padding="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="PART_TextBox"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         VerticalContentAlignment="Center"
+                                         Padding="4,0"/>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" >
+                                    <RepeatButton x:Name="PART_IncreaseButton" Height="15" Width="20" FontSize="10" 
+                                                  Background="Transparent" 
+                                                  Foreground="{StaticResource MidnightPurple}" 
+                                                  BorderThickness="0" 
+                                                  Content="▲" 
+                                                  Focusable="False"
+                                                  IsTabStop="False" 
+                                                  Click="IncreaseButton_Click"/>
+                                    <RepeatButton x:Name="PART_DecreaseButton" Height="15" Width="20" FontSize="10" 
+                                                  Background="Transparent" 
+                                                  Foreground="{StaticResource MidnightPurple}" 
+                                                  BorderThickness="0" 
+                                                  Content="▼" 
+                                                  Focusable="False"
+                                                  IsTabStop="False" 
+                                                  Click="DecreaseButton_Click"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Page.Resources>
+    
     <Grid>
 
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
@@ -45,7 +106,8 @@
 
                 <xctk:IntegerUpDown Minimum="10" Maximum="60" Value="10" Width="100" Style="{StaticResource RoundedIntegerUpDownStyle}" 
                                     MouseEnter="IntegerUpDown_MouseEnter"
-                                    MouseLeave="IntegerUpDown_MouseLeave" />
+                                    MouseLeave="IntegerUpDown_MouseLeave"
+                                    Increment="5"/>
 
             </StackPanel>
 
@@ -64,7 +126,7 @@
             </StackPanel>
 
             <!-- Question Count -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
                 <TextBlock Text="Question Count" Width="270" VerticalAlignment="Center"
                            FontSize="30"
                            FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
@@ -76,6 +138,15 @@
                                     MouseLeave="IntegerUpDown_MouseLeave" />
 
             </StackPanel>
+
+            <!-- Message Area -->
+            <TextBlock Text="" 
+           Name="ValidityMessageBlock" 
+           FontSize="20"
+           Foreground="{StaticResource HotPink}"
+           FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+           HorizontalAlignment="Center"
+           Margin="0,0,0,5"/>
 
             <!-- Buttons -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
@@ -90,7 +161,7 @@
 
                 <Button Name="ExitButton"
                         Content="Exit"
-                        Width="150" Height="50"
+                        Width="130" Height="50"
                         Style="{StaticResource RoundedButtonStyle}"
                         Click="ButtonClicked"
                         MouseEnter="Button_MouseEnter"
@@ -100,5 +171,6 @@
         </StackPanel>
 
     </Grid>
-    
+
+
 </Page>

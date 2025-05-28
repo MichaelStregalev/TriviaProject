@@ -53,7 +53,8 @@ namespace Trivia
                 switch (btn.Name)
                 {
                     case "CreateButton":
-                        //NavigationService.Navigate(new RoomPage(RoomNameInput.Text));
+                        // Validation checks
+                        NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true));
                         break;
 
                     case "ExitButton":
@@ -95,6 +96,25 @@ namespace Trivia
         private void IntegerUpDown_MouseLeave(object sender, MouseEventArgs e)
         {
             ((IntegerUpDown)sender).Cursor = pointerCursor;
+        }
+
+        private void IncreaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            IntegerUpDownHelpers.IncreaseButton_Click(sender, e);
+        }
+
+        private void DecreaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            IntegerUpDownHelpers.DecreaseButton_Click(sender, e);
+        }
+
+        private void Page_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                //Validation checks
+                NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true));
+            }
         }
     }
 }

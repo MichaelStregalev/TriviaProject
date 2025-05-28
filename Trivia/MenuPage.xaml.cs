@@ -64,7 +64,7 @@ namespace Trivia
                         break;
 
                     case "JoinRoomButton":
-                        //NavigationService.Navigate(new JoinRoomPage());
+                        NavigationService.Navigate(new JoinRoomPage(this.username));
                         break;
 
                     case "StatisticsButton":
@@ -72,7 +72,7 @@ namespace Trivia
                         break;
 
                     case "ExitButton":
-                        NavigationService.GoBack();
+                        NavigationService.Navigate(new WelcomePage());
                         break;
 
                     default:
