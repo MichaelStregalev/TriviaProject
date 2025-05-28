@@ -27,13 +27,18 @@ namespace Trivia
         private Cursor pointerCursor;
         private Cursor questionMarkCursor;
 
-        public RoomPage(string username, string roomName, bool isAdmin)
+        // <-- ROOM CONTROLLER -->
+        private BackendTrivia.Room roomController;
+
+        public RoomPage(string username, string roomName, bool isAdmin, BackendTrivia.Room roomController)
         {
             InitializeComponent();
 
             this.username = username;
             this.roomName = roomName;
             this.isAdmin = isAdmin;
+
+            RoomNameTextBlock.Text = roomName;
 
             selectCursor = new Cursor(Application.GetResourceStream(
                 new Uri("pack://application:,,,/Cursors/Select.cur")).Stream);
@@ -46,8 +51,8 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
-
-            RoomNameTextBlock.Text = roomName;
+            // The room controller
+            this.roomController = roomController;
 
             LoadPlayers();
         }
@@ -58,9 +63,9 @@ namespace Trivia
             PlayersListPanel.Children.Clear();
 
         }
-            private void ExitButton_Click(object sender, RoutedEventArgs e)
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new MenuPage(this.username));
+            NavigationService.Navigate(new MenuPage(this.username, new BackendTrivia.Menu(this.roomController.GetCommunicator())));
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

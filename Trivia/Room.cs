@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace BackendTrivia
 {
-    internal class Room
+    public class Room
     {
         private Communicator mCom;
         public Room(Communicator c)
         {
             mCom = c;
         }
-
-
+        public Communicator GetCommunicator()
+        {
+            return this.mCom;
+        }
 
     }
 }

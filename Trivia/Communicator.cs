@@ -6,10 +6,11 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace BackendTrivia
 {
-    internal class Communicator
+    public class Communicator
     {
         //Private variables
         private Socket mClient = null;

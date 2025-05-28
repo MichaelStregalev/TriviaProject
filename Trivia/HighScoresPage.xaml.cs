@@ -24,7 +24,10 @@ namespace Trivia
 
         // <-- The username of the User -->
         private String username;
-        public HighScoresPage(String username)
+
+        // <-- MENU CONTROLLER -->
+        private BackendTrivia.Menu menuController;
+        public HighScoresPage(String username, BackendTrivia.Menu menuController)
         {
             InitializeComponent();
 
@@ -41,6 +44,8 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
+            // Menu controller
+            this.menuController = menuController;
 
             DisplayHighScores();
         }
@@ -71,7 +76,7 @@ namespace Trivia
         }
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new MenuPage(this.username));
+            NavigationService.Navigate(new MenuPage(this.username, this.menuController));
         }
     }
 }

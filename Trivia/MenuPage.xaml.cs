@@ -23,7 +23,10 @@ namespace Trivia
 
         // <-- Username of the user -->
         private string username;
-        public MenuPage(string username)
+
+        // <-- COMMUNICATOR -->
+        private BackendTrivia.Menu menuController;
+        public MenuPage(string username, BackendTrivia.Menu menuController)
         {
             InitializeComponent();
 
@@ -38,6 +41,8 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
+
+            this.menuController = menuController;
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
@@ -57,15 +62,15 @@ namespace Trivia
                 switch (btn.Name)
                 {
                     case "CreateRoomButton":
-                        NavigationService.Navigate(new CreateRoomPage(this.username));
+                        NavigationService.Navigate(new CreateRoomPage(this.username, this.menuController));
                         break;
 
                     case "JoinRoomButton":
-                        NavigationService.Navigate(new JoinRoomPage(this.username));
+                        NavigationService.Navigate(new JoinRoomPage(this.username, this.menuController));
                         break;
 
                     case "StatisticsButton":
-                        NavigationService.Navigate(new StatisticsPage(this.username));
+                        NavigationService.Navigate(new StatisticsPage(this.username, this.menuController));
                         break;
 
                     case "ExitButton":

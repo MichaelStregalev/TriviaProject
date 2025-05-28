@@ -24,7 +24,10 @@ namespace Trivia
 
         // <-- The username of the User -->
         private String username;
-        public StatisticsPage(String username)
+
+        // <-- MENU CONTROLLER -->
+        private BackendTrivia.Menu menuController;
+        public StatisticsPage(String username, BackendTrivia.Menu menuController)
         {
             InitializeComponent();
 
@@ -41,6 +44,8 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
+            // Menu controller
+            this.menuController = menuController;
 
             UsernameTextBlock.Text = username;
 
@@ -54,12 +59,12 @@ namespace Trivia
 
         private void HighScores_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new HighScoresPage(this.username));
+            NavigationService.Navigate(new HighScoresPage(this.username, this.menuController));
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new MenuPage(this.username));
+            NavigationService.Navigate(new MenuPage(this.username, this.menuController));
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

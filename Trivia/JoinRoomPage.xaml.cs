@@ -25,7 +25,10 @@ namespace Trivia
         // <-- The username of the User -->
         private String username;
 
-        public JoinRoomPage(String username)
+        // <-- MENU CONTROLLER -->
+        private BackendTrivia.Menu menuController;
+
+        public JoinRoomPage(String username, BackendTrivia.Menu menuController)
         {
             InitializeComponent();
 
@@ -42,6 +45,8 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
+            // Menu controller
+            this.menuController = menuController;
 
             LoadRooms();
         }
@@ -91,9 +96,7 @@ namespace Trivia
         }
         private void JoinButton_Click(object sender, RoutedEventArgs e)
         {
-            string roomName = (string)((Button)sender).Tag;
-            MessageBox.Show($"Joining room: {roomName}");
-            // TODO: Navigate to the room
+            // NO BUTTON TO YET IMPLEMENT THIS
         }
     }
 }

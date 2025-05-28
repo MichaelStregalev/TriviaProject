@@ -8,7 +8,7 @@ using static BackendTrivia.Communicator;
 
 namespace BackendTrivia
 {
-    internal class Menu
+    public class Menu
     {
         private Communicator mCom;
         public Menu(Communicator c) 

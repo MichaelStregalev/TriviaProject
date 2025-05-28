@@ -10,7 +10,7 @@ using static BackendTrivia.Communicator;
 
 namespace BackendTrivia
 {
-    internal class Login
+    public class Login
     {
         private Communicator mCom;
         public Login() 
@@ -61,7 +61,7 @@ namespace BackendTrivia
                 return new Menu(mCom);
             }
 
-            throw new Exception();
+            throw new Exception(infoRecvived.mJson);
         }
     }
 }

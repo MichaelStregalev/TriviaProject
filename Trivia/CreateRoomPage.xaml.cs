@@ -25,7 +25,10 @@ namespace Trivia
 
         // <-- Username of the user -->
         private string username;
-        public CreateRoomPage(string username)
+
+        // <-- MENU CONTROLLER -->
+        private BackendTrivia.Menu menuController;
+        public CreateRoomPage(string username, BackendTrivia.Menu menuController)
         {
             InitializeComponent();
 
@@ -42,6 +45,9 @@ namespace Trivia
 
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
+
+            // Menu controller
+            this.menuController = menuController;
         }
         private void ButtonClicked(object sender, RoutedEventArgs e)
         {
@@ -50,8 +56,25 @@ namespace Trivia
                 switch (btn.Name)
                 {
                     case "CreateButton":
-                        // Validation checks
-                        NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true));
+
+                        try
+                        {
+                            if (string.IsNullOrWhiteSpace(RoomNameInput.Text))
+                            {
+                                ValidityMessageBlock.Text = "Room Name can't be empty!";
+                                break;
+                            }
+
+                            BackendTrivia.Room roomController = this.menuController.CreateRoom(
+                                RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
+
+                            NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true, roomController));
+                        }
+                        catch(Exception)
+                        {
+                            ValidityMessageBlock.Text = "Room Creation failed.";
+                        }
+                        
                         break;
 
                     case "ExitButton":
@@ -109,8 +132,23 @@ namespace Trivia
         {
             if (e.Key == Key.Enter)
             {
-                //Validation checks
-                NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true));
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(RoomNameInput.Text))
+                    {
+                        ValidityMessageBlock.Text = "Room Name can't be empty!";
+                        return;
+                    }
+
+                    BackendTrivia.Room roomController = this.menuController.CreateRoom(
+                        RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
+
+                    NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true, roomController));
+                }
+                catch (Exception)
+                {
+                    ValidityMessageBlock.Text = "Room Creation failed.";
+                }
             }
         }
     }

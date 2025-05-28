@@ -25,6 +25,9 @@ namespace Trivia
         // <-- Validity Icons -->
         private BitmapImage valid;
         private BitmapImage invalid;
+
+        // <-- LOGIN CONTROLLER -->
+        private BackendTrivia.Login loginController;
         public LoginPage()
         {
             InitializeComponent();
@@ -45,6 +48,8 @@ namespace Trivia
             this.Cursor = pointerCursor;
 
             this.Focus();
+
+            this.loginController = new BackendTrivia.Login();
         }
 
         private void TextBox_MouseEnter(object sender, MouseEventArgs e)
@@ -86,9 +91,55 @@ namespace Trivia
         {
             if (e.Key == Key.Enter)
             {
-                //ValidateFields();
-                MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                NavigationService.Navigate(new MenuPage(UsernameInput.Text));
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(UsernameInput.Text) || string.IsNullOrWhiteSpace(PasswordInput.Password))
+                    {
+                        ValidityMessageBlock.Text = "Please fill in all fields.";
+
+                        if (string.IsNullOrWhiteSpace(UsernameInput.Text))
+                        {
+                            UsernameValidIcon.Source = invalid;
+                        }
+                        else
+                        {
+                            UsernameValidIcon.Source = valid;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(PasswordInput.Password))
+                        {
+                            PasswordValidIcon.Source = invalid;
+                        }
+                        else
+                        {
+                            PasswordValidIcon.Source = valid;
+                        }
+
+                        return;
+                    }
+
+                    BackendTrivia.Menu menuController = this.loginController.LoginAcc(UsernameInput.Text, PasswordInput.Password);
+
+                    NavigationService.Navigate(new MenuPage(UsernameInput.Text, menuController));
+                }
+                catch (Exception)
+                {
+                    ValidityMessageBlock.Text = "Login failed. Please check your username and password.";
+
+                    if (string.IsNullOrWhiteSpace(UsernameInput.Text))
+                    {
+                        UsernameValidIcon.Source = invalid;
+                    }
+                    else
+                    {
+                        UsernameValidIcon.Source = valid;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(PasswordInput.Password))
+                    {
+                        PasswordValidIcon.Source = invalid;
+                    }
+                }
             }
         }
     }
