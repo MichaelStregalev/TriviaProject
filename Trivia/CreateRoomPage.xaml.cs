@@ -16,9 +16,6 @@ using Xceed.Wpf.Toolkit;
 
 namespace Trivia
 {
-    /// <summary>
-    /// Interaction logic for CreateRoomPage.xaml
-    /// </summary>
     public partial class CreateRoomPage : Page
     {
         // <-- Custom Cursors -->

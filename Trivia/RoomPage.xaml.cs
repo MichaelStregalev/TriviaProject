@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    /// <summary>
-    /// Interaction logic for RoomPage.xaml
-    /// </summary>
     public partial class RoomPage : Page
     {
         // <-- The info of the room & user -->
@@ -60,11 +57,10 @@ namespace Trivia
 
             PlayersListPanel.Children.Clear();
 
-
         }
             private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService?.Navigate(new MenuPage(this.username));
+            NavigationService.Navigate(new MenuPage(this.username));
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    public partial class JoinRoomPage : Page
+    public partial class HighScoresPage : Page
     {
         // <-- Custom Cursors -->
         private Cursor selectCursor;
@@ -24,8 +24,7 @@ namespace Trivia
 
         // <-- The username of the User -->
         private String username;
-
-        public JoinRoomPage(String username)
+        public HighScoresPage(String username)
         {
             InitializeComponent();
 
@@ -35,7 +34,7 @@ namespace Trivia
                 new Uri("pack://application:,,,/Cursors/Select.cur")).Stream);
 
             questionMarkCursor = new Cursor(Application.GetResourceStream(
-                 new Uri("pack://application:,,,/Cursors/QuestionMark.cur")).Stream);
+                new Uri("pack://application:,,,/Cursors/QuestionMark.cur")).Stream);
 
             pointerCursor = new Cursor(Application.GetResourceStream(
                 new Uri("pack://application:,,,/Cursors/Pointer.cur")).Stream);
@@ -43,29 +42,14 @@ namespace Trivia
             // Default cursor - the pointer cursor
             this.Cursor = pointerCursor;
 
-            LoadRooms();
+            DisplayHighScores();
         }
-        private void LoadRooms()
+
+        private void DisplayHighScores()
         {
-            //TODO: var rooms = GetAvailableRooms();
-
-            RoomListPanel.Children.Clear();
-
-            //if (rooms.Count == 0)
-            //{
-            //    RoomListPanel.Children.Add(new TextBlock
-            //    {
-            //        Text = "No rooms Available to join right now!",
-            //        FontSize = 20,
-            //        Foreground = (Brush)FindResource("MidnightPurple"),
-            //        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
-            //        HorizontalAlignment = HorizontalAlignment.Center,
-            //        Margin = new Thickness(0, 50, 0, 0)
-            //    });
-            //}
-
 
         }
+
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             ((Button)sender).Cursor = questionMarkCursor;
@@ -87,13 +71,7 @@ namespace Trivia
         }
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
-        }
-        private void JoinButton_Click(object sender, RoutedEventArgs e)
-        {
-            string roomName = (string)((Button)sender).Tag;
-            MessageBox.Show($"Joining room: {roomName}");
-            // TODO: Navigate to the room
+            NavigationService.Navigate(new MenuPage(this.username));
         }
     }
 }

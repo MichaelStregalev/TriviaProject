@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    /// <summary>
-    /// Interaction logic for SignupPage.xaml
-    /// </summary>
     public partial class SignupPage : Page
     {
         // <-- Custom Cursors -->
@@ -91,7 +88,6 @@ namespace Trivia
             {
                 //ValidateFields();
                 MessageBox.Show("Signup successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                //NavigationService.Navigate(new MenuPage());
                 NavigationService.Navigate(new MenuPage(UsernameInput.Text));
             }
         }

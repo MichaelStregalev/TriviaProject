@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Trivia
 {
-    /// <summary>
-    /// Interaction logic for MenuPage.xaml
-    /// </summary>
     public partial class MenuPage : Page
     {
         // <-- Custom Cursors -->
@@ -68,7 +65,7 @@ namespace Trivia
                         break;
 
                     case "StatisticsButton":
-                        //NavigationService.Navigate(new StatisticsPage());
+                        NavigationService.Navigate(new StatisticsPage(this.username));
                         break;
 
                     case "ExitButton":
