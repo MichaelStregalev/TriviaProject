@@ -1,0 +1,61 @@
+﻿<Page x:Class="Trivia.WelcomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Trivia"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Trivia"
+      Background="{StaticResource SunnySideup}">
+
+    <Grid>
+        
+        <!-- Background Image -->
+        <Image Source="Images/WelcomeBackground.png"
+               Stretch="Fill" />
+        
+        
+        <!-- Main content -->
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="500">
+            <!-- Title Text -->
+            <TextBlock Text="T r i v i a"
+               FontSize="90"
+               Foreground="{StaticResource HotPink}"
+               TextAlignment="Center"
+               HorizontalAlignment="Center"
+               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold" />
+
+            <!-- Buttons StackPanel -->
+            <StackPanel Width="200" Margin="0,20,0,0">
+                
+                <Button Name="LoginButton" Content="Login" Margin="0,0,0,30" Style="{StaticResource RoundedButtonStyle}" 
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Click="NavigateToPage"/>
+
+                <Button Name="SignupButton" Content="Signup" Style="{StaticResource RoundedButtonStyle}" 
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Click="NavigateToPage"/>
+                
+            </StackPanel>
+
+            <!-- New here? - Stackpanel-->
+            <StackPanel Width="200" Margin="0,40,0,0">
+                
+                <TextBlock Name="NewHereInfoBlock" Text="New? Press here!"
+                           FontSize="20"
+                           Foreground="{StaticResource MidnightPurple}"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium" 
+                           MouseEnter="NewHereInfoBlock_MouseEnter"
+                           MouseLeave="NewHereInfoBlock_MouseLeave"/>
+            </StackPanel>
+
+        </StackPanel>
+
+    </Grid>
+    
+</Page>

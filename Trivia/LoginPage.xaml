@@ -1,0 +1,86 @@
+﻿<Page x:Class="Trivia.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Trivia"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Login"
+      Background="{StaticResource SunnySideup}"
+      KeyDown="Page_KeyDown" 
+      Focusable="True" 
+      KeyUp="Page_KeyDown">
+
+    <Grid>
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
+
+            <!-- Title -->
+            <TextBlock Text="Log-in"
+               FontSize="80"
+               Foreground="{StaticResource HotPink}"
+               TextAlignment="Center"
+               HorizontalAlignment="Center"
+               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold" />
+
+            <!-- Username Field -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+
+                <TextBlock Text="Username"
+                   Width="180" 
+                   VerticalAlignment="Center" 
+                   FontSize="30" 
+                   FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+                   Foreground="{StaticResource MidnightPurple}"/>
+
+                <TextBox Name="UsernameInput" Width="300" Height="40" Style="{StaticResource RoundedTextBoxStyle}"
+                         MouseEnter="TextBox_MouseEnter"
+                         MouseLeave="TextBox_MouseLeave"/>
+
+                <Image Name="UsernameValidIcon" Width="25" Height="25" Margin="10" />
+
+            </StackPanel>
+
+            <!-- Password Field -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,10">
+
+                <TextBlock Text="Password"
+                           Width="180" 
+                           VerticalAlignment="Center" 
+                           FontSize="30" 
+                           FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+                           Foreground="{StaticResource MidnightPurple}"/>
+
+                <PasswordBox Name="PasswordInput" Width="300" Height="40" Style="{StaticResource RoundedPasswordBoxStyle}" 
+                     MouseEnter="PasswordBox_MouseEnter"
+                     MouseLeave="PasswordBox_MouseLeave"/>
+
+                <Image Name="PasswordValidIcon" Width="25" Height="25" Margin="10" />
+
+            </StackPanel>
+
+            <!-- Message Area -->
+            <TextBlock Text="" 
+               Name="ValidityMessageBlock" 
+               FontSize="20"
+               Foreground="{StaticResource HotPink}"
+               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,10"/>
+
+            <!-- Exit Button (Go back to MainPage) -->
+            <Button Content="Exit"
+            Name="ExitButton"
+            Width="130"
+            Height="50"
+            Click="ExitButton_Click"
+            MouseEnter="ExitButton_MouseEnter"
+            MouseLeave="ExitButton_MouseLeave"
+            Style="{StaticResource RoundedButtonStyle}"/>
+
+        </StackPanel>
+
+    </Grid>
+    
+</Page>
