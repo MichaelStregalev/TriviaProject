@@ -10,6 +10,7 @@
 #include "Communicator.h"
 #include "Responses.h"
 #include "TriviaExceptions.h"
+#include "JsonResponsePacketSerializer.h"
 
 // DEFINE
 #define MAX_BUFFER_SIZE	1024
@@ -142,22 +143,29 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	{
 		try
 		{
-			//Reading from Socket
-			std::string message = readFromSocket(clientSocket, MAX_BUFFER_SIZE, 0);
-			RequestInfo requestData = messageToRequestInfo(message);
+			// Reading from Socket
+			RequestInfo requestData = readRequestInfo(clientSocket);
+			std::cout << "REQUEST- CODE:" << requestData.requestId << " MESSAGE: " << Byte::deserializeBytesToString(requestData.buffer) << std::endl;
 
 			if (m_clients[clientSocket]->isRequestRelevant(requestData))
 			{
 				RequestResult result = m_clients[clientSocket]->handleRequest(requestData);
-				std::string requestString = Byte::deserializeBytesToString(requestData.buffer);
-				std::cout << requestString << std::endl;
-				std::string resultString = Byte::deserializeBytesToString(result.response);
-				std::cout << resultString << std::endl;
-
-				if (send(clientSocket, resultString.c_str(), resultString.size(), 0) == INVALID_SOCKET)
+				char* resultCharArray = Byte::bufferToCharArray(result.response);
+				std::cout << "RESULT- ";
+				std::cout << "CODE: " << resultCharArray[0] << std::endl;
+				for (int i = 0; i < result.response.size(); i++)
 				{
+					std::cout << resultCharArray[i];
+				}
+				std::cout << std::endl;
+
+				if (send(clientSocket, resultCharArray, result.response.size(), 0) == INVALID_SOCKET)
+				{
+					delete[] resultCharArray;
 					throw SendingMessageErrorException();
 				}
+
+				delete[] resultCharArray;
 
 				if (m_clients[clientSocket] != result.newHandler)
 				{
@@ -172,8 +180,28 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		}
 		catch (const RequestNotRelevantException& e)
 		{
-			// If we catch a non-relevant request, we will just continue...
-			std::cerr << "Non-relevant request." << std::endl;
+			ErrorResponse err;
+			err.message = "Non-relevant request.";
+
+			Byte::Buffer bufferOfResponse = JsonResponsePacketSerializer::serializeResponse(err);
+			int lengthOfBuffer = Byte::deserializeBytesToString(bufferOfResponse).size();
+
+			char* errCharArray = Byte::bufferToCharArray(bufferOfResponse);
+
+			std::cout << "RESULT ERROR: ";
+			for (int i = 0; i < lengthOfBuffer; i++)
+			{
+				std::cout << errCharArray[i];
+			}
+
+			if (send(clientSocket, errCharArray, lengthOfBuffer, 0) == INVALID_SOCKET)
+			{
+				delete[] errCharArray;
+				break;
+			}
+
+			delete[] errCharArray;
+
 			continue;
 		}
 		catch (const SendingMessageErrorException& e)
@@ -234,38 +262,39 @@ std::string Communicator::readFromSocket(SOCKET sc, int bytesNum, int flags)
 	return result;
 }
 
-RequestInfo Communicator::messageToRequestInfo(const std::string& binaryMessage) const
+RequestInfo Communicator::readRequestInfo(SOCKET sc)
 {
-	RequestInfo result;
-
-	// Getting the arrival time
-	time_t timeStamp;
-	time(&timeStamp);
-	result.receivalTime = timeStamp; // Inserting into Struct
-
-	Byte::Buffer buffer = Byte::separateBinary(binaryMessage);
-
-	// Getting the Request ID
-	Byte codeRequest(buffer[REQUEST_ID_IN_BUFFER]);
-	result.requestId = codeRequest.decimalValue(); // Inserting into Struct
-
-	std::string dataLengthBin; // This will be a binary string representing the data length
-	int i = 0;
-	for (i = DATA_LENGTH_START; i <= DATA_LENGTH_END; i++)
+	char codeInByte;
+	int res = recv(sc, &codeInByte, 1, 0);
+	if (res == INVALID_SOCKET)
 	{
-		dataLengthBin += buffer[i].binaryCode();
+		throw ReceivingMessageErrorException();
 	}
 
-	int dataLength = Byte::calculateDecimalValue(dataLengthBin); // Getting the decimal data length
-
-	// Getting the message itself into the buffer
-	Byte::Buffer message;
-	for (int i = DATA_START; i < DATA_START + dataLength; i++)
+	char lengthInByte[4];
+	res = recv(sc, lengthInByte, 4, 0);
+	if (res == INVALID_SOCKET)
 	{
-		message.push_back(buffer[i]);
+		throw ReceivingMessageErrorException();
 	}
 
-	result.buffer = message; //Inserting into the struct the message buffer (which only contains the JSON data)
+	int length = *(int*)lengthInByte;
 
-	return result;
+	char* message = new char[length + 1];
+	res = recv(sc, message, length, 0);
+	if (res == INVALID_SOCKET)
+	{
+		throw ReceivingMessageErrorException();
+	}
+
+	message[length] = '\0';
+	std::string messageString(message);
+
+	delete[] message;
+
+	std::cout << messageString << std::endl;
+
+	RequestInfo info((int)codeInByte, messageString);
+
+	return info;
 }
