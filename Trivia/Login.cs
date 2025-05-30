@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using static BackendTrivia.Communicator;
+using System.Windows.Interop;
 
 namespace BackendTrivia
 {
@@ -33,7 +34,10 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            if(infoRecvived.mCode == 99)
+            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
+            int status = doc.RootElement.GetProperty("status").GetInt32();
+
+            if (status == 99)
             {
                 return new Menu(mCom);
             }
@@ -56,7 +60,10 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == 100)
+            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
+            int status = doc.RootElement.GetProperty("status").GetInt32();
+
+            if (status == 100)
             {
                 return new Menu(mCom);
             }
