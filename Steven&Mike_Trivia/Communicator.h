@@ -51,7 +51,7 @@ private:
 
 	void handleNewClient(SOCKET clientSocket);
 	std::string readFromSocket(SOCKET sc, int bytesNum, int flags);						// Reads data from the socket
-	RequestInfo messageToRequestInfo(const std::string& binaryMessage) const;			// Turns a message to RequestInfo Struct
+	RequestInfo readRequestInfo(SOCKET sc);												// ...
 	void acceptClient();										// Accepting each client and calling for a thread to handle them
 
 };

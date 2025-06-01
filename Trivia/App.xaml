@@ -1,0 +1,107 @@
+﻿<Application x:Class="Trivia.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Trivia"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             StartupUri="MainWindow.xaml">
+    
+    <Application.Resources>
+        
+        <!-- Named colors -->
+        <SolidColorBrush x:Key="MidnightPurple" Color="#640D5F" />
+        <SolidColorBrush x:Key="HotPink" Color="#D91656" />
+        <SolidColorBrush x:Key="OrangeSoda" Color="#EB5B00" />
+        <SolidColorBrush x:Key="SunnySideup" Color="#FFB200" />
+        <SolidColorBrush x:Key="Eggshell" Color="#f7f2e4" />
+
+        <!-- Custom shaped button - rounded -->
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+
+            <Setter Property="Background" Value="{StaticResource OrangeSoda}" />
+            <Setter Property="Foreground" Value="{StaticResource MidnightPurple}" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="FontFamily" Value="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold" />
+                                    
+            <!-- Setter for rounded buttons -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                            CornerRadius="20"
+                            Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
+        
+        <!-- Custom input TextBox (it is the same as the PasswordBox) --> 
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+            <Setter Property="Background" Value="{StaticResource Eggshell}"/>
+            <Setter Property="Foreground" Value="{StaticResource MidnightPurple}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OrangeSoda}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+            <!-- Setter for rounded border -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                                    <ScrollViewer Margin="0"
+                                    x:Name="PART_ContentHost" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
+
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontFamily" Value="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+            <Setter Property="Background" Value="{StaticResource Eggshell}"/>
+            <Setter Property="Foreground" Value="{StaticResource MidnightPurple}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OrangeSoda}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+            <!-- Setter for rounded border -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                            <ScrollViewer Margin="0"
+                             x:Name="PART_ContentHost" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+
+    </Application.Resources>
+</Application>
