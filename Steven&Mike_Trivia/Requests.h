@@ -18,7 +18,18 @@ struct RequestInfo
 	int requestId;
 	time_t receivalTime;
 	Byte::Buffer buffer;
-} typedef RequestInfo;
+
+	RequestInfo(int requestId, std::string message)
+	{
+		this->requestId = requestId;
+
+		this->buffer = Byte::stringToBuffer(message);
+
+		time_t timeStamp;
+		time(&timeStamp);
+		this->receivalTime = timeStamp; // Inserting into Struct
+	}
+};
 
 struct RequestResult
 {

@@ -139,6 +139,10 @@ namespace Trivia
                     {
                         PasswordValidIcon.Source = invalid;
                     }
+                    else
+                    {
+                        PasswordValidIcon.Source = valid;
+                    }
                 }
             }
         }

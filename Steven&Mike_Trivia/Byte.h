@@ -63,6 +63,8 @@ public:
 	static Buffer intToBuffer(int number);
 	// This function will get a string, and return a buffer that represents all of the bytes that together make up the string!
 	static Buffer stringToBuffer(const std::string& content);
+	// ....
+	static char* bufferToCharArray(const Buffer& bytes);
 
 private:
 

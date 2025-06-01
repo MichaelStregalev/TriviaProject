@@ -205,6 +205,18 @@ Byte::Buffer Byte::stringToBuffer(const std::string& content)
 	return buffer;
 }
 
+char* Byte::bufferToCharArray(const Buffer& bytes)
+{
+	char* charResult = new char[bytes.size()];
+
+	for (int i = 0; i < bytes.size(); i++)
+	{
+		charResult[i] = bytes[i].asciiChar();
+	}
+
+	return charResult;
+}
+
 // STATIC HELPER METHOD - BINARY CODE TO BYTE VALUE (unsigned char)
 unsigned char Byte::binaryToByte(const std::string& binary)
 {

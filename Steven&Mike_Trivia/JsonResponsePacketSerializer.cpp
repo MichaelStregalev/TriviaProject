@@ -1,5 +1,6 @@
 #include "JsonResponsePacketSerializer.h"
 #include "Byte.h"
+#include <iostream>
 
 /*
 This is how responses in the protocol look like
