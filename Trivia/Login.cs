@@ -1,4 +1,8 @@
-﻿using System;
+﻿using BackendTrivia;
+using static BackendTrivia.Communicator;
+using static Trivia.Codes;
+using System.Text.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +19,7 @@ namespace BackendTrivia
     public class Login
     {
         private Communicator mCom;
-        public Login() 
+        public Login()
         {
             mCom = new Communicator();
         }
@@ -31,14 +35,14 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(2, json);
+            mCom.Send(((int)RequestCodes.LOGIN_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
             JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
             int status = doc.RootElement.GetProperty("status").GetInt32();
 
-            if (status == 99)
+            if (status == SUCCESSFUL_LOGIN)
             {
                 return new Menu(mCom);
             }
@@ -57,14 +61,14 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(1, json);
+            mCom.Send(((int)RequestCodes.SIGNUP_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
             JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
             int status = doc.RootElement.GetProperty("status").GetInt32();
 
-            if (status == 100)
+            if (status == SUCCESSFUL_SIGNUP)
             {
                 return new Menu(mCom);
             }
