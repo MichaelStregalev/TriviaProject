@@ -11,6 +11,7 @@ using Trivia;
 using static BackendTrivia.Communicator;
 using static Trivia.Codes;
 using static Trivia.Responses;
+using System.Windows.Documents;
 
 namespace BackendTrivia
 {
@@ -22,6 +23,10 @@ namespace BackendTrivia
             mCom = c;
         }
 
+        public Communicator GetCommunicator()
+        {
+            return mCom;
+        }
         public Room CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
         {
             var data = new
@@ -119,6 +124,28 @@ namespace BackendTrivia
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_HIGHSCORE_RESPONSE_CODE))
             {
                 return this;
+            }
+
+            throw new Exception();
+        }
+
+        public Login SignOut()
+        {
+            var data = new
+            {
+
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.LOGOUT_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.LOGOUT_RESPONSE_CODE))
+            {
+                return new Login();
             }
 
             throw new Exception();
