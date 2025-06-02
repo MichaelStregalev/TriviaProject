@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using static BackendTrivia.Communicator;
 using System.Windows.Interop;
+using static Trivia.Codes;
 
 namespace BackendTrivia
 {
