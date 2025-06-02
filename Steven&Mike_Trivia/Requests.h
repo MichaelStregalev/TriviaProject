@@ -35,7 +35,7 @@ struct RequestResult
 {
 	Byte::Buffer response;
 	IRequestHandler* newHandler = nullptr;
-} typedef RequestResult;
+};
 
 // <-- LOGIN MANAGER REQUESTS -->
 
@@ -43,26 +43,26 @@ struct LoginRequest
 {
 	std::string userName;
 	std::string password;
-} typedef LoginRequest;
+};
 
 struct SignupRequest
 {
 	std::string userName;
 	std::string password;
 	std::string email;
-} typedef SignupRequest;
+};
 
 // <-- ROOM REQUESTS -->
 
 struct GetPlayersInRoomRequest
 {
 	unsigned int roomId;
-} typedef GetPlayersInRoomRequest;
+};
 
 struct JoinRoomRequest
 {
 	unsigned int roomId;
-} typedef JoinRoomRequest;
+};
 
 struct CreateRoomRequest
 {
@@ -70,4 +70,4 @@ struct CreateRoomRequest
 	unsigned int maxPlayers;
 	unsigned int questionCount;
 	unsigned int answerTimeout;
-} typedef CreateRoomRequest;
+};
