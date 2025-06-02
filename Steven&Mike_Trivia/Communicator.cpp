@@ -208,6 +208,13 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		{
 			// If there has occurred an error with sending a message to the socket - 
 			// it means it was closed, and we need to close the socket.
+
+			// If the user was logged in and an error occurred where the user left unexpectedly - signout the user.
+			if (MenuRequestHandler* menuHandler = dynamic_cast<MenuRequestHandler*>(m_clients[clientSocket]))
+			{
+				menuHandler->handleRequest(RequestInfo(LOGOUT_REQUEST_CODE, ""));
+			}
+
 			break;
 		}
 		catch (const std::exception& e)
