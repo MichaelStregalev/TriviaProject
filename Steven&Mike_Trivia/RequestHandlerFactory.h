@@ -8,6 +8,7 @@
 #include "RoomManager.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "RequestHandlerFactory.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
