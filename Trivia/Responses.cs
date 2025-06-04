@@ -8,7 +8,7 @@ using static Trivia.Codes;
 */
 namespace Trivia
 {
-    internal class Responses
+    public class Responses
     {
         public struct RoomData
         {
