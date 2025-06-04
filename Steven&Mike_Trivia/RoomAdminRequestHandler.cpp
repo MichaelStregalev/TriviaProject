@@ -44,16 +44,7 @@ RequestResult RoomAdminRequestHandler::closeRoom(const RequestInfo& request)
 	RequestResult result;
 	try
 	{
-		// Get all users in the room
-		auto users = m_room.getAllUsers();
-
-		// Create the response to send to all users
-		LeaveRoomResponse response{ LEAVE_ROOM_RESPONSE_CODE };
-
-		for (const auto& user : users)
-		{
-			//??
-		}
+		LeaveRoomResponse response{ CLOSE_ROOM_RESPONSE_CODE };
 
 		// Remove the room from the manager
 		m_roomManager.deleteRoom(m_room.getRoomData().id);
@@ -78,20 +69,12 @@ RequestResult RoomAdminRequestHandler::startGame(const RequestInfo& request)
 	try
 	{
 		StartGameResponse response{ START_GAME_RESPONSE_CODE };
-		auto buffer = JsonResponsePacketSerializer::serializeResponse(response);
 
-		auto users = m_room.getAllUsers();
+		// Setting the rooms status to GAME_STARTED
+		m_room.getRoomData().roomStatus = GAME_STARTED;
 
-		for (const auto& user : users)
-		{
-			//??
-		}
-
-		// Setting the rooms status to ROOM_STARTED
-		m_room.getRoomData().roomStatus = ROOM_STARTED;
-
-		result.response = buffer;
-		//result.newHandler = m_handlerFactory.createGameRequestHandler(??);
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);
+		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// needs to change to game request handler!!
 	}
 	catch (const std::exception& e)
 	{
@@ -110,7 +93,7 @@ RequestResult RoomAdminRequestHandler::getRoomState(const RequestInfo& request)
 	try
 	{
 		GetRoomStateResponse response{ GET_ROOM_STATE_RESPONSE_CODE };
-		response.hasGameBegun = m_room.getRoomData().roomStatus == ROOM_STARTED;
+		response.hasGameBegun = m_room.getRoomData().roomStatus == GAME_STARTED;
 		response.answerTimeout = m_room.getRoomData().timePerQuestion;
 		response.questionCount = m_room.getRoomData().numOfQuestionsInGame;
 

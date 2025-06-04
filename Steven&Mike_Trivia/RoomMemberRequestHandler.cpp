@@ -67,7 +67,7 @@ RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo& request)
 	{
 		
 		GetRoomStateResponse response{ GET_ROOM_STATE_RESPONSE_CODE };
-		response.hasGameBegun = m_room.getRoomData().roomStatus == ROOM_STARTED;
+		response.hasGameBegun = m_room.getRoomData().roomStatus == GAME_STARTED;
 		response.answerTimeout = m_room.getRoomData().timePerQuestion;
 		response.questionCount = m_room.getRoomData().numOfQuestionsInGame;
 		

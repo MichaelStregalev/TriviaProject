@@ -37,4 +37,4 @@ enum RequestCodes { SIGNUP_REQUEST_CODE = 1, LOGIN_REQUEST_CODE, LOGOUT_REQUEST_
 
 // <-- ROOM CODES -->
 
-enum RoomStatus { ROOM_OPEN = 200, ROOM_STARTED };
+enum RoomStatus { ROOM_OPEN = 200, GAME_STARTED };
