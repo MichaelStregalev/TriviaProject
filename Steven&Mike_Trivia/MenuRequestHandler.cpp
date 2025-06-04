@@ -247,7 +247,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& request)
 		// Building the response
 		JoinRoomResponse response{ JOIN_ROOM_RESPONSE_CODE };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-		result.newHandler = m_handlerFactory.createRoomMemberRequestHandler();
+		result.newHandler = m_handlerFactory.createRoomMemberRequestHandler(m_user, *(m_handlerFactory.getRoomManager().getRoom(joinRoomRequest.roomId)));
 		// The new handler will be RoomMemeberRequestHandler.
 	}
 	catch (const std::exception& e)
@@ -274,13 +274,13 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& request)
 		RoomData data{ 0, createRoomRequest.roomName, createRoomRequest.maxPlayers, createRoomRequest.questionCount,
 						createRoomRequest.answerTimeout, ROOM_OPEN};
 
-		// Creating the room
-		m_handlerFactory.getRoomManager().createRoom(m_user, data);
+		// Creating the room - and getting the id of the room
+		int createdRoomId = m_handlerFactory.getRoomManager().createRoom(m_user, data);
 
 		// Building the response
 		JoinRoomResponse response{ CREATE_ROOM_RESPONSE_CODE };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
-		result.newHandler = m_handlerFactory.createRoomAdminRequestHandler();
+		result.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, *(m_handlerFactory.getRoomManager().getRoom(createdRoomId)));
 		// The new handler will be RoomAdminRequestHandler.
 	}
 	catch (const std::exception& e)

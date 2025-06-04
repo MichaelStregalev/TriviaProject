@@ -5,6 +5,7 @@
 #include "Room.h"
 #include "LoggedUser.h"
 #include "RoomManager.h"
+#include "RequestHandlerFactory.h"
 
 class RequestHandlerFactory;
 
@@ -29,6 +30,6 @@ private:
 
 	// <-- PRIVATE METHODS -->
 	RequestResult closeRoom(const RequestInfo& request);
-	RequestResult startRoom(const RequestInfo& request);
+	RequestResult startGame(const RequestInfo& request);
 	RequestResult getRoomState(const RequestInfo& request);
 };

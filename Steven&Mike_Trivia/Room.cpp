@@ -15,6 +15,11 @@ std::set<LoggedUser> Room::getAllUsers() const
 	return m_users;
 }
 
+RoomData& Room::getRoomData()
+{
+	return m_metadata;
+}
+
 const RoomData& Room::getRoomData() const
 {
 	return m_metadata;

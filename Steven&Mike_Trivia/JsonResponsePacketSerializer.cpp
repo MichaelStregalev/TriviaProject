@@ -153,7 +153,7 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const StartGameResp
     std::string data = j.dump();    // Get the JSON as a string
 
     // Return the serialization buffer
-    return baseSerialization(START_ROOM_RESPONSE_CODE, data);
+    return baseSerialization(START_GAME_RESPONSE_CODE, data);
 }
 
 Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
