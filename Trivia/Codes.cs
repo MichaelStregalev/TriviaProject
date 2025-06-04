@@ -54,7 +54,8 @@ namespace Trivia
 
         public enum RoomStatus
         {
-            ROOM_OPEN = 200
+            ROOM_OPEN = 200,
+            GAME_STARTED
         }
     }
 }
