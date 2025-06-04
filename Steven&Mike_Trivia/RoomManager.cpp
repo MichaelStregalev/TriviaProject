@@ -55,7 +55,7 @@ Room* RoomManager::getRoom(int roomId) const
     throw RoomDoesNotExistException(roomId);
 }
 
-void RoomManager::createRoom(const LoggedUser& user, RoomData& data)
+int RoomManager::createRoom(const LoggedUser& user, RoomData& data)
 {
     int roomId = generateUniqueRoomId();    // Generate a unique room ID
     data.id = roomId;                       // Change the ID of the room
@@ -63,6 +63,8 @@ void RoomManager::createRoom(const LoggedUser& user, RoomData& data)
     newRoom.addUser(user);                  // Add the logged user to the room
 
     m_rooms[roomId] = newRoom;              // Insert the new room into the map
+
+    return roomId;
 }
 
 void RoomManager::deleteRoom(int roomId)

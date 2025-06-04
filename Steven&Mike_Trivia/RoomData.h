@@ -17,5 +17,4 @@ struct RoomData
 	unsigned int numOfQuestionsInGame;
 	unsigned int timePerQuestion;
 	enum RoomStatus roomStatus;
-
-} typedef RoomData;
+};
