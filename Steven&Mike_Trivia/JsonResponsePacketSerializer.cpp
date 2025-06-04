@@ -134,6 +134,55 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetStatistics
     return baseSerialization(GET_STATISTICS_RESPONSE_CODE, data);
 }
 
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const CloseRoomResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(CLOSE_ROOM_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const StartGameResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(START_ROOM_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetRoomStateResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+    j[GAME_BEGUN_FIELD] = response.hasGameBegun;
+    j[PLAYERS_FIELD] = response.players;
+    j[QUESTION_COUNT_FIELD] = response.questionCount;
+    j[ANSWER_TIMEOUT_FIELD] = response.answerTimeout;
+
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(GET_ROOM_STATE_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(LEAVE_ROOM_RESPONSE_CODE, data);
+}
+
 // BASE SERIALIZATION
 Byte::Buffer JsonResponsePacketSerializer::baseSerialization(int code, const std::string& data)
 {

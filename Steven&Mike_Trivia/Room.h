@@ -39,7 +39,6 @@ public:
 	void addUser(const LoggedUser& user);
 	void removeUser(const LoggedUser& user);
 
-
 private:
 
 	// <-- FIELDS -->

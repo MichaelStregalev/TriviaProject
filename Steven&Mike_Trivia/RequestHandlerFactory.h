@@ -34,8 +34,9 @@ public:
 	// <-- METHODS -->
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
-	RoomAdminRequestHandler* createRoomAdminRequestHandler();
-	RoomMemberRequestHandler* createRoomMemberRequestHandler();
+
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(LoggedUser user, Room room);
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(LoggedUser user, Room room);
 
 	
 private:

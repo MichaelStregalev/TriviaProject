@@ -32,7 +32,6 @@ public:
 	Room* getRoom(int roomId) const;					// Get the room based on its id
 
 	// <-- METHODS -->
-
 	void createRoom(const LoggedUser& user, RoomData& data);
 	void deleteRoom(int roomId);
 
