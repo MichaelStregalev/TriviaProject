@@ -69,7 +69,7 @@ namespace BackendTrivia
             throw new Exception();
         }
 
-        public Menu Statistics()
+        public List<double> Statistics()
         {
 
             var data = new
@@ -91,13 +91,13 @@ namespace BackendTrivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE))
             {
-                return this;
+                return stats;
             }
 
             throw new Exception();
         }
 
-        public Menu HighScores()
+        public List<int> HighScores()
         {
             var data = new
             {
@@ -118,7 +118,7 @@ namespace BackendTrivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_HIGHSCORE_RESPONSE_CODE))
             {
-                return this;
+                return stats;
             }
 
             throw new Exception();
