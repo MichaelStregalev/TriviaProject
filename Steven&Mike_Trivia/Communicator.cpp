@@ -208,6 +208,35 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 		{
 			// If there has occurred an error with sending a message to the socket - 
 			// it means it was closed, and we need to close the socket.
+
+			// In case the user has already logged in, we will sign out for the user.
+			IRequestHandler* handler = m_clients[clientSocket];
+
+			if (handler)
+			{
+				if (MenuRequestHandler* menuHandler = dynamic_cast<MenuRequestHandler*>(handler))
+				{
+					m_handlerFactory.getLoginManager().logout(menuHandler->getUser().getUsername());
+				}
+
+				else if (RoomMemberRequestHandler* roomHandler = dynamic_cast<RoomMemberRequestHandler*>(handler))
+				{
+					LoggedUser currentUser = roomHandler->getUser();
+					int currentRoomId = roomHandler->getRoom().getRoomData().id;
+
+					m_handlerFactory.getLoginManager().logout(currentUser.getUsername());
+					m_handlerFactory.getRoomManager().getRoom(currentRoomId)->removeUser(currentUser);
+				}
+
+				else if (RoomAdminRequestHandler* roomHandler = dynamic_cast<RoomAdminRequestHandler*>(handler))
+				{
+					LoggedUser currentUser = roomHandler->getUser();
+
+					m_handlerFactory.getLoginManager().logout(currentUser.getUsername());
+					roomHandler->handleRequest(RequestInfo(CLOSE_ROOM_REQUEST_CODE, ""));
+				}
+			}
+
 			break;
 		}
 		catch (const std::exception& e)

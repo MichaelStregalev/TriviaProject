@@ -35,6 +35,16 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 	return result;
 }
 
+LoggedUser RoomMemberRequestHandler::getUser() const
+{
+	return m_user;
+}
+
+Room RoomMemberRequestHandler::getRoom() const
+{
+	return m_room;
+}
+
 RequestResult RoomMemberRequestHandler::leaveRoom(const RequestInfo& request)
 {
 	RequestResult result;

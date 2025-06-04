@@ -60,6 +60,11 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
+LoggedUser MenuRequestHandler::getUser() const
+{
+	return m_user;
+}
+
 RequestResult MenuRequestHandler::signout(const RequestInfo& request)
 {
 	// The result, will be filled at the end with information
