@@ -37,13 +37,14 @@
 
                 <StackPanel>
                     <!-- Room Info Panel -->
-                    <StackPanel Name="RoomInfoPanel" Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Center" />
+                    <StackPanel Name="RoomInfoPanel" Orientation="Horizontal" Margin="0,5,0,5" HorizontalAlignment="Center" 
+                                Width="600" Height="20"/>
 
                     <!-- Player List Scroll -->
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                       MouseEnter="ScrollViewer_MouseEnter"
                       MouseLeave="ScrollViewer_MouseLeave"
-                      Height="180">
+                      Height="145">
                         <StackPanel Name="PlayersListPanel" />
                     </ScrollViewer>
 
