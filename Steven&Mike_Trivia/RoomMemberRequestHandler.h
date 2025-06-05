@@ -35,4 +35,5 @@ private:
 	// <-- PRIVATE METHODS -->
 	RequestResult leaveRoom(const RequestInfo& request);
 	RequestResult getRoomState(const RequestInfo& request);
+	RequestResult startGame(const RequestInfo& request);
 };

@@ -10,7 +10,8 @@ RoomMemberRequestHandler::RoomMemberRequestHandler(LoggedUser user, Room room, R
 
 bool RoomMemberRequestHandler::isRequestRelevant(const RequestInfo& request) const
 {
-    return request.requestId == LEAVE_ROOM_REQUEST_CODE || request.requestId == GET_ROOM_STATE_REQUEST_CODE;
+    return request.requestId == LEAVE_ROOM_REQUEST_CODE || request.requestId == GET_ROOM_STATE_REQUEST_CODE 
+								|| request.requestId == START_GAME_REQUEST_CODE;
 }
 
 RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request)
@@ -26,6 +27,10 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 
 	case GET_ROOM_STATE_REQUEST_CODE:
 		result = getRoomState(request);
+		break;
+
+	case START_GAME_REQUEST_CODE:
+		result = startGame(request);
 		break;
 
 	default:	// Shouldn't happen, as we check before if the request is relevant.
@@ -97,6 +102,31 @@ RequestResult RoomMemberRequestHandler::getRoomState(const RequestInfo& request)
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be the same, as an error occurred.
+	}
+
+	return result;
+}
+
+RequestResult RoomMemberRequestHandler::startGame(const RequestInfo& request)
+{
+	RequestResult result;
+
+	try
+	{
+		StartGameResponse response{ START_GAME_RESPONSE_CODE };
+		
+		// This function will be called in case the admin already started the game and the client of the rest
+		// of the users has noticed hasGameBegun == true!!
+		// So, this function will be the same as the startGame in the RoomAdminRequestHandler but - won't change the roomdata.
+
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);
+		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// needs to change to game request handler!!
+	}
+	catch (const std::exception& e)
+	{
+		ErrorResponse error{ e.what() };
+		result.response = JsonResponsePacketSerializer::serializeResponse(error);
+		result.newHandler = this;
 	}
 
 	return result;
