@@ -213,14 +213,16 @@ RequestResult MenuRequestHandler::getHighscore(const RequestInfo& request)
 			return a.second > b.second;
 			});
 
-		// Extract only the scores
+		// Extract only the scores and names
+		std::vector<std::string> names;
 		std::vector<int> scores;
 		for (const auto& pair : scoreVectorPairs)
 		{
+			names.push_back(pair.first);
 			scores.push_back(pair.second);
 		}
 
-		GetHighScoreResponse response{ GET_HIGHSCORE_RESPONSE_CODE, scores };
+		GetHighScoreResponse response{ GET_HIGHSCORE_RESPONSE_CODE, scores, names };
 		// Building the successful signup response
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;

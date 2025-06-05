@@ -13,6 +13,7 @@
 #define PLAYERS_FIELD			"players"
 #define STATISTICS_FIELD		"statistics"
 #define SCORES_FIELD			"scores"
+#define NAMES_FIELD				"names"
 #define GAME_BEGUN_FIELD		"hasGameBegun"
 #define PLAYERS_FIELD			"players"
 #define QUESTION_COUNT_FIELD	"questionCount"

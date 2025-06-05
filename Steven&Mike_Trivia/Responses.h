@@ -45,6 +45,7 @@ struct GetHighScoreResponse
 {
 	unsigned int status;
 	std::vector<int> scores;
+	std::vector<std::string> names;
 };
 
 struct GetStatisticsResponse
