@@ -71,9 +71,9 @@ namespace Trivia
 
                             NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));
                         }
-                        catch(Exception)
+                        catch(Exception ex)
                         {
-                            ValidityMessageBlock.Text = "Room Creation failed.";
+                            ValidityMessageBlock.Text = ex.Message;
                         }
                         
                         break;
@@ -146,9 +146,9 @@ namespace Trivia
 
                     NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    ValidityMessageBlock.Text = "Room Creation failed.";
+                    ValidityMessageBlock.Text = ex.Message;
                 }
             }
         }

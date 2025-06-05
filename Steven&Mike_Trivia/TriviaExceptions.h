@@ -339,6 +339,12 @@ public:
 	RoomDoesNotExistException(int roomId) : RoomException("Room with id " + std::to_string(roomId) + " does not exist!") {}
 };
 
+class RoomNameInvalidException : public RoomException
+{
+public:
+	RoomNameInvalidException(const std::string& roomName) : RoomException("Room name '" + roomName + "' must be within 2 to 12 characters.") {};
+};
+
 // <-- HIERARCHY -->
 
 /*

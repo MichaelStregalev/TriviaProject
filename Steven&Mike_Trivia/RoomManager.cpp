@@ -59,6 +59,11 @@ Room* RoomManager::getRoom(int roomId) const
 
 int RoomManager::createRoom(const LoggedUser& user, RoomData& data)
 {
+    if (data.name.size() < MINIMUM_LENGTH_ROOM_NAME || data.name.size() > MAXIMUM_LENGTH_ROOM_NAME)
+    {
+        throw RoomNameInvalidException(data.name);
+    }
+
     int roomId = generateUniqueRoomId();    // Generate a unique room ID
     data.id = roomId;                       // Change the ID of the room
     Room newRoom(data);                     // Create a new Room object using the provided data
