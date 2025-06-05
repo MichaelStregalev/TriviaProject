@@ -406,4 +406,5 @@ std::exception
 	+-- RoomException
 		|
 		+-- RoomDoesNotExistException
+		+-- RoomNameInvalidException
 */
