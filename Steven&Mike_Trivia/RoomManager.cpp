@@ -29,9 +29,11 @@ std::vector<RoomData> RoomManager::getRooms() const
     std::vector<RoomData> rooms;
 
     // Iterate over all rooms in the map, and add their data only if the room's status is ROOM_OPEN
+    // We will also need to check that there is enough space for another player!!
     for (const auto& pair : m_rooms) 
     {
-        if (pair.second.getRoomData().roomStatus == ROOM_OPEN)
+        if (pair.second.getRoomData().roomStatus == ROOM_OPEN && 
+            pair.second.getAllUsers().size() < pair.second.getRoomData().maxPlayers)
         {
             rooms.push_back(pair.second.getRoomData());
         }
