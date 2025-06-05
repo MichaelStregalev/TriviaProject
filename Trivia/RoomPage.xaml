@@ -34,22 +34,43 @@
 
             <!-- Player List -->
             <Border BorderBrush="{StaticResource OrangeSoda}" BorderThickness="2" CornerRadius="10" Background="{StaticResource Eggshell}" Padding="10" Height="200">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              MouseEnter="ScrollViewer_MouseEnter"
-                              MouseLeave="ScrollViewer_MouseLeave">
-                    <StackPanel Name="PlayersListPanel" />
-                </ScrollViewer>
+
+                <StackPanel>
+                    <!-- Room Info Panel -->
+                    <StackPanel Name="RoomInfoPanel" Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Center" />
+
+                    <!-- Player List Scroll -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      MouseEnter="ScrollViewer_MouseEnter"
+                      MouseLeave="ScrollViewer_MouseLeave"
+                      Height="180">
+                        <StackPanel Name="PlayersListPanel" />
+                    </ScrollViewer>
+
+                </StackPanel>
             </Border>
 
-            <!-- Exit Button -->
-            <Button Content="Exit Room"
-            Width="170" Height="50"
-            Style="{StaticResource RoundedButtonStyle}"
-            Margin="0,15,0,0"
-            Click="ExitButton_Click"
-            HorizontalAlignment="Center"
-            MouseEnter="Button_MouseEnter"
-            MouseLeave="Button_MouseLeave" />
+            <!-- Buttons panel for Exit/Close Room and Start Game -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0" >
+                <Button Name="StartGameButton"
+                        Content="Start Game"
+                        Width="170" Height="50"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Click="StartGameButton_Click"
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Visibility="Collapsed" />
+                
+                <Button Name="ExitOrCloseButton"
+                        Content="Exit Room"
+                        Width="170" Height="50"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Click="ExitOrCloseButton_Click"
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Margin="0,0,10,0"/>
+                
+            </StackPanel>
         </StackPanel>
 
     </Grid>

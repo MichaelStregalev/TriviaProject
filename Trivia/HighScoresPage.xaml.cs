@@ -52,7 +52,62 @@ namespace Trivia
 
         private void DisplayHighScores()
         {
+            List<(string, int)> scores;
 
+            try
+            {
+                scores = menuController.HighScores();
+            }
+            catch
+            {
+                MessageBox.Show("Failed to load high scores.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            LeaderboardStack.Children.Clear();
+
+            for (int i = 0; i < Math.Min(5, scores.Count); i++)
+            {
+                var (name, score) = scores[i];
+
+                StackPanel row = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(0, 5, 0, 5)
+                };
+
+                TextBlock numberAndName = new TextBlock
+                {
+                    Text = $"{i + 1}.  {name}",
+                    FontSize = 24,
+                    FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                    Foreground = (Brush)FindResource("HotPink"),
+                    Width = 500,
+                    HorizontalAlignment = HorizontalAlignment.Left
+                };
+
+                TextBlock scoreText = new TextBlock
+                {
+                    Text = score.ToString(),
+                    FontSize = 24,
+                    FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA Medium"),
+                    Foreground = (Brush)FindResource("MidnightPurple"),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+
+                // If one of the highscores is the current user...
+                if (name.Equals(this.username))
+                {
+                    numberAndName.FontSize += 4;
+                    scoreText.FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold");
+                    scoreText.FontSize += 4;
+                }
+
+                row.Children.Add(numberAndName);
+                row.Children.Add(scoreText);
+
+                LeaderboardStack.Children.Add(row);
+            }
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

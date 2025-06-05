@@ -57,6 +57,7 @@ namespace Trivia
         {
             public uint Status;
             public List<int> Scores;
+            public List<string> Names;
         }
 
         public struct GetStatisticsResponse
@@ -73,6 +74,7 @@ namespace Trivia
         public struct CreateRoomResponse
         {
             public uint Status;
+            public int RoomId;
         }
 
         public struct CloseRoomResponse

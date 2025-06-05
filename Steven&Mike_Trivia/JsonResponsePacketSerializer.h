@@ -17,6 +17,7 @@
 #define PLAYERS_FIELD			"players"
 #define QUESTION_COUNT_FIELD	"questionCount"
 #define ANSWER_TIMEOUT_FIELD	"answerTimeout"
+#define ROOM_ID_FIELD			"roomId"
 
 /*
 					JsonResponsePacketSerializer

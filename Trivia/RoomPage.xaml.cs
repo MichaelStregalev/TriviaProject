@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,12 +13,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Trivia
 {
     public partial class RoomPage : Page
     {
         // <-- The info of the room & user -->
+        private int roomId;
         private string username;
         private string roomName;
         private bool isAdmin;
@@ -30,10 +33,15 @@ namespace Trivia
         // <-- ROOM CONTROLLER -->
         private BackendTrivia.Room roomController;
 
-        public RoomPage(string username, string roomName, bool isAdmin, BackendTrivia.Room roomController)
+        // <-- TIMERS FOR THREADS -->
+        private DispatcherTimer playersUpdateTimer;
+        private DispatcherTimer roomStateCheckTimer;
+
+        public RoomPage(int roomId, string username, string roomName, bool isAdmin, BackendTrivia.Room roomController)
         {
             InitializeComponent();
 
+            this.roomId = roomId;
             this.username = username;
             this.roomName = roomName;
             this.isAdmin = isAdmin;
@@ -54,20 +62,182 @@ namespace Trivia
             // The room controller
             this.roomController = roomController;
 
-            LoadPlayers();
+            // Adjust UI for admin
+            if (isAdmin)
+            {
+                ExitOrCloseButton.Content = "Close Room";
+                StartGameButton.Visibility = Visibility.Visible;
+            }
+
+            LoadInfo();
+
+            SetupTimers();
+
+            this.Unloaded += (s, e) => playersUpdateTimer?.Stop();
+            this.Unloaded += (s, e) => roomStateCheckTimer?.Stop();
+        }
+        private void LoadInfo()
+        {
+            RoomInfoPanel.Children.Clear();
+
+            try
+            {
+                var roomState = roomController.GetRoomState();
+                var questionCount = roomState.AnswerCount;
+                var answerTimeout = roomState.AnswerTimeOut;
+
+                RoomInfoPanel.Children.Add(CreateInfoBlock($"Room ID: {roomId}"));
+                RoomInfoPanel.Children.Add(CreateInfoBlock($"Questions: {questionCount}"));
+                RoomInfoPanel.Children.Add(CreateInfoBlock($"Timeout: {answerTimeout}s"));
+            }
+            catch (Exception)
+            {
+                RoomInfoPanel.Children.Add(new TextBlock
+                {
+                    Text = "Error loading room info.",
+                    FontSize = 14,
+                    Foreground = (Brush)FindResource("HotPink")
+                });
+            }
         }
 
+        // Helper method for creating an info block in LoadInfo
+        TextBlock CreateInfoBlock(string text)
+        {
+            return new TextBlock
+            {
+                Text = text,
+                FontSize = 16,
+                FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                Foreground = (Brush)FindResource("MidnightPurple"),
+                Margin = new Thickness(10, 0, 10, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+        }
+        private void SetupTimers()
+        {
+            // Timer for updating players list
+            playersUpdateTimer = new DispatcherTimer();
+            playersUpdateTimer.Interval = TimeSpan.FromSeconds(3);
+            playersUpdateTimer.Tick += (sender, e) => LoadPlayers();
+            playersUpdateTimer.Start();
+
+
+            // Timer for checking room state
+            roomStateCheckTimer = new DispatcherTimer();
+            roomStateCheckTimer.Interval = TimeSpan.FromSeconds(3);
+            roomStateCheckTimer.Tick += (sender, e) => CheckRoomState();
+            roomStateCheckTimer.Start();
+        }
+        private void CheckRoomState()
+        {
+            try
+            {
+                var state = roomController.GetRoomState();
+
+                if (state.HasGameBegun)
+                {
+                    // Navigate to game page
+                    // NavigationService.Navigate(new GamePage(username, roomName, isAdmin, roomController));
+                }
+            }
+            catch
+            {
+                NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+            }
+        }
         private void LoadPlayers()
         {
-
             PlayersListPanel.Children.Clear();
 
-        }
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService.Navigate(new MenuPage(this.username, new BackendTrivia.Menu(this.roomController.GetCommunicator())));
-        }
+            List<string> players;
+            try
+            {
+                players = roomController.GetPlayersInRoom(roomId); // Adjust room id if needed
+            }
+            catch (Exception)
+            {
+                return;
+            }
 
+            int playerCount = players.Count;
+
+            // Calculate dynamic font size (example: between 14 and 20)
+            // If fewer players, font size bigger; if many players, smaller font
+            double fontSize = Codes.MAX_FONT_SIZE_PLAYER - (playerCount - 1) * Codes.MULTIPLICATION_FONT;
+
+            // Showcase the current user
+
+            TextBlock currentPlayerText = new TextBlock
+            {
+                Text = username,
+                FontSize = fontSize + Codes.BIGGER_FONT_ADDITION,
+                FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                Foreground = (Brush)FindResource("HotPink"),
+                Margin = new Thickness(5, 2, 5, 2)
+            };
+
+            PlayersListPanel.Children.Add(currentPlayerText);
+
+            foreach (string player in players)
+            {
+                if (!player.Equals(username))
+                {
+                    TextBlock playerText = new TextBlock
+                    {
+                        Text = username,
+                        FontSize = fontSize,
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        Foreground = (Brush)FindResource("MidnightPurple"),
+                        Margin = new Thickness(5, 2, 5, 2)
+                    };
+
+                    PlayersListPanel.Children.Add(playerText);
+                }
+            }
+        }
+        private void ExitOrCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isAdmin)
+            {
+                // Close the room and navigate to MenuPage
+                try
+                {
+                    roomController.CloseRoom();
+                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to close the room: " + ex.Message);
+                }
+            }
+            else
+            {
+                // Leave the room and navigate to MenuPage
+                try
+                {
+                    roomController.LeaveRoom();
+                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to leave the room: " + ex.Message);
+                }
+            }
+        }
+        private void StartGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                roomController.StartRoom();
+                // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
+                StartGameButton.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to start the game: " + ex.Message);
+            }
+        }
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
             ((Button)sender).Cursor = questionMarkCursor;

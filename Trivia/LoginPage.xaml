@@ -38,8 +38,6 @@
                          MouseEnter="TextBox_MouseEnter"
                          MouseLeave="TextBox_MouseLeave"/>
 
-                <Image Name="UsernameValidIcon" Width="25" Height="25" Margin="10" />
-
             </StackPanel>
 
             <!-- Password Field -->
@@ -56,8 +54,6 @@
                      MouseEnter="PasswordBox_MouseEnter"
                      MouseLeave="PasswordBox_MouseLeave"/>
 
-                <Image Name="PasswordValidIcon" Width="25" Height="25" Margin="10" />
-
             </StackPanel>
 
             <!-- Message Area -->
@@ -69,15 +65,29 @@
                HorizontalAlignment="Center"
                Margin="0,0,0,10"/>
 
-            <!-- Exit Button (Go back to MainPage) -->
-            <Button Content="Exit"
-            Name="ExitButton"
-            Width="130"
-            Height="50"
-            Click="ExitButton_Click"
-            MouseEnter="ExitButton_MouseEnter"
-            MouseLeave="ExitButton_MouseLeave"
-            Style="{StaticResource RoundedButtonStyle}"/>
+            <!-- Buttons Side-by-Side -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+
+                <Button Content="Log In"
+                        Name="LoginButton"
+                        Width="130"
+                        Height="50"
+                        Click="LoginButton_Click"
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Margin="0,0,20,0"/>
+
+                <Button Content="Exit"
+                        Name="ExitButton"
+                        Width="130"
+                        Height="50"
+                        Click="ExitButton_Click"
+                        MouseEnter="Button_MouseEnter"
+                        MouseLeave="Button_MouseLeave"
+                        Style="{StaticResource RoundedButtonStyle}"/>
+
+            </StackPanel>
 
         </StackPanel>
 

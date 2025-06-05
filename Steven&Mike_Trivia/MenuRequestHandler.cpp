@@ -283,7 +283,7 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& request)
 		int createdRoomId = m_handlerFactory.getRoomManager().createRoom(m_user, data);
 
 		// Building the response
-		JoinRoomResponse response{ CREATE_ROOM_RESPONSE_CODE };
+		CreateRoomResponse response{ CREATE_ROOM_RESPONSE_CODE, createdRoomId};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, *(m_handlerFactory.getRoomManager().getRoom(createdRoomId)));
 		// The new handler will be RoomAdminRequestHandler.

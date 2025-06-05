@@ -6,11 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Trivia;
-using static BackendTrivia.Communicator;
-using static Trivia.Codes;
 using static Trivia.Responses;
 
 namespace BackendTrivia
@@ -19,11 +16,11 @@ namespace BackendTrivia
     {
         public struct RoomData
         {
-            uint id;
-            string name;
-            uint maxPlayers;
-            uint numOfQuestionsInGame;
-            uint timePerQuestion;
+            public uint id;
+            public string name;
+            public uint maxPlayers;
+            public uint numOfQuestionsInGame;
+            public uint timePerQuestion;
         }
         public struct GetRoomStateResponse
         {

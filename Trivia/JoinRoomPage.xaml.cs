@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendTrivia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Trivia
 {
@@ -27,6 +29,12 @@ namespace Trivia
 
         // <-- MENU CONTROLLER -->
         private BackendTrivia.Menu menuController;
+
+        // <-- TIMER -->
+        private DispatcherTimer refreshTimer;
+
+        // <-- ROOM, WILL HELP US WITH REFRESHING -->
+        private BackendTrivia.Room roomBackend;
 
         public JoinRoomPage(String username, BackendTrivia.Menu menuController)
         {
@@ -47,29 +55,147 @@ namespace Trivia
             this.Cursor = pointerCursor;
             // Menu controller
             this.menuController = menuController;
+            // Room
+            this.roomBackend = new BackendTrivia.Room(menuController.GetCommunicator());
+            
+            // Create timer
+            refreshTimer = new DispatcherTimer();
+            refreshTimer.Interval = TimeSpan.FromSeconds(3);
+            refreshTimer.Tick += (sender, e) => LoadRooms();
 
-            LoadRooms();
+            // Start the timer
+            refreshTimer.Start();
+
+            // Optionally, you can hook to Unloaded event to stop timer when leaving the page
+            this.Unloaded += (s, e) => refreshTimer.Stop();
         }
+
         private void LoadRooms()
         {
-            //TODO: var rooms = GetAvailableRooms();
+            try
+            {
+                RoomListPanel.Children.Clear();
 
-            RoomListPanel.Children.Clear();
+                List<BackendTrivia.Room.RoomData> rooms = roomBackend.GetRooms();
 
-            //if (rooms.Count == 0)
-            //{
-            //    RoomListPanel.Children.Add(new TextBlock
-            //    {
-            //        Text = "No rooms Available to join right now!",
-            //        FontSize = 20,
-            //        Foreground = (Brush)FindResource("MidnightPurple"),
-            //        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
-            //        HorizontalAlignment = HorizontalAlignment.Center,
-            //        Margin = new Thickness(0, 50, 0, 0)
-            //    });
-            //}
+                if (rooms.Count == 0)
+                {
+                    RoomListPanel.Children.Add(new TextBlock
+                    {
+                        Text = "No rooms Available to join right now!",
+                        FontSize = 20,
+                        Foreground = (Brush)FindResource("MidnightPurple"),
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Margin = new Thickness(0, 50, 0, 0)
+                    });
 
+                    return;
+                }
+                
+                foreach (var room in rooms)
+                {
+                    StackPanel roomRow = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        Margin = new Thickness(10),
+                        HorizontalAlignment = HorizontalAlignment.Stretch
+                    };
 
+                    // Room name
+                    TextBlock nameBlock = new TextBlock
+                    {
+                        Text = room.name,
+                        Width = 200,
+                        Foreground = (Brush)FindResource("HotPink"),
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        FontSize = 20
+                    };
+
+                    // Room ID
+                    TextBlock idBlock = new TextBlock
+                    {
+                        Text = $"ID: {room.id}",
+                        Width = 100,
+                        Foreground = (Brush)FindResource("MidnightPurple"),
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        FontSize = 16,
+                        Margin = new Thickness(10, 0, 0, 0)
+                    };
+
+                    // Get the amount of current players in the room
+                    int currentPlayers = roomBackend.GetPlayersInRoom((int)room.id).Count;
+
+                    // Players count
+                    TextBlock playersCountBlock = new TextBlock
+                    {
+                        Width = 100
+                    };
+
+                    playersCountBlock.Inlines.Add(new Run($"{currentPlayers}/")
+                    {
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        FontSize = 16,
+                        Foreground = (Brush)FindResource("MidnightPurple"),
+                    });
+
+                    playersCountBlock.Inlines.Add(new Run($"{room.maxPlayers}")
+                    {
+                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        FontSize = 16,
+                        Foreground = (Brush)FindResource("MidnightPurple"),
+                    });
+
+                    // Join Button
+                    Button joinButton = new Button
+                    {
+                        Content = "Join",
+                        Tag = new { Id = room.id, Name = room.name },
+                        Width = 80,
+                        Height = 30,
+                        Margin = new Thickness(20, 0, 0, 0),
+                        Style = (Style)FindResource("RoundedButtonStyle")
+                    };
+                    joinButton.Click += JoinButton_Click;
+
+                    roomRow.Children.Add(nameBlock);
+                    roomRow.Children.Add(idBlock);
+                    roomRow.Children.Add(playersCountBlock);
+                    roomRow.Children.Add(joinButton);
+
+                    RoomListPanel.Children.Add(roomRow);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load rooms: " + ex.Message);
+            }
+
+        }
+        private void JoinButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button joinButton = sender as Button;
+            if (joinButton == null)
+            {
+                return;
+            }
+
+            // Get the info of the room
+            dynamic tag = joinButton.Tag;
+            int roomId = tag.Id;
+            string roomName = tag.Name;
+
+            try
+            {
+                // Let the Menu object handle the request
+                Room joinedRoom = menuController.JoinRoom(roomId);
+
+                NavigationService.Navigate(new RoomPage(roomId, username, roomName, false, joinedRoom));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to join room: {ex.Message}", "Join Room Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -93,10 +219,6 @@ namespace Trivia
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
-        }
-        private void JoinButton_Click(object sender, RoutedEventArgs e)
-        {
-            // NO BUTTON TO YET IMPLEMENT THIS
         }
     }
 }

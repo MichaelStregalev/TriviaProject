@@ -5,11 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Trivia;
-using static BackendTrivia.Communicator;
-using static Trivia.Codes;
 using static Trivia.Responses;
 
 namespace BackendTrivia
@@ -21,8 +18,11 @@ namespace BackendTrivia
         {
             mCom = c;
         }
-
-        public Room CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
+        public Communicator GetCommunicator()
+        {
+            return mCom;
+        }
+        public (Room, int) CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
         {
             var data = new
             {
@@ -39,9 +39,13 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
+            Responses.CreateRoomResponse result = JsonSerializer.Deserialize<CreateRoomResponse>(infoRecvived.mJson);
+
+            int roomId = result.RoomId;
+
             if (infoRecvived.mCode == ((int)ResponseCodes.CREATE_ROOM_RESPONSE_CODE))
             {
-                return new Room(mCom);
+                return (new Room(mCom), roomId);
             }
 
             throw new Exception();
@@ -97,7 +101,7 @@ namespace BackendTrivia
             throw new Exception();
         }
 
-        public List<int> HighScores()
+        public List<(string, int)> HighScores()
         {
             var data = new
             {
@@ -113,12 +117,14 @@ namespace BackendTrivia
 
             Responses.GetHighScoreResponse result = JsonSerializer.Deserialize<GetHighScoreResponse>(infoRecvived.mJson);
 
-            uint status = result.Status;
-            List<int> stats = result.Scores;
-
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_HIGHSCORE_RESPONSE_CODE))
             {
-                return stats;
+                var highscores = new List<(string, int)>();
+                for (int i = 0; i < result.Scores.Count; i++)
+                {
+                    highscores.Add((result.Names[i], result.Scores[i]));
+                }
+                return highscores;
             }
 
             throw new Exception();
