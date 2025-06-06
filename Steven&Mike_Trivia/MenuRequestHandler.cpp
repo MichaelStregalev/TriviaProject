@@ -6,7 +6,7 @@
 #include "Codes.h"
 
 // CONSTRUCTOR
-MenuRequestHandler::MenuRequestHandler(LoggedUser user, RequestHandlerFactory handler) : m_user(user), m_handlerFactory(handler)
+MenuRequestHandler::MenuRequestHandler(const LoggedUser& user, RequestHandlerFactory& handler) : m_user(user), m_handlerFactory(handler)
 {
 }
 

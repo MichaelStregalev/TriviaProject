@@ -2,7 +2,7 @@
 #include "Responses.h"
 #include "JsonResponsePacketSerializer.h"
 
-RoomMemberRequestHandler::RoomMemberRequestHandler(LoggedUser user, Room room, RoomManager& manager, RequestHandlerFactory& handler) :
+RoomMemberRequestHandler::RoomMemberRequestHandler(const LoggedUser& user, const Room& room, RoomManager& manager, RequestHandlerFactory& handler) :
     m_user(user), m_room(room), m_roomManager(manager), m_handlerFactory(handler)
 {
 

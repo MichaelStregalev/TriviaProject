@@ -25,17 +25,17 @@ LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 	return new LoginRequestHandler(*this);
 }
 
-MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(LoggedUser user)
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(const LoggedUser& user)
 {
 	return new MenuRequestHandler(user, *this);
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(LoggedUser user, Room room)
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(const LoggedUser& user, const Room& room)
 {
 	return new RoomAdminRequestHandler(user, room, m_roomManager, *this);
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(LoggedUser user, Room room)
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(const LoggedUser& user, const Room& room)
 {
 	return new RoomMemberRequestHandler(user, room, m_roomManager, *this);
 }

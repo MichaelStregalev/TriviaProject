@@ -14,7 +14,7 @@ class RoomMemberRequestHandler : public IRequestHandler
 public:
 
 	// CONSTRUCTOR
-	RoomMemberRequestHandler(LoggedUser user, Room room, RoomManager& manager, RequestHandlerFactory& handler);
+	RoomMemberRequestHandler(const LoggedUser& user, const Room& room, RoomManager& manager, RequestHandlerFactory& handler);
 	virtual ~RoomMemberRequestHandler() = default;
 
 	bool isRequestRelevant(const RequestInfo& request) const override;				// Is the request relevant?

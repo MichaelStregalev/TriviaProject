@@ -19,12 +19,15 @@ public:
 	// CONSTRUCTOR
 	LoginManager(IDatabase* db);
 
+	// DECONSTRUCTOR
+	~LoginManager();
+
 	// SIGNUP
-	bool signup(std::string username, std::string password, std::string email);
+	bool signup(const std::string& username, const std::string& password, const std::string& email);
 	// LOGIN
-	bool login(std::string username, std::string password);
+	bool login(const std::string& username, const std::string& password);
 	// LOGOUT
-	bool logout(std::string username);
+	bool logout(const std::string& username);
 
 private:
 

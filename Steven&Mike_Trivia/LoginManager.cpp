@@ -5,9 +5,15 @@
 
 LoginManager::LoginManager(IDatabase* db) : m_database(db)
 {
+    std::cout << "LOGIN MANAGER CONSTRUCTOR!" << std::endl;
 }
 
-bool LoginManager::signup(std::string username, std::string password, std::string email)
+LoginManager::~LoginManager()
+{
+    std::cout << "LOGIN MANAGER DECONSTRUCTOR!!!" << std::endl;
+}
+
+bool LoginManager::signup(const std::string& username, const std::string& password, const std::string& email)
 {
     // Check if the user exists...
     if (m_database->doesUserExist(username))
@@ -28,10 +34,14 @@ bool LoginManager::signup(std::string username, std::string password, std::strin
     {
         LoggedUser newUser(username);
         m_loggedUsers.insert(newUser);
+
+        return true;
     }
+
+    return false;
 }
 
-bool LoginManager::login(std::string username, std::string password)
+bool LoginManager::login(const std::string& username, const std::string& password)
 {
     // First we will check that the user does exist in the database..
     if (!m_database->doesUserExist(username))
@@ -58,7 +68,7 @@ bool LoginManager::login(std::string username, std::string password)
     return true;
 }
 
-bool LoginManager::logout(std::string username)
+bool LoginManager::logout(const std::string& username)
 {
     LoggedUser user(username);
     auto it = m_loggedUsers.find(user); // Try and find the username we are trying to logout from
