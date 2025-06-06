@@ -143,11 +143,7 @@ namespace Trivia
                 if (!isUsernameValid || !isPasswordValid || !isEmailValid)
                 {
                     ValidityMessageBlock.Text = "Please fill in all fields.";
-
-                    UsernameValidIcon.Source = invalid;
-                    PasswordValidIcon.Source = invalid;
-                    EmailValidIcon.Source = invalid;
-
+                    
                     return;
                 }
 

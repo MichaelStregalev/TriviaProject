@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Trivia;
 using static Trivia.Responses;
+using System.Windows.Controls;
 
 namespace BackendTrivia
 {
@@ -39,16 +40,25 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            Responses.CreateRoomResponse result = JsonSerializer.Deserialize<CreateRoomResponse>(infoRecvived.mJson);
-
-            int roomId = result.RoomId;
-
             if (infoRecvived.mCode == ((int)ResponseCodes.CREATE_ROOM_RESPONSE_CODE))
             {
+                // Only deserialize on success
+                Responses.CreateRoomResponse result = JsonSerializer.Deserialize<Responses.CreateRoomResponse>(infoRecvived.mJson);
+                int roomId = result.RoomId;
                 return (new Room(mCom), roomId);
             }
 
-            throw new Exception();
+            // Handle error case
+            string errorMessage = "An unknown error occurred during room creation.";
+
+            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
+            JsonElement root = doc.RootElement;
+            if (root.TryGetProperty("message", out JsonElement messageElement))
+            {
+                errorMessage = messageElement.GetString();
+            }
+
+            throw new Exception(errorMessage);
         }
 
         public Room JoinRoom(int RoomId)
@@ -128,6 +138,26 @@ namespace BackendTrivia
             }
 
             throw new Exception();
+        }
+
+        public void Logout()
+        {
+            var data = new
+            {
+
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.LOGOUT_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            if (infoRecvived.mCode != ((int)ResponseCodes.LOGOUT_RESPONSE_CODE))
+            {
+                throw new Exception();
+            }
         }
     }
 }

@@ -81,7 +81,7 @@
             <!-- Message Area -->
             <TextBlock Text="" 
                        Name="ValidityMessageBlock" 
-                       FontSize="20"
+                       FontSize="16"
                        Foreground="{StaticResource HotPink}"
                        FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"
                        HorizontalAlignment="Center"

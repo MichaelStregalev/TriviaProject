@@ -69,7 +69,7 @@ bool SqliteDatabase::open()
 			averageTime FLOAT GENERATED ALWAYS AS (
 			CASE 
             WHEN totalQuestions > 0 THEN totalTime/totalQuestions 
-            ELSE NULL 
+            ELSE 0 
 			END) STORED,
 			correctAnswers INT NOT NULL DEFAULT 0,
 			totalGames INT NOT NULL DEFAULT 0,

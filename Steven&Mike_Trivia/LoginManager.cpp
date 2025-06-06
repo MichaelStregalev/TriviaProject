@@ -23,8 +23,12 @@ bool LoginManager::signup(std::string username, std::string password, std::strin
     validateEmail(email);
 
     // If all parameters are valid, we can add the user to the database!
-    // if addNewUser returned 1 - the user signed up successfully.
-    return m_database->addNewUser(username, password, email) == 1;
+    // if addNewUser returned 1 - the user signed up successfully, and will be added onto the logged Users list!
+    if (m_database->addNewUser(username, password, email) == 1)
+    {
+        LoggedUser newUser(username);
+        m_loggedUsers.insert(newUser);
+    }
 }
 
 bool LoginManager::login(std::string username, std::string password)
