@@ -204,10 +204,12 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 			continue;
 		}
-		catch (const SendingMessageErrorException& e)
+		catch (const SocketException& e)
 		{
 			// If there has occurred an error with sending a message to the socket - 
 			// it means it was closed, and we need to close the socket.
+
+			std::cout << "ERROR EXCEPTION - USER LEFT" << std::endl;
 
 			// In case the user has already logged in, we will sign out for the user.
 			IRequestHandler* handler = m_clients[clientSocket];

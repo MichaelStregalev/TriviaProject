@@ -58,7 +58,7 @@ namespace Trivia
             {
                 List<double> stats = menuController.Statistics();
 
-                if (stats.Count == Codes.STATS_COUNT)
+                if (stats != null && stats.Count == Codes.STATS_COUNT)
                 {
                     AvgAnswerTime.Text = $"{stats[Codes.AVGANSWERTIME_INDEX]:0.00} sec";
                     CorrectAnswers.Text = ((int)stats[Codes.CORRECT_ANSWERS_INDEX]).ToString();

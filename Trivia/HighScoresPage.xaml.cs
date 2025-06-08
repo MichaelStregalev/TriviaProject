@@ -73,16 +73,16 @@ namespace Trivia
                 StackPanel row = new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
-                    Margin = new Thickness(0, 5, 0, 5)
+                    Margin = new Thickness(0, 5, 0, -1)
                 };
 
                 TextBlock numberAndName = new TextBlock
                 {
-                    Text = $"{i + 1}.  {name}",
+                    Text = $"{i + 1}.   {name}",
                     FontSize = 24,
-                    FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
-                    Foreground = (Brush)FindResource("HotPink"),
-                    Width = 500,
+                    FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
+                    Foreground = (Brush)FindResource("MidnightPurple"),
+                    Width = 600,
                     HorizontalAlignment = HorizontalAlignment.Left
                 };
 
@@ -90,7 +90,7 @@ namespace Trivia
                 {
                     Text = score.ToString(),
                     FontSize = 24,
-                    FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA Medium"),
+                    FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                     Foreground = (Brush)FindResource("MidnightPurple"),
                     HorizontalAlignment = HorizontalAlignment.Right
                 };
@@ -99,7 +99,9 @@ namespace Trivia
                 if (name.Equals(this.username))
                 {
                     numberAndName.FontSize += 4;
-                    scoreText.FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold");
+                    numberAndName.Foreground = (Brush)FindResource("HotPink");
+                    scoreText.FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont");
+                    scoreText.Foreground = (Brush)FindResource("HotPink");
                     scoreText.FontSize += 4;
                 }
 

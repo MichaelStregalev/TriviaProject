@@ -62,11 +62,13 @@ namespace Trivia
             // The room controller
             this.roomController = roomController;
 
-            // Adjust UI for admin
+            // Adjust GUI for admin
             if (isAdmin)
             {
                 ExitOrCloseButton.Content = "Close Room";
+                ExitOrCloseButton.Width = 200;
                 StartGameButton.Visibility = Visibility.Visible;
+                StartGameButton.Width = 200;
             }
 
             LoadInfo();
@@ -108,7 +110,7 @@ namespace Trivia
             {
                 Text = text,
                 FontSize = 16,
-                FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                 Foreground = (Brush)FindResource("MidnightPurple"),
                 Margin = new Thickness(10, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Center
@@ -172,7 +174,7 @@ namespace Trivia
             {
                 Text = username,
                 FontSize = fontSize + Codes.BIGGER_FONT_ADDITION,
-                FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                 Foreground = (Brush)FindResource("HotPink"),
                 Margin = new Thickness(5, 2, 5, 2)
             };
@@ -187,7 +189,7 @@ namespace Trivia
                     {
                         Text = username,
                         FontSize = fontSize,
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         Foreground = (Brush)FindResource("MidnightPurple"),
                         Margin = new Thickness(5, 2, 5, 2)
                     };

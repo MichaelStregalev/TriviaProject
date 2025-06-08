@@ -61,7 +61,7 @@ int RoomManager::createRoom(const LoggedUser& user, RoomData& data)
 {
     if (data.name.size() < MINIMUM_LENGTH_ROOM_NAME || data.name.size() > MAXIMUM_LENGTH_ROOM_NAME)
     {
-        throw RoomNameInvalidException(data.name);
+        throw RoomNameInvalidException();
     }
 
     int roomId = generateUniqueRoomId();    // Generate a unique room ID

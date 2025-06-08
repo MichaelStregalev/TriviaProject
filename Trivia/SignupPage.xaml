@@ -35,6 +35,7 @@
                            Foreground="{StaticResource MidnightPurple}"/>
 
                 <TextBox Name="UsernameInput" Width="300" Height="40" Style="{StaticResource RoundedTextBoxStyle}"
+                         MaxLength="13"
                          MouseEnter="TextBox_MouseEnter"
                          MouseLeave="TextBox_MouseLeave"/>
 
@@ -53,6 +54,7 @@
                Foreground="{StaticResource MidnightPurple}"/>
 
                 <PasswordBox Name="PasswordInput" Width="300" Height="40" Style="{StaticResource RoundedPasswordBoxStyle}" 
+                             MaxLength="20"
                              MouseEnter="PasswordBox_MouseEnter"
                              MouseLeave="PasswordBox_MouseLeave"/>
 

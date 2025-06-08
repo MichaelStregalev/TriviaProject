@@ -100,12 +100,9 @@ namespace BackendTrivia
 
             Responses.GetStatisticsResponse result = JsonSerializer.Deserialize<GetStatisticsResponse>(infoRecvived.mJson);
 
-            uint status = result.Status;
-            List<double> stats = result.Statistics;
-
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE))
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE) && result != null && result.Statistics != null)
             {
-                return stats;
+                return result.Statistics;
             }
 
             throw new Exception();

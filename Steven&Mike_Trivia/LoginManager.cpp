@@ -5,12 +5,6 @@
 
 LoginManager::LoginManager(IDatabase* db) : m_database(db)
 {
-    std::cout << "LOGIN MANAGER CONSTRUCTOR!" << std::endl;
-}
-
-LoginManager::~LoginManager()
-{
-    std::cout << "LOGIN MANAGER DECONSTRUCTOR!!!" << std::endl;
 }
 
 bool LoginManager::signup(const std::string& username, const std::string& password, const std::string& email)
@@ -41,7 +35,7 @@ bool LoginManager::signup(const std::string& username, const std::string& passwo
     return false;
 }
 
-bool LoginManager::login(const std::string& username, const std::string& password)
+int LoginManager::login(const std::string& username, const std::string& password)
 {
     // First we will check that the user does exist in the database..
     if (!m_database->doesUserExist(username))
@@ -52,7 +46,7 @@ bool LoginManager::login(const std::string& username, const std::string& passwor
     // We will need to make sure that the password matches the user's password in the database!
     if (!m_database->doesPasswordMatch(username, password))
     {
-        return false; // Wrong password
+        return PASSWORD_DONT_MATCH; // Wrong password
     }
 
     LoggedUser user(username);
@@ -60,12 +54,12 @@ bool LoginManager::login(const std::string& username, const std::string& passwor
 
     if (it != m_loggedUsers.end())
     {
-        return false;   // If found - return false, user already logged on
+        return ALREADY_CONNECTED;   // If found - return false, user already logged on
     }
 
     // If everything is valid up to now - we can insert the user as logged on!
     m_loggedUsers.insert(user);
-    return true;
+    return LOGIN_SUCCESSFUL;
 }
 
 bool LoginManager::logout(const std::string& username)

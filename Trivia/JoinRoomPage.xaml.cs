@@ -85,7 +85,7 @@ namespace Trivia
                         Text = "No rooms Available to join right now!",
                         FontSize = 20,
                         Foreground = (Brush)FindResource("MidnightPurple"),
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                         HorizontalAlignment = HorizontalAlignment.Center,
                         Margin = new Thickness(0, 50, 0, 0)
                     });
@@ -108,7 +108,7 @@ namespace Trivia
                         Text = room.name,
                         Width = 200,
                         Foreground = (Brush)FindResource("HotPink"),
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                         FontSize = 20
                     };
 
@@ -118,7 +118,7 @@ namespace Trivia
                         Text = $"ID: {room.id}",
                         Width = 100,
                         Foreground = (Brush)FindResource("MidnightPurple"),
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
                         Margin = new Thickness(10, 0, 0, 0)
                     };
@@ -134,14 +134,14 @@ namespace Trivia
 
                     playersCountBlock.Inlines.Add(new Run($"{currentPlayers}/")
                     {
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                     });
 
                     playersCountBlock.Inlines.Add(new Run($"{room.maxPlayers}")
                     {
-                        FontFamily = new FontFamily("pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                         FontSize = 16,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                     });

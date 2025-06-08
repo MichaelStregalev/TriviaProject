@@ -243,7 +243,7 @@ protected:
 class UserDoesNotExistException : public SignupException
 {
 public:
-	UserDoesNotExistException(const std::string& username) : SignupException("User " + username + " does not exist in the server.") {}
+	UserDoesNotExistException(const std::string& username) : SignupException("User does not exist in the server.") {}
 };
 
 /*
@@ -342,7 +342,7 @@ public:
 class RoomNameInvalidException : public RoomException
 {
 public:
-	RoomNameInvalidException(const std::string& roomName) : RoomException("Room name '" + roomName + "' must be within 2 to 12 characters.") {};
+	RoomNameInvalidException() : RoomException("Room name must be within 2 to 12 characters.") {};
 };
 
 // <-- HIERARCHY -->

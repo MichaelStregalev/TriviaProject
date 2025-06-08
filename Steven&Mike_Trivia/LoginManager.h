@@ -5,6 +5,11 @@
 #include "UserValidity.h"
 #include <set>
 
+// DEFINES CONSTS
+#define		LOGIN_SUCCESSFUL		1
+#define		PASSWORD_DONT_MATCH		0
+#define		ALREADY_CONNECTED		-1
+
 /*
 							LoginManager
 	LoginManager is a class that will be responsible for the users'
@@ -19,13 +24,10 @@ public:
 	// CONSTRUCTOR
 	LoginManager(IDatabase* db);
 
-	// DECONSTRUCTOR
-	~LoginManager();
-
 	// SIGNUP
 	bool signup(const std::string& username, const std::string& password, const std::string& email);
-	// LOGIN
-	bool login(const std::string& username, const std::string& password);
+	// LOGIN (1 = login successful, 0 = passwords do NOT match, -1 = user already connected)
+	int login(const std::string& username, const std::string& password);
 	// LOGOUT
 	bool logout(const std::string& username);
 
