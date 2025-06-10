@@ -5,12 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Trivia;
-using static BackendTrivia.Communicator;
-using static Trivia.Codes;
 using static Trivia.Responses;
+using System.Windows.Controls;
 
 namespace BackendTrivia
 {
@@ -21,8 +19,11 @@ namespace BackendTrivia
         {
             mCom = c;
         }
-
-        public Room CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
+        public Communicator GetCommunicator()
+        {
+            return mCom;
+        }
+        public (Room, uint) CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
         {
             var data = new
             {
@@ -41,17 +42,30 @@ namespace BackendTrivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.CREATE_ROOM_RESPONSE_CODE))
             {
-                return new Room(mCom);
+                // Only deserialize on success
+                Responses.CreateRoomResponse result = JsonSerializer.Deserialize<Responses.CreateRoomResponse>(infoRecvived.mJson);
+                uint roomId = result.RoomId;
+                return (new Room(mCom), roomId);
             }
 
-            throw new Exception();
+            // Handle error case
+            string errorMessage = "An unknown error occurred during room creation.";
+
+            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
+            JsonElement root = doc.RootElement;
+            if (root.TryGetProperty("message", out JsonElement messageElement))
+            {
+                errorMessage = messageElement.GetString();
+            }
+
+            throw new Exception(errorMessage);
         }
 
-        public Room JoinRoom(int RoomId)
+        public Room JoinRoom(uint RoomId)
         {
             var data = new
             {
-                roomid = RoomId
+                roomId = RoomId
             };
 
             // Serialize to JSON
@@ -86,18 +100,15 @@ namespace BackendTrivia
 
             Responses.GetStatisticsResponse result = JsonSerializer.Deserialize<GetStatisticsResponse>(infoRecvived.mJson);
 
-            uint status = result.Status;
-            List<double> stats = result.Statistics;
-
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE))
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE) && result != null && result.Statistics != null)
             {
-                return stats;
+                return result.Statistics;
             }
 
             throw new Exception();
         }
 
-        public List<int> HighScores()
+        public List<(string, int)> HighScores()
         {
             var data = new
             {
@@ -113,15 +124,37 @@ namespace BackendTrivia
 
             Responses.GetHighScoreResponse result = JsonSerializer.Deserialize<GetHighScoreResponse>(infoRecvived.mJson);
 
-            uint status = result.Status;
-            List<int> stats = result.Scores;
-
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_HIGHSCORE_RESPONSE_CODE))
             {
-                return stats;
+                var highscores = new List<(string, int)>();
+                for (int i = 0; i < result.Scores.Count; i++)
+                {
+                    highscores.Add((result.Names[i], result.Scores[i]));
+                }
+                return highscores;
             }
 
             throw new Exception();
+        }
+
+        public void Logout()
+        {
+            var data = new
+            {
+
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.LOGOUT_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            if (infoRecvived.mCode != ((int)ResponseCodes.LOGOUT_RESPONSE_CODE))
+            {
+                throw new Exception();
+            }
         }
     }
 }

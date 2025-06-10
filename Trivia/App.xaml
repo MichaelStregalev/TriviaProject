@@ -7,6 +7,10 @@
     
     <Application.Resources>
         
+        <!-- Fonts -->
+        <FontFamily x:Key="AnomaliaUltraBoldFont">pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold</FontFamily>
+        <FontFamily x:Key="AnomaliaMediumFont">pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium</FontFamily>
+        
         <!-- Named colors -->
         <SolidColorBrush x:Key="MidnightPurple" Color="#640D5F" />
         <SolidColorBrush x:Key="HotPink" Color="#D91656" />

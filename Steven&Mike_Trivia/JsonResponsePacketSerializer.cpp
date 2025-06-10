@@ -103,6 +103,7 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const CreateRoomRes
 {
     nlohmann::json j;
     j[STATUS_FIELD] = response.status;
+    j[ROOM_ID_FIELD] = response.roomId;
 
     std::string data = j.dump();    // Get the JSON as a string
 
@@ -115,6 +116,7 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetHighScoreR
     nlohmann::json j;
     j[STATUS_FIELD] = response.status;
     j[SCORES_FIELD] = response.scores;
+    j[NAMES_FIELD] = response.names;
 
     std::string data = j.dump();    // Get the JSON as a string
 

@@ -6,7 +6,7 @@
 #include "Codes.h"
 
 // CONSTRUCTOR
-MenuRequestHandler::MenuRequestHandler(LoggedUser user, RequestHandlerFactory handler) : m_user(user), m_handlerFactory(handler)
+MenuRequestHandler::MenuRequestHandler(const LoggedUser& user, RequestHandlerFactory& handler) : m_user(user), m_handlerFactory(handler)
 {
 }
 
@@ -82,7 +82,7 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& request)
 		}
 		else
 		{
-			// Building the unsuccessful signup response
+			// Building the unsuccessful signout response
 			ErrorResponse response{ "User " + m_user.getUsername() + " does not exist!" };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 			result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -90,7 +90,7 @@ RequestResult MenuRequestHandler::signout(const RequestInfo& request)
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful sigout response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -104,22 +104,19 @@ RequestResult MenuRequestHandler::getRooms(const RequestInfo& request)
 	// The result, will be filled at the end with information
 	RequestResult result;
 	
-	// Use the deserializer in order to get the info from the request
-	GetPlayersInRoomRequest getPlayersInRoomRequest = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(request.buffer);
-
 	try
 	{
 		std::vector<RoomData> rooms = m_handlerFactory.getRoomManager().getRooms();
 
-		// Building the successful signup response
-		GetRoomsResponse response{ GET_ROOMS_RESPONSE_CODE };
+		// Building the successful getRooms response
+		GetRoomsResponse response{ GET_ROOMS_RESPONSE_CODE , rooms};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;
 		// The new handler will still be the menu request handler.
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful getRooms response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -157,7 +154,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(const RequestInfo& request)
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful getPlayersInRoom response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -177,14 +174,14 @@ RequestResult MenuRequestHandler::getStatistics(const RequestInfo& request)
 		std::vector<double> statistics = m_handlerFactory.getStatisticManager().getUserStatistics(m_user.getUsername());
 
 		GetStatisticsResponse response{GET_STATISTICS_RESPONSE_CODE, statistics};
-		// Building the successful signup response
+		// Building the successful getStatistics response
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;
 		// The new handler will still be the menu request handler.
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful getStatistics response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -213,22 +210,24 @@ RequestResult MenuRequestHandler::getHighscore(const RequestInfo& request)
 			return a.second > b.second;
 			});
 
-		// Extract only the scores
+		// Extract only the scores and names
+		std::vector<std::string> names;
 		std::vector<int> scores;
 		for (const auto& pair : scoreVectorPairs)
 		{
+			names.push_back(pair.first);
 			scores.push_back(pair.second);
 		}
 
-		GetHighScoreResponse response{ GET_HIGHSCORE_RESPONSE_CODE, scores };
-		// Building the successful signup response
+		GetHighScoreResponse response{ GET_HIGHSCORE_RESPONSE_CODE, scores, names };
+		// Building the successful getHighscore response
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;
 		// The new handler will still be the menu request handler.
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful getHighscore response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -257,7 +256,7 @@ RequestResult MenuRequestHandler::joinRoom(const RequestInfo& request)
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful joinRoom response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
@@ -283,14 +282,14 @@ RequestResult MenuRequestHandler::createRoom(const RequestInfo& request)
 		int createdRoomId = m_handlerFactory.getRoomManager().createRoom(m_user, data);
 
 		// Building the response
-		JoinRoomResponse response{ CREATE_ROOM_RESPONSE_CODE };
+		CreateRoomResponse response{ CREATE_ROOM_RESPONSE_CODE, createdRoomId};
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = m_handlerFactory.createRoomAdminRequestHandler(m_user, *(m_handlerFactory.getRoomManager().getRoom(createdRoomId)));
 		// The new handler will be RoomAdminRequestHandler.
 	}
 	catch (const std::exception& e)
 	{
-		// Building the unsuccessful signup response
+		// Building the unsuccessful createRoom response
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!

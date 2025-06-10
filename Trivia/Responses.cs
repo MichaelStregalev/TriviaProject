@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using static Trivia.Codes;
 
 /*
@@ -10,93 +11,127 @@ namespace Trivia
 {
     public class Responses
     {
-        public struct RoomData
+        public class RoomData
         {
-            uint id;
-            string name;
-            uint maxPlayers;
-            uint numOfQuestionsInGame;
-            uint timePerQuestion;
+            public uint id { get; set; }
+            public required string name { get; set; }
+            public uint maxPlayers { get; set; }
+            public uint numOfQuestionsInGame { get; set; }
+            public uint timePerQuestion { get; set; }
         }
         public enum RoomStatus
         {
             RoomStatus
         }
-        public struct LoginResponse
+        public class LoginResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct SignupResponse
+        public class SignupResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct ErrorResponse
+        public class ErrorResponse
         {
-            public string Message;
+            [JsonPropertyName("message")]
+            public required string Message { get; set; }
         }
 
-        public struct LogoutResponse
+        public class LogoutResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct GetRoomsResponse
+        public class GetRoomsResponse
         {
-            public uint Status;
-            public List<RoomData> Rooms;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("rooms")]
+            public required List<RoomData> Rooms { get; set; }
         }
 
-        public struct GetPlayersInRoomResponse
+        public class GetPlayersInRoomResponse
         {
-            public List<string> Players;
+            [JsonPropertyName("players")]
+            public required List<string> Players { get; set; }
         }
 
-        public struct GetHighScoreResponse
+        public class GetHighScoreResponse
         {
-            public uint Status;
-            public List<int> Scores;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("scores")]
+            public required List<int> Scores { get; set; }
+
+            [JsonPropertyName("names")]
+            public required List<string> Names { get; set; }
         }
 
-        public struct GetStatisticsResponse
+        public class GetStatisticsResponse
         {
-            public uint Status;
-            public List<double> Statistics;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("statistics")]
+            public required List<double> Statistics { get; set; }
         }
 
-        public struct JoinRoomResponse
+        public class JoinRoomResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct CreateRoomResponse
+        public class CreateRoomResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("roomId")]
+            public uint RoomId { get; set; }
         }
 
-        public struct CloseRoomResponse
+        public class CloseRoomResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct StartRoomResponse
+        public class StartRoomResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct LeaveRoomResponse
+        public class LeaveRoomResponse
         {
-            public uint Status;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
         }
 
-        public struct GetRoomStateResponse
+        public class GetRoomStateResponse
         {
-            public uint Status;
-            public bool HasGameBegun;
-            public List<string> Players;
-            public uint AnswerCount;
-            public uint AnswerTimeOut;
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("hasGameBegun")]
+            public bool HasGameBegun { get; set; }
+
+            [JsonPropertyName("players")]
+            public required List<string> Players { get; set; }
+
+            [JsonPropertyName("questionCount")]
+            public uint AnswerCount { get; set; }
+
+            [JsonPropertyName("answerTimeout")]
+            public uint AnswerTimeOut { get; set; }
         }
     }
 }

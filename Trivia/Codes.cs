@@ -47,10 +47,26 @@ namespace Trivia
         public const int SUCCESSFUL_LOGIN = 99;
         public const int SUCCESSFUL_SIGNUP = 100;
 
+
+        // <-- CONSTS TO PREVENT MAGIC NUMBERS -->
+
         public const int REQUEST_ID_IN_BUFFER = 0;
         public const int DATA_LENGTH_START = 1;
         public const int DATA_LENGTH_END = 4;
         public const int DATA_START = 5;
+
+        // STATISTICS CONSTS
+        public const int STATS_COUNT = 5;
+        public const int AVGANSWERTIME_INDEX = 0;
+        public const int CORRECT_ANSWERS_INDEX = 1;
+        public const int TOTAL_ANSWERS_INDEX = 2;
+        public const int TOTAL_GAMES_INDEX = 3;
+        public const int SCORE_INDEX = 4;
+
+        // JOIN ROOM CONSTS
+        public const int MAX_FONT_SIZE_PLAYER = 20;
+        public const double MULTIPLICATION_FONT = 0.6;
+        public const int BIGGER_FONT_ADDITION = 2;
 
         public enum RoomStatus
         {

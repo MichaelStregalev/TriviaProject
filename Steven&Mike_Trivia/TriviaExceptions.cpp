@@ -4,7 +4,7 @@ UsernameInvalidException::UsernameInvalidException(const std::string& username, 
     : SignupException(""), _username(username)
 {
     // The start of the message, unless the username is empty and then we'll override the start.
-    _message = "The username '" + username + "' ";
+    _message = "The username ";
 
     switch (validity)
     {
@@ -39,7 +39,7 @@ PasswordInvalidException::PasswordInvalidException(const std::string& password, 
     : SignupException(""), _password(password)
 {
     // The start of the message, unless the username is empty and then we'll override the start.
-    _message = "The password '" + password + "' ";
+    _message = "The password ";
 
     switch (validity)
     {
@@ -80,7 +80,7 @@ EmailInvalidException::EmailInvalidException(const std::string& email, emailVali
     : SignupException(""), _email(email)
 {
     // The start of the message, unless the username is empty and then we'll override the start.
-    _message = "The email '" + email + "' ";
+    _message = "The email ";
 
     switch (validity)
     {
@@ -88,22 +88,22 @@ EmailInvalidException::EmailInvalidException(const std::string& email, emailVali
         _message = "The email cannot be empty.";
         break;
     case NO_AT_SIGN:
-        _message = "must contain an '@' sign.";
+        _message += "must contain an '@' sign.";
         break;
     case NO_DOT:
-        _message = "must contain a '.' after the '@' sign.";
+        _message += "must contain a '.' after the '@' sign.";
         break;
     case EMAIL_SPACES:
-        _message = "must not contain spaces.";
+        _message += "must not contain spaces.";
         break;
     case INVALID_FORMAT:
-        _message = "has an invalid format.";
+        _message += "has an invalid format.";
         break;
     case EMAIL_VALID:       // Shouldn't happen, but just in case - we will handle it...
-        _message = "is valid.";
+        _message += "is valid.";
         break;
     default:
-        _message = "is invalid for an unknown reason.";
+        _message += "is invalid for an unknown reason.";
         break;
     }
 }

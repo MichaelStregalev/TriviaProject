@@ -45,6 +45,7 @@ struct GetHighScoreResponse
 {
 	unsigned int status;
 	std::vector<int> scores;
+	std::vector<std::string> names;
 };
 
 struct GetStatisticsResponse
@@ -61,6 +62,7 @@ struct JoinRoomResponse
 struct CreateRoomResponse
 {
 	unsigned int status;
+	unsigned int roomId;
 };
 
 struct CloseRoomResponse

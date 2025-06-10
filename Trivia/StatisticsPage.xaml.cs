@@ -54,7 +54,27 @@ namespace Trivia
 
         private void LoadStats()
         {
+            try
+            {
+                List<double> stats = menuController.Statistics();
 
+                if (stats != null && stats.Count == Codes.STATS_COUNT)
+                {
+                    AvgAnswerTime.Text = $"{stats[Codes.AVGANSWERTIME_INDEX]:0.00} sec";
+                    CorrectAnswers.Text = ((int)stats[Codes.CORRECT_ANSWERS_INDEX]).ToString();
+                    TotalAnswers.Text = ((int)stats[Codes.TOTAL_ANSWERS_INDEX]).ToString();
+                    NumGames.Text = ((int)stats[Codes.TOTAL_GAMES_INDEX]).ToString();
+                    Score.Text = ((int)stats[Codes.SCORE_INDEX]).ToString();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to load all statistics.", "Statistics Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while loading statistics:\n" + ex.Message, "Statistics Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void HighScores_Click(object sender, RoutedEventArgs e)

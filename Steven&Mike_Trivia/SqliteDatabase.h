@@ -64,4 +64,7 @@ private:
 
 	// Callback function for integer results in the database
 	static int callbackIntValue(void* data, int len, char** values, char** columns);
+
+	// Callback function for float results in the database
+	static int callbackFloatValue(void* data, int len, char** values, char** columns);
 };

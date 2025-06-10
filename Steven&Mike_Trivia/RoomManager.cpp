@@ -29,9 +29,11 @@ std::vector<RoomData> RoomManager::getRooms() const
     std::vector<RoomData> rooms;
 
     // Iterate over all rooms in the map, and add their data only if the room's status is ROOM_OPEN
+    // We will also need to check that there is enough space for another player!!
     for (const auto& pair : m_rooms) 
     {
-        if (pair.second.getRoomData().roomStatus == ROOM_OPEN)
+        if (pair.second.getRoomData().roomStatus == ROOM_OPEN && 
+            pair.second.getAllUsers().size() < pair.second.getRoomData().maxPlayers)
         {
             rooms.push_back(pair.second.getRoomData());
         }
@@ -57,6 +59,11 @@ Room* RoomManager::getRoom(int roomId) const
 
 int RoomManager::createRoom(const LoggedUser& user, RoomData& data)
 {
+    if (data.name.size() < MINIMUM_LENGTH_ROOM_NAME || data.name.size() > MAXIMUM_LENGTH_ROOM_NAME)
+    {
+        throw RoomNameInvalidException();
+    }
+
     int roomId = generateUniqueRoomId();    // Generate a unique room ID
     data.id = roomId;                       // Change the ID of the room
     Room newRoom(data);                     // Create a new Room object using the provided data
@@ -84,12 +91,12 @@ void RoomManager::deleteRoom(int roomId)
 
 int RoomManager::generateRandomRoomId()
 {
-    return rand() % MAXIMUM_ROOM_ID + 1;
+    return rand() % (MAXIMUM_ROOM_ID - MINIMUM_ROOM_ID + 1) + MINIMUM_ROOM_ID;;
 }
 
 int RoomManager::generateUniqueRoomId()
 {
-    int roomId;
+    int roomId = 0;
 
     // Generate a new random ID until we find one that doesn't already exist
     do 

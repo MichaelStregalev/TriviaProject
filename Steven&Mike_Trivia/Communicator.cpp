@@ -143,23 +143,41 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 	{
 		try
 		{
+			std::cout << "~~~~~~~~~~~~~~~~~" << std::endl;
 			// Reading from Socket
 			RequestInfo requestData = readRequestInfo(clientSocket);
-			std::cout << "REQUEST- CODE:" << requestData.requestId << " MESSAGE: " << Byte::deserializeBytesToString(requestData.buffer) << std::endl;
+			std::cout << "REQUEST - CODE:" << requestData.requestId << " MESSAGE: " << Byte::deserializeBytesToString(requestData.buffer) << std::endl;
 
 			if (m_clients[clientSocket]->isRequestRelevant(requestData))
 			{
 				RequestResult result = m_clients[clientSocket]->handleRequest(requestData);
 				char* resultCharArray = Byte::bufferToCharArray(result.response);
-				std::cout << "RESULT- ";
-				std::cout << "CODE: " << resultCharArray[0] << std::endl;
-				for (int i = 0; i < result.response.size(); i++)
-				{
-					std::cout << resultCharArray[i];
-				}
-				std::cout << std::endl;
 
-				if (send(clientSocket, resultCharArray, result.response.size(), 0) == INVALID_SOCKET)
+				// Getting a string that is full of '\0', later on populating it
+				std::string resultString(result.response.size(), '\0');
+				for (int i = 0; i < result.response.size(); ++i)
+				{
+					resultString[i] = result.response[i].asciiChar();
+				}
+
+				// Printing the printable and non-printable characters of the result - if non-printable, print the hex values.
+				std::cout << "RESULT - ";
+				for (size_t i = 0; i < resultString.size(); ++i)
+				{
+					char c = resultString[i];
+					if (std::isprint(static_cast<unsigned char>(c)))
+					{
+						std::cout << c;
+					}
+					else
+					{
+						std::cout << "\\x" << std::hex << std::uppercase << (int)(unsigned char)c << std::dec;
+					}
+				}
+
+				std::cout << "\n~~~~~~~~~~~~~~~~~" << std::endl;
+
+				if (send(clientSocket, resultString.data(), resultString.size(), 0) == INVALID_SOCKET)
 				{
 					delete[] resultCharArray;
 					throw SendingMessageErrorException();
@@ -204,10 +222,12 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 			continue;
 		}
-		catch (const SendingMessageErrorException& e)
+		catch (const SocketException& e)
 		{
 			// If there has occurred an error with sending a message to the socket - 
 			// it means it was closed, and we need to close the socket.
+
+			std::cout << "ERROR EXCEPTION - USER LEFT" << std::endl;
 
 			// In case the user has already logged in, we will sign out for the user.
 			IRequestHandler* handler = m_clients[clientSocket];
@@ -320,8 +340,6 @@ RequestInfo Communicator::readRequestInfo(SOCKET sc)
 	std::string messageString(message);
 
 	delete[] message;
-
-	std::cout << messageString << std::endl;
 
 	RequestInfo info((int)codeInByte, messageString);
 
