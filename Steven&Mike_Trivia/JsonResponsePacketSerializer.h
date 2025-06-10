@@ -7,18 +7,22 @@
 
 // <-- DEFINE CONSTS FOR FIELDS
 
-#define ERROR_MESSAGE_FIELD		"message"
-#define STATUS_FIELD			"status"
-#define ROOMS_FIELD				"rooms"
-#define PLAYERS_FIELD			"players"
-#define STATISTICS_FIELD		"statistics"
-#define SCORES_FIELD			"scores"
-#define NAMES_FIELD				"names"
-#define GAME_BEGUN_FIELD		"hasGameBegun"
-#define PLAYERS_FIELD			"players"
-#define QUESTION_COUNT_FIELD	"questionCount"
-#define ANSWER_TIMEOUT_FIELD	"answerTimeout"
-#define ROOM_ID_FIELD			"roomId"
+#define		ERROR_MESSAGE_FIELD			"message"
+#define		STATUS_FIELD				"status"
+#define		ROOMS_FIELD					"rooms"
+#define		PLAYERS_FIELD				"players"
+#define		STATISTICS_FIELD			"statistics"
+#define		SCORES_FIELD				"scores"
+#define		NAMES_FIELD					"names"
+#define		GAME_BEGUN_FIELD			"hasGameBegun"
+#define		PLAYERS_FIELD				"players"
+#define		QUESTION_COUNT_FIELD		"questionCount"
+#define		ANSWER_TIMEOUT_FIELD		"answerTimeout"
+#define		ROOM_ID_FIELD				"roomId"
+#define		CORRECT_ANSWER_ID_FIELD		"correctAnswerId"
+#define		RESULTS_FIELD				"results"
+#define		QUESTION_FIELD				"question"
+#define		ANSWERS_FIELD				"answers"
 
 /*
 					JsonResponsePacketSerializer
@@ -54,6 +58,8 @@ namespace JsonResponsePacketSerializer
 	// Base serialization - will do the serialization of the data, given the data and the code for the serialization
 	Byte::Buffer baseSerialization(int code, const std::string& data);
 
-	// Convert room data to Json
+	// Convert RoomData to JSON
 	nlohmann::json roomDataToJson(const RoomData& room);
+	// Convert PlayerResult to JSON
+	nlohmann::json playerResultToJson(const PlayerResult& result);
 }
