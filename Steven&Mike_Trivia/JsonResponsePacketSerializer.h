@@ -44,6 +44,11 @@ namespace JsonResponsePacketSerializer
 	Byte::Buffer serializeResponse(const GetRoomStateResponse& response);
 	Byte::Buffer serializeResponse(const LeaveRoomResponse& response);
 
+	Byte::Buffer serializeResponse(const GetGameResultsResponse& response);
+	Byte::Buffer serializeResponse(const SubmitAnswerResponse& response);
+	Byte::Buffer serializeResponse(const GetQuestionResponse& response);
+	Byte::Buffer serializeResponse(const LeaveGameResponse& response);
+
 	// <-- HELPER METHODS -->
 
 	// Base serialization - will do the serialization of the data, given the data and the code for the serialization
