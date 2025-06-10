@@ -45,6 +45,8 @@ public:
 	int getPlayerScore(const std::string& username) const override;
 	// Get the high scores
 	std::map<std::string, int> getHighScores() const override;
+	// Update the DataBase according to Game Data
+	int submitGameStatistics(GameData gm, const std::string& username) const override;
 
 private:
 

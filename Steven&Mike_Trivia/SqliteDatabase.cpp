@@ -339,6 +339,32 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 	return result;
 }
 
+int SqliteDatabase::submitGameStatistics(GameData gm, const std::string& username) const
+{
+	int totalTime = gm.averageAnswerTime * (gm.correctAnswerCount + gm.wrongAnswerCount);
+	int totalQuestions = gm.correctAnswerCount + gm.wrongAnswerCount;
+	int scoreToAdd = (gm.correctAnswerCount * CORRECT_ANSWER) + (gm.wrongAnswerCount * WRONG_ANSWER);
+
+	std::string queryStart = "UPDATE Statistics SET";
+	std::string query1 = " totalTime = totalTime + " + std::to_string(totalTime) + ",";
+	std::string query2 = " totalQuestions = totalQuestions + " + std::to_string(totalQuestions) + ",";
+	std::string query3 = " correctAnswers = correctAnswers + " + std::to_string(gm.correctAnswerCount) + ",";
+	std::string query4 = " totalGames = totalGames + 1,";
+	std::string query5 = " score = score + " + std::to_string(scoreToAdd);
+	std::string queryEnd = " WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
+
+	std::string query = queryStart + query1 + query2 + query3 + query4 + query5 + queryEnd;
+
+	int res = sqlite3_exec(_db, query.c_str(), nullptr, nullptr, nullptr);
+
+	if (res != SQLITE_OK)
+	{
+		throw FailedExecutionQueryException(query);
+	}
+
+	return 1;
+}
+
 // <-- PRIVATE HELPER METHODS -->
 
 // THIS FUNCTION WILL ONLY LET US USE QUERIES THAT EITHER - CHECK IF SOMETHING EXISTS IN THE DATABASE, OR AN EXECUTION QUERY
