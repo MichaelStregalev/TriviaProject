@@ -80,6 +80,8 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request)
 {
 	RequestResult result;
 
+	std::cout << "LOGIN REQUEST HANDELR: LOGIN" << std::endl;
+
 	// Use the deserializer in order to get the info from the request
 	LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
 

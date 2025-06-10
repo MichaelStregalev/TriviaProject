@@ -68,7 +68,7 @@ GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersRequ
     }
     catch (const nlohmann::json::exception& e)
     {
-        throw std::invalid_argument("Invalid LoginRequest JSON format!");
+        throw std::invalid_argument("Invalid GetPlayersRequest JSON format!");
     }
 }
 
@@ -89,7 +89,7 @@ JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(const 
     }
     catch (const nlohmann::json::exception& e)
     {
-        throw std::invalid_argument("Invalid LoginRequest JSON format!");
+        throw std::invalid_argument("Invalid JoinRoomRequest JSON format!");
     }
 }
 
@@ -113,6 +113,6 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
     }
     catch (const nlohmann::json::exception& e)
     {
-        throw std::invalid_argument("Invalid LoginRequest JSON format!");
+        throw std::invalid_argument("Invalid CreateRoomRequest JSON format!");
     }
 }

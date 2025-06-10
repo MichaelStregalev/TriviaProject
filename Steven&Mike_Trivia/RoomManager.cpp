@@ -91,12 +91,12 @@ void RoomManager::deleteRoom(int roomId)
 
 int RoomManager::generateRandomRoomId()
 {
-    return rand() % MAXIMUM_ROOM_ID + 1;
+    return rand() % (MAXIMUM_ROOM_ID - MINIMUM_ROOM_ID + 1) + MINIMUM_ROOM_ID;;
 }
 
 int RoomManager::generateUniqueRoomId()
 {
-    int roomId;
+    int roomId = 0;
 
     // Generate a new random ID until we find one that doesn't already exist
     do 

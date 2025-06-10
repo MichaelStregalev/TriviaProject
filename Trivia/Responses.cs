@@ -95,7 +95,7 @@ namespace Trivia
             public uint Status { get; set; }
 
             [JsonPropertyName("roomId")]
-            public int RoomId { get; set; }
+            public uint RoomId { get; set; }
         }
 
         public class CloseRoomResponse

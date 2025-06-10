@@ -14,7 +14,7 @@ class RoomAdminRequestHandler : public IRequestHandler
 public:
 
 	// CONSTRUCTOR
-	RoomAdminRequestHandler(const LoggedUser& user, const Room& room, RoomManager& manager, RequestHandlerFactory& handler);
+	RoomAdminRequestHandler(const LoggedUser& user, Room& room, RoomManager& manager, RequestHandlerFactory& handler);
 	virtual ~RoomAdminRequestHandler() = default;
 
 	bool isRequestRelevant(const RequestInfo& request) const override;				// Is the request relevant?
@@ -27,13 +27,14 @@ public:
 private:
 
 	// <-- FIELDS -->
-	Room m_room;
+	Room& m_room;
 	LoggedUser m_user;
 	RoomManager& m_roomManager;
 	RequestHandlerFactory& m_handlerFactory;
 
 	// <-- PRIVATE METHODS -->
-	RequestResult closeRoom(const RequestInfo& request);
-	RequestResult startGame(const RequestInfo& request);
-	RequestResult getRoomState(const RequestInfo& request);
+	RequestResult closeRoom();
+	RequestResult startGame();
+	RequestResult getRoomState();
+	RequestResult getPlayersInRoom();		// Added so we can get the players in the room
 };

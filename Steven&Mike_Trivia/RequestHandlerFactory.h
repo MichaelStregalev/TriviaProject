@@ -36,8 +36,8 @@ public:
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(const LoggedUser& user);
 
-	RoomAdminRequestHandler* createRoomAdminRequestHandler(const LoggedUser& user, const Room& room);
-	RoomMemberRequestHandler* createRoomMemberRequestHandler(const LoggedUser& user, const Room& room);
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(const LoggedUser& user, Room& room);
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(const LoggedUser& user, Room& room);
 
 	
 private:

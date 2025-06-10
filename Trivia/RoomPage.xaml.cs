@@ -20,7 +20,7 @@ namespace Trivia
     public partial class RoomPage : Page
     {
         // <-- The info of the room & user -->
-        private int roomId;
+        private uint roomId;
         private string username;
         private string roomName;
         private bool isAdmin;
@@ -37,7 +37,7 @@ namespace Trivia
         private DispatcherTimer playersUpdateTimer;
         private DispatcherTimer roomStateCheckTimer;
 
-        public RoomPage(int roomId, string username, string roomName, bool isAdmin, BackendTrivia.Room roomController)
+        public RoomPage(uint roomId, string username, string roomName, bool isAdmin, BackendTrivia.Room roomController)
         {
             InitializeComponent();
 
@@ -133,6 +133,10 @@ namespace Trivia
         }
         private void CheckRoomState()
         {
+            // This refresh will check one of the following - if the game still exists (has not been closed) - and if it does,
+            // did the game start already? if so - start the game!
+            // if the game does not exist - leave it...
+
             try
             {
                 var state = roomController.GetRoomState();
@@ -141,10 +145,17 @@ namespace Trivia
                 {
                     // Navigate to game page
                     // NavigationService.Navigate(new GamePage(username, roomName, isAdmin, roomController));
+                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
                 }
             }
             catch
             {
+                // Stop updating the players if the player is going to leave the room.
+                // Preventing an error from occurring in the server.
+                playersUpdateTimer.Stop();
+
+                // Leave the room!
+                roomController.LeaveRoom();
                 NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
             }
         }
@@ -155,7 +166,7 @@ namespace Trivia
             List<string> players;
             try
             {
-                players = roomController.GetPlayersInRoom(roomId); // Adjust room id if needed
+                players = roomController.GetPlayersInRoom();
             }
             catch (Exception)
             {
@@ -187,7 +198,7 @@ namespace Trivia
                 {
                     TextBlock playerText = new TextBlock
                     {
-                        Text = username,
+                        Text = player,
                         FontSize = fontSize,
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         Foreground = (Brush)FindResource("MidnightPurple"),
@@ -205,8 +216,13 @@ namespace Trivia
                 // Close the room and navigate to MenuPage
                 try
                 {
-                    roomController.CloseRoom();
-                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                    playersUpdateTimer.Stop();
+                    roomStateCheckTimer.Stop();
+
+                    LoadPlayers();      // Last time, we will try and laod the players
+
+                    BackendTrivia.Menu nextController = roomController.CloseRoom();
+                    NavigationService.Navigate(new MenuPage(username, nextController));
                 }
                 catch (Exception ex)
                 {
@@ -218,8 +234,13 @@ namespace Trivia
                 // Leave the room and navigate to MenuPage
                 try
                 {
-                    roomController.LeaveRoom();
-                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                    playersUpdateTimer.Stop();
+                    roomStateCheckTimer.Stop();
+
+                    LoadPlayers();      // Last time, we will try and laod the players
+
+                    BackendTrivia.Menu nextController = roomController.LeaveRoom();
+                    NavigationService.Navigate(new MenuPage(username, nextController));
                 }
                 catch (Exception ex)
                 {
@@ -231,9 +252,17 @@ namespace Trivia
         {
             try
             {
+                playersUpdateTimer.Stop();
+                roomStateCheckTimer.Stop();
+
+                LoadPlayers();      // Last time, we will try and laod the players
+
                 roomController.StartRoom();
                 // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
                 StartGameButton.IsEnabled = false;
+
+                // Later we will change to GamePage
+                NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
             }
             catch (Exception ex)
             {

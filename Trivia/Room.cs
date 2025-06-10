@@ -9,37 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Trivia;
 using static Trivia.Responses;
+using System.Text.Json.Serialization;
 
 namespace BackendTrivia
 {
     public class Room
     {
-        public struct RoomData
-        {
-            public uint id;
-            public string name;
-            public uint maxPlayers;
-            public uint numOfQuestionsInGame;
-            public uint timePerQuestion;
-        }
-        public struct GetRoomStateResponse
-        {
-            public uint Status;
-            public bool HasGameBegun;
-            public List<string> Players;
-            public uint AnswerCount;
-            public uint AnswerTimeOut;
-        }
-        public struct GetPlayersInRoomResponse
-        {
-            public List<string> Players;
-        }
-
-        public struct GetRoomsResponse
-        {
-            public uint Status;
-            public List<RoomData> Rooms;
-        }
 
         private Communicator mCom;
         public Room(Communicator c)
@@ -65,9 +40,6 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
-            int status = doc.RootElement.GetProperty("status").GetInt32();
-
             if (infoRecvived.mCode == ((int)ResponseCodes.CLOSE_ROOM_RESPONSE_CODE))
             {
                 return new Menu(mCom);
@@ -89,9 +61,6 @@ namespace BackendTrivia
             mCom.Send(((int)RequestCodes.START_ROOM_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
-
-            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
-            int status = doc.RootElement.GetProperty("status").GetInt32();
 
             if (infoRecvived.mCode == ((int)ResponseCodes.START_ROOM_RESPONSE_CODE))
             {
@@ -115,9 +84,6 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
-            int status = doc.RootElement.GetProperty("status").GetInt32();
-
             if (infoRecvived.mCode == ((int)ResponseCodes.LEAVE_ROOM_RESPONSE_CODE))
             {
                 return new Menu(mCom);
@@ -140,27 +106,22 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_ROOM_STATE_RESPONSE_CODE))
+            GetRoomStateResponse result = JsonSerializer.Deserialize<GetRoomStateResponse>(infoRecvived.mJson);
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_ROOM_STATE_RESPONSE_CODE) && result != null)
             {
-                GetRoomStateResponse result = JsonSerializer.Deserialize<GetRoomStateResponse>(infoRecvived.mJson);
-
-                uint status = result.Status;
-                bool hasGameBegun = result.HasGameBegun;
-                List<string> players = result.Players;
-                uint answerCount = result.AnswerCount;
-                uint answerTimeOut = result.AnswerTimeOut;
-
                 return result;
             }
 
             throw new Exception();
         }
 
-        public List<string> GetPlayersInRoom(int id)
+        // TWO OPTIONS FOR THE FUNCTION - FOR A CERTAIN ROOM WITH ID, OR FOR THE CURRENT ROOM
+        public List<string> GetPlayersInRoom(uint roomId)
         {
             var data = new
             {
-                id = id
+                roomId = roomId
             };
 
             // Serialize to JSON
@@ -170,10 +131,36 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_PLAYERS_IN_ROOMS_RESPONSE_CODE))
-            {
-                GetPlayersInRoomResponse result = JsonSerializer.Deserialize<GetPlayersInRoomResponse>(infoRecvived.mJson);
+            GetPlayersInRoomResponse result = JsonSerializer.Deserialize<GetPlayersInRoomResponse>(infoRecvived.mJson);
 
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_PLAYERS_IN_ROOMS_RESPONSE_CODE) && result != null)
+            {
+                return result.Players;
+            }
+
+            throw new Exception();
+        }
+
+        public List<string> GetPlayersInRoom()
+        {
+            var data = new
+            {
+
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.GET_PLAYERS_IN_ROOMS_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            GetPlayersInRoomResponse result = JsonSerializer.Deserialize<GetPlayersInRoomResponse>(infoRecvived.mJson);
+
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_PLAYERS_IN_ROOMS_RESPONSE_CODE) && result != null)
+            {
                 return result.Players;
             }
 
@@ -194,10 +181,10 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_ROOMS_RESPONSE_CODE))
-            {
-                GetRoomsResponse result = JsonSerializer.Deserialize<GetRoomsResponse>(infoRecvived.mJson);
+            GetRoomsResponse result = JsonSerializer.Deserialize<GetRoomsResponse>(infoRecvived.mJson);
 
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_ROOMS_RESPONSE_CODE) && result != null)
+            {
                 return result.Rooms;
             }
 

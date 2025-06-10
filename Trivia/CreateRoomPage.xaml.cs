@@ -66,7 +66,7 @@ namespace Trivia
                                 break;
                             }
 
-                            (Room roomController, int roomId) = this.menuController.CreateRoom(
+                            (Room roomController, uint roomId) = this.menuController.CreateRoom(
                             RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
 
                             NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));
@@ -141,7 +141,7 @@ namespace Trivia
                         return;
                     }
 
-                    (Room roomController, int roomId) = this.menuController.CreateRoom(
+                    (Room roomController, uint roomId) = this.menuController.CreateRoom(
                             RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
 
                     NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));

@@ -76,7 +76,7 @@ namespace Trivia
             {
                 RoomListPanel.Children.Clear();
 
-                List<BackendTrivia.Room.RoomData> rooms = roomBackend.GetRooms();
+                List<Responses.RoomData> rooms = roomBackend.GetRooms();
 
                 if (rooms.Count == 0)
                 {
@@ -109,7 +109,7 @@ namespace Trivia
                         Width = 200,
                         Foreground = (Brush)FindResource("HotPink"),
                         FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
-                        FontSize = 20
+                        FontSize = 20,
                     };
 
                     // Room ID
@@ -120,19 +120,20 @@ namespace Trivia
                         Foreground = (Brush)FindResource("MidnightPurple"),
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
-                        Margin = new Thickness(10, 0, 0, 0)
+                        Margin = new Thickness(0, 0, 20, 0)
                     };
 
                     // Get the amount of current players in the room
-                    int currentPlayers = roomBackend.GetPlayersInRoom((int)room.id).Count;
+                    int currentPlayers = roomBackend.GetPlayersInRoom(room.id).Count;
 
                     // Players count
                     TextBlock playersCountBlock = new TextBlock
                     {
-                        Width = 100
+                        Width = 100,
+                        Margin = new Thickness(0, 0, 40, 0)
                     };
 
-                    playersCountBlock.Inlines.Add(new Run($"{currentPlayers}/")
+                    playersCountBlock.Inlines.Add(new Run($"{currentPlayers} / ")
                     {
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
@@ -141,7 +142,7 @@ namespace Trivia
 
                     playersCountBlock.Inlines.Add(new Run($"{room.maxPlayers}")
                     {
-                        FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
+                        FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                     });
@@ -151,12 +152,15 @@ namespace Trivia
                     {
                         Content = "Join",
                         Tag = new { Id = room.id, Name = room.name },
-                        Width = 80,
+                        Width = 90,
                         Height = 30,
-                        Margin = new Thickness(20, 0, 0, 0),
-                        Style = (Style)FindResource("RoundedButtonStyle")
+                        Margin = new Thickness(80, 0, 0, 0),
+                        Style = (Style)FindResource("RoundedButtonStyle"),
+                        FontSize = 14
                     };
                     joinButton.Click += JoinButton_Click;
+                    joinButton.MouseEnter += Button_MouseEnter;
+                    joinButton.MouseLeave += Button_MouseLeave;
 
                     roomRow.Children.Add(nameBlock);
                     roomRow.Children.Add(idBlock);
@@ -170,7 +174,6 @@ namespace Trivia
             {
                 MessageBox.Show("Failed to load rooms: " + ex.Message);
             }
-
         }
         private void JoinButton_Click(object sender, RoutedEventArgs e)
         {
@@ -182,7 +185,7 @@ namespace Trivia
 
             // Get the info of the room
             dynamic tag = joinButton.Tag;
-            int roomId = tag.Id;
+            uint roomId = tag.Id;
             string roomName = tag.Name;
 
             try

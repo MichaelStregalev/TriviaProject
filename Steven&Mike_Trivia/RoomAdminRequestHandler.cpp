@@ -2,15 +2,15 @@
 #include "Responses.h"
 #include "JsonResponsePacketSerializer.h"
 
-RoomAdminRequestHandler::RoomAdminRequestHandler(const LoggedUser& user, const Room& room, RoomManager& manager, RequestHandlerFactory& handler) :
+RoomAdminRequestHandler::RoomAdminRequestHandler(const LoggedUser& user, Room& room, RoomManager& manager, RequestHandlerFactory& handler) :
     m_user(user), m_room(room), m_roomManager(manager), m_handlerFactory(handler)
 {
 }
 
 bool RoomAdminRequestHandler::isRequestRelevant(const RequestInfo& request) const
 {
-    return request.requestId == CLOSE_ROOM_REQUEST_CODE || request.requestId == START_GAME_REQUEST_CODE ||
-                            request.requestId == GET_ROOM_STATE_REQUEST_CODE;
+    return request.requestId == CLOSE_ROOM_REQUEST_CODE || request.requestId == START_GAME_REQUEST_CODE 
+		|| request.requestId == GET_ROOM_STATE_REQUEST_CODE || request.requestId == GET_PLAYERS_IN_ROOMS_REQUEST_CODE;
 }
 
 RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& request)
@@ -21,15 +21,19 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& request)
 	switch (request.requestId)
 	{
 	case CLOSE_ROOM_REQUEST_CODE:
-		result = closeRoom(request);
+		result = closeRoom();
 		break;
 
 	case START_GAME_REQUEST_CODE:
-		result = startGame(request);
+		result = startGame();
 		break;
 
 	case GET_ROOM_STATE_REQUEST_CODE:
-		result = getRoomState(request);
+		result = getRoomState();
+		break;
+
+	case GET_PLAYERS_IN_ROOMS_REQUEST_CODE:
+		result = getPlayersInRoom();
 		break;
 
 	default:	// Shouldn't happen, as we check before if the request is relevant.
@@ -49,14 +53,16 @@ Room RoomAdminRequestHandler::getRoom() const
 	return m_room;
 }
 
-RequestResult RoomAdminRequestHandler::closeRoom(const RequestInfo& request)
+RequestResult RoomAdminRequestHandler::closeRoom()
 {
 	RequestResult result;
+
 	try
 	{
-		LeaveRoomResponse response{ CLOSE_ROOM_RESPONSE_CODE };
+		CloseRoomResponse response{ CLOSE_ROOM_RESPONSE_CODE };
 
-		// Remove the room from the manager
+		// Remove the admin from the and room remove the room from the manager
+		m_room.removeUser(m_user);
 		m_roomManager.deleteRoom(m_room.getRoomData().id);
 
 		// Set current user back to Menu page
@@ -69,10 +75,11 @@ RequestResult RoomAdminRequestHandler::closeRoom(const RequestInfo& request)
 		result.response = JsonResponsePacketSerializer::serializeResponse(error);
 		result.newHandler = this;
 	}
+
 	return result;
 }
 
-RequestResult RoomAdminRequestHandler::startGame(const RequestInfo& request)
+RequestResult RoomAdminRequestHandler::startGame()
 {
 	RequestResult result;
 
@@ -96,7 +103,7 @@ RequestResult RoomAdminRequestHandler::startGame(const RequestInfo& request)
 	return result;
 }
 
-RequestResult RoomAdminRequestHandler::getRoomState(const RequestInfo& request)
+RequestResult RoomAdminRequestHandler::getRoomState()
 {
 	RequestResult result;
 
@@ -123,6 +130,38 @@ RequestResult RoomAdminRequestHandler::getRoomState(const RequestInfo& request)
 		ErrorResponse response{ e.what() };
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 		result.newHandler = this;	// The new handler will be the same, as an error occurred.
+	}
+
+	return result;
+}
+
+RequestResult RoomAdminRequestHandler::getPlayersInRoom()
+{
+	RequestResult result;
+
+	try
+	{
+		// Getting the vector of all the users (usernames) in the room
+		std::vector<std::string> allUsersInRoom;
+
+		// Pushing back only the usernames
+		for (const LoggedUser& user : m_room.getAllUsers())
+		{
+			allUsersInRoom.push_back(user.getUsername());
+		}
+
+		// Building the response
+		GetPlayersInRoomResponse response{ allUsersInRoom };
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
+		result.newHandler = this;
+		// The new handler will still be the menu request handler.
+	}
+	catch (const std::exception& e)
+	{
+		// Building the unsuccessful signup response
+		ErrorResponse response{ e.what() };
+		result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
+		result.newHandler = this;	// The new handler will be a menu request handler, once again since an error occurred!
 	}
 
 	return result;

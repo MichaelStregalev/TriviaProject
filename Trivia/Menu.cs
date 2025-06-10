@@ -23,7 +23,7 @@ namespace BackendTrivia
         {
             return mCom;
         }
-        public (Room, int) CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
+        public (Room, uint) CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
         {
             var data = new
             {
@@ -44,7 +44,7 @@ namespace BackendTrivia
             {
                 // Only deserialize on success
                 Responses.CreateRoomResponse result = JsonSerializer.Deserialize<Responses.CreateRoomResponse>(infoRecvived.mJson);
-                int roomId = result.RoomId;
+                uint roomId = result.RoomId;
                 return (new Room(mCom), roomId);
             }
 
@@ -61,11 +61,11 @@ namespace BackendTrivia
             throw new Exception(errorMessage);
         }
 
-        public Room JoinRoom(int RoomId)
+        public Room JoinRoom(uint RoomId)
         {
             var data = new
             {
-                roomid = RoomId
+                roomId = RoomId
             };
 
             // Serialize to JSON
