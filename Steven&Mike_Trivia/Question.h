@@ -5,6 +5,8 @@
 #include <map>
 #include <algorithm>
 
+#define CORRECT_ANSWER 10
+#define WRONG_ANSWER -2
 /*
 							Question
 			Question is a basic class that will allow us

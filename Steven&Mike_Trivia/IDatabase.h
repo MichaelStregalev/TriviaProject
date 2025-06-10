@@ -7,6 +7,8 @@
 #include <vector>
 #include "Question.h"
 #include "sqlite3.h"
+#include "GameData.h"
+#include "PlayerResult.h"
 
 /*
 								IDataBase
@@ -45,6 +47,10 @@ public:
 	virtual int getPlayerScore(const std::string& username) const = 0;
 	// Get the high scores
 	virtual std::map<std::string, int> getHighScores() const = 0;
+	// Update the DataBase according to Game Data
+	virtual int submitGameStatistics(GameData gm, const std::string& username) const = 0;
+
 
 private:
+
 };
