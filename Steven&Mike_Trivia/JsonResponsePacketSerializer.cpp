@@ -185,6 +185,73 @@ Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const LeaveRoomResp
     return baseSerialization(LEAVE_ROOM_RESPONSE_CODE, data);
 }
 
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetGameResultsResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+
+    // Convert the vector of PlayerResult to a JSON array
+    nlohmann::json playerResults = nlohmann::json::array();
+
+    for (const PlayerResult& result : response.results)
+    {
+        playerResults.push_back(playerResultToJson(result));
+    }
+
+    j[RESULTS_FIELD] = playerResults;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(GET_GAME_RESULTS_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const SubmitAnswerResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+    j[CORRECT_ANSWER_ID_FIELD] = response.correctAnswerId;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(SUBMIT_ANSWER_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const GetQuestionResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+    j[QUESTION_FIELD] = response.question;
+
+    // Convert the map of answers to a JSON object
+    nlohmann::json answersJson;
+
+    for (const auto& pair : response.answers)
+    {
+        // The keys in json objects must be strings!
+        answersJson[std::to_string(pair.first)] = pair.second;
+    }
+
+    j[ANSWERS_FIELD] = answersJson;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(GET_QUESTION_RESPONSE_CODE, data);
+}
+
+Byte::Buffer JsonResponsePacketSerializer::serializeResponse(const LeaveGameResponse& response)
+{
+    nlohmann::json j;
+    j[STATUS_FIELD] = response.status;
+
+    std::string data = j.dump();    // Get the JSON as a string
+
+    // Return the serialization buffer
+    return baseSerialization(LEAVE_GAME_RESPONSE_CODE, data);
+}
+
 // BASE SERIALIZATION
 Byte::Buffer JsonResponsePacketSerializer::baseSerialization(int code, const std::string& data)
 {
@@ -215,5 +282,15 @@ nlohmann::json JsonResponsePacketSerializer::roomDataToJson(const RoomData& room
         {"numOfQuestionsInGame", room.numOfQuestionsInGame},
         {"timePerQuestion", room.timePerQuestion},
         {"roomStatus", room.roomStatus}
+    };
+}
+
+nlohmann::json JsonResponsePacketSerializer::playerResultToJson(const PlayerResult& result)
+{
+    return {
+        {"username", result.username},
+        {"correctAnswerCount", result.correctAnswerCount},
+        {"wrongAnswerCount", result.wrongAnswerCount},
+        {"averageAnswerTime", result.averageAnswerTime}
     };
 }

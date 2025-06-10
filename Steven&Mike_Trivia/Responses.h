@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "RoomData.h"
+#include "PlayerResult.h"
 
 /*
 				RESPONSES
@@ -87,4 +88,28 @@ struct GetRoomStateResponse
 struct LeaveRoomResponse
 {
 	unsigned int status;
+};
+
+struct LeaveGameResponse
+{
+	unsigned int status;
+};
+
+struct GetQuestionResponse
+{
+	unsigned int status;
+	std::string question;
+	std::map<unsigned int, std::string> answers;
+};
+
+struct SubmitAnswerResponse
+{
+	unsigned int status;
+	unsigned int correctAnswerId;
+};
+
+struct GetGameResultsResponse
+{
+	unsigned int status;
+	std::vector<PlayerResult> results;
 };
