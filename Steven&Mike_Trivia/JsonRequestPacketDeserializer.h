@@ -16,6 +16,8 @@
 #define QUESTION_COUNT_FIELD	"questionCount"
 #define ANSWER_TIMEOUT_FIELD	"answerTimeout"
 
+#define ANSWER_ID_FIELD			"answerId"
+
 
 /*
 					JsonRequestPacketDeserializer
@@ -33,4 +35,7 @@ namespace JsonRequestPacketDeserializer
 	GetPlayersInRoomRequest deserializeGetPlayersRequest(const Byte::Buffer& buffer);
 	JoinRoomRequest deserializeJoinRoomRequest(const Byte::Buffer& buffer);
 	CreateRoomRequest deserializeCreateRoomRequest(const Byte::Buffer& buffer);
+
+	// <-- Game deserializers
+	SubmitAnswerRequest deserializeSubmitAnswerRequest(const Byte::Buffer& buffer);
 }
