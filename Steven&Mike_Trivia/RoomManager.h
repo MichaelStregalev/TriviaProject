@@ -13,6 +13,9 @@
 #define MINIMUM_ROOM_ID		1000
 #define MAXIMUM_ROOM_ID		9999
 
+#define MINIMUM_LENGTH_ROOM_NAME		2
+#define MAXIMUM_LENGTH_ROOM_NAME		12
+
 /*
 							RoomManager
 	RoomManager allows us to manage ALL rooms in our server!
@@ -32,8 +35,7 @@ public:
 	Room* getRoom(int roomId) const;					// Get the room based on its id
 
 	// <-- METHODS -->
-
-	void createRoom(const LoggedUser& user, RoomData& data);
+	int createRoom(const LoggedUser& user, RoomData& data);		// returns the ID of the room created
 	void deleteRoom(int roomId);
 
 private:

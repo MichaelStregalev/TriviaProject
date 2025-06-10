@@ -52,7 +52,64 @@ namespace Trivia
 
         private void DisplayHighScores()
         {
+            List<(string, int)> scores;
 
+            try
+            {
+                scores = menuController.HighScores();
+            }
+            catch
+            {
+                MessageBox.Show("Failed to load high scores.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            LeaderboardStack.Children.Clear();
+
+            for (int i = 0; i < Math.Min(5, scores.Count); i++)
+            {
+                var (name, score) = scores[i];
+
+                StackPanel row = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(0, 5, 0, -1)
+                };
+
+                TextBlock numberAndName = new TextBlock
+                {
+                    Text = $"{i + 1}.   {name}",
+                    FontSize = 24,
+                    FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
+                    Foreground = (Brush)FindResource("MidnightPurple"),
+                    Width = 600,
+                    HorizontalAlignment = HorizontalAlignment.Left
+                };
+
+                TextBlock scoreText = new TextBlock
+                {
+                    Text = score.ToString(),
+                    FontSize = 24,
+                    FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
+                    Foreground = (Brush)FindResource("MidnightPurple"),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+
+                // If one of the highscores is the current user...
+                if (name.Equals(this.username))
+                {
+                    numberAndName.FontSize += 4;
+                    numberAndName.Foreground = (Brush)FindResource("HotPink");
+                    scoreText.FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont");
+                    scoreText.Foreground = (Brush)FindResource("HotPink");
+                    scoreText.FontSize += 4;
+                }
+
+                row.Children.Add(numberAndName);
+                row.Children.Add(scoreText);
+
+                LeaderboardStack.Children.Add(row);
+            }
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

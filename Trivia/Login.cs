@@ -1,21 +1,22 @@
-﻿using System;
+﻿using BackendTrivia;
+using static BackendTrivia.Communicator;
+using static Trivia.Codes;
+using System.Text.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Text.Json;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using static BackendTrivia.Communicator;
 using System.Windows.Interop;
-using static Trivia.Codes;
 
 namespace BackendTrivia
 {
     public class Login
     {
         private Communicator mCom;
-        public Login() 
+        public Login()
         {
             mCom = new Communicator();
         }
@@ -31,19 +32,26 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(2, json);
+            mCom.Send(((int)RequestCodes.LOGIN_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
             JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
-            int status = doc.RootElement.GetProperty("status").GetInt32();
+            JsonElement root = doc.RootElement;
 
-            if (status == 99)
+            int status = root.TryGetProperty("status", out JsonElement statusElement)
+                ? statusElement.GetInt32() : 0;
+
+            if (status == SUCCESSFUL_LOGIN)
             {
                 return new Menu(mCom);
             }
 
-            throw new Exception();
+            // Try to get a message to show in the exception
+            string errorMessage = root.TryGetProperty("message", out JsonElement messageElement)
+                ? messageElement.GetString() : "An unknown error occurred during login.";
+
+            throw new Exception(errorMessage);
         }
         public Menu signup(string Username, string Password, string Email)
         {
@@ -57,19 +65,26 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(1, json);
+            mCom.Send(((int)RequestCodes.SIGNUP_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
             JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
-            int status = doc.RootElement.GetProperty("status").GetInt32();
+            JsonElement root = doc.RootElement;
 
-            if (status == 100)
+            int status = root.TryGetProperty("status", out JsonElement statusElement)
+                ? statusElement.GetInt32() : 0;
+
+            if (status == SUCCESSFUL_SIGNUP)
             {
                 return new Menu(mCom);
             }
 
-            throw new Exception(infoRecvived.mJson);
+            // Try to get a message to show in the exception
+            string errorMessage = root.TryGetProperty("message", out JsonElement messageElement)
+                ? messageElement.GetString() : "An unknown error occurred during login.";
+
+            throw new Exception(errorMessage);
         }
     }
 }

@@ -7,7 +7,7 @@ LoginManager::LoginManager(IDatabase* db) : m_database(db)
 {
 }
 
-bool LoginManager::signup(std::string username, std::string password, std::string email)
+bool LoginManager::signup(const std::string& username, const std::string& password, const std::string& email)
 {
     // Check if the user exists...
     if (m_database->doesUserExist(username))
@@ -23,11 +23,19 @@ bool LoginManager::signup(std::string username, std::string password, std::strin
     validateEmail(email);
 
     // If all parameters are valid, we can add the user to the database!
-    // if addNewUser returned 1 - the user signed up successfully.
-    return m_database->addNewUser(username, password, email) == 1;
+    // if addNewUser returned 1 - the user signed up successfully, and will be added onto the logged Users list!
+    if (m_database->addNewUser(username, password, email) == 1)
+    {
+        LoggedUser newUser(username);
+        m_loggedUsers.insert(newUser);
+
+        return true;
+    }
+
+    return false;
 }
 
-bool LoginManager::login(std::string username, std::string password)
+int LoginManager::login(const std::string& username, const std::string& password)
 {
     // First we will check that the user does exist in the database..
     if (!m_database->doesUserExist(username))
@@ -38,7 +46,7 @@ bool LoginManager::login(std::string username, std::string password)
     // We will need to make sure that the password matches the user's password in the database!
     if (!m_database->doesPasswordMatch(username, password))
     {
-        return false; // Wrong password
+        return PASSWORD_DONT_MATCH; // Wrong password
     }
 
     LoggedUser user(username);
@@ -46,15 +54,15 @@ bool LoginManager::login(std::string username, std::string password)
 
     if (it != m_loggedUsers.end())
     {
-        return false;   // If found - return false, user already logged on
+        return ALREADY_CONNECTED;   // If found - return false, user already logged on
     }
 
     // If everything is valid up to now - we can insert the user as logged on!
     m_loggedUsers.insert(user);
-    return true;
+    return LOGIN_SUCCESSFUL;
 }
 
-bool LoginManager::logout(std::string username)
+bool LoginManager::logout(const std::string& username)
 {
     LoggedUser user(username);
     auto it = m_loggedUsers.find(user); // Try and find the username we are trying to logout from

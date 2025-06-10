@@ -13,6 +13,12 @@
 #define PLAYERS_FIELD			"players"
 #define STATISTICS_FIELD		"statistics"
 #define SCORES_FIELD			"scores"
+#define NAMES_FIELD				"names"
+#define GAME_BEGUN_FIELD		"hasGameBegun"
+#define PLAYERS_FIELD			"players"
+#define QUESTION_COUNT_FIELD	"questionCount"
+#define ANSWER_TIMEOUT_FIELD	"answerTimeout"
+#define ROOM_ID_FIELD			"roomId"
 
 /*
 					JsonResponsePacketSerializer
@@ -32,6 +38,11 @@ namespace JsonResponsePacketSerializer
 	Byte::Buffer serializeResponse(const CreateRoomResponse& response);
 	Byte::Buffer serializeResponse(const GetHighScoreResponse& response);
 	Byte::Buffer serializeResponse(const GetStatisticsResponse& response);
+
+	Byte::Buffer serializeResponse(const CloseRoomResponse& response);
+	Byte::Buffer serializeResponse(const StartGameResponse& response);
+	Byte::Buffer serializeResponse(const GetRoomStateResponse& response);
+	Byte::Buffer serializeResponse(const LeaveRoomResponse& response);
 
 	// <-- HELPER METHODS -->
 

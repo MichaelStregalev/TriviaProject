@@ -33,12 +33,12 @@ public:
 
 	// GETTERS
 	std::set<LoggedUser> getAllUsers() const;
+	RoomData& getRoomData();					// RoomData for being able to change it
 	const RoomData& getRoomData() const;
 
 	// <-- METHODS -->
 	void addUser(const LoggedUser& user);
 	void removeUser(const LoggedUser& user);
-
 
 private:
 

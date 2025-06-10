@@ -1,22 +1,29 @@
-﻿using System;
+﻿using static BackendTrivia.Communicator;
+using static Trivia.Codes;
+using System.Text.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using static BackendTrivia.Communicator;
+using Trivia;
+using static Trivia.Responses;
+using System.Windows.Controls;
 
 namespace BackendTrivia
 {
     public class Menu
     {
         private Communicator mCom;
-        public Menu(Communicator c) 
+        public Menu(Communicator c)
         {
             mCom = c;
         }
-
-        public Room CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
+        public Communicator GetCommunicator()
+        {
+            return mCom;
+        }
+        public (Room, uint) CreateRoom(string RoomName, int MaxPlayers, int QuestionCount, int AnswerTimeOut)
         {
             var data = new
             {
@@ -29,11 +36,46 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(7, json);
+            mCom.Send(((int)RequestCodes.CREATE_ROOM_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == 42)
+            if (infoRecvived.mCode == ((int)ResponseCodes.CREATE_ROOM_RESPONSE_CODE))
+            {
+                // Only deserialize on success
+                Responses.CreateRoomResponse result = JsonSerializer.Deserialize<Responses.CreateRoomResponse>(infoRecvived.mJson);
+                uint roomId = result.RoomId;
+                return (new Room(mCom), roomId);
+            }
+
+            // Handle error case
+            string errorMessage = "An unknown error occurred during room creation.";
+
+            JsonDocument doc = JsonDocument.Parse(infoRecvived.mJson);
+            JsonElement root = doc.RootElement;
+            if (root.TryGetProperty("message", out JsonElement messageElement))
+            {
+                errorMessage = messageElement.GetString();
+            }
+
+            throw new Exception(errorMessage);
+        }
+
+        public Room JoinRoom(uint RoomId)
+        {
+            var data = new
+            {
+                roomId = RoomId
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.JOIN_ROOM_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.JOIN_ROOM_RESPONSE_CODE))
             {
                 return new Room(mCom);
             }
@@ -41,29 +83,32 @@ namespace BackendTrivia
             throw new Exception();
         }
 
-        public Room JoinRoom(int RoomId)
+        public List<double> Statistics()
         {
+
             var data = new
             {
-                roomid = RoomId
+
             };
 
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(6, json);
+            mCom.Send(((int)RequestCodes.GET_STATISTICS_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == 32)
+            Responses.GetStatisticsResponse result = JsonSerializer.Deserialize<GetStatisticsResponse>(infoRecvived.mJson);
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_STATISTICS_RESPONSE_CODE) && result != null && result.Statistics != null)
             {
-                return new Room(mCom);
+                return result.Statistics;
             }
 
             throw new Exception();
         }
 
-        public Menu Statistics()
+        public List<(string, int)> HighScores()
         {
             var data = new
             {
@@ -73,16 +118,43 @@ namespace BackendTrivia
             // Serialize to JSON
             string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
 
-            mCom.Send(9, json);
+            mCom.Send(((int)RequestCodes.GET_HIGHSCORE_REQUEST_CODE), json);
 
             Info infoRecvived = mCom.Recv();
 
-            if (infoRecvived.mCode == 62)
+            Responses.GetHighScoreResponse result = JsonSerializer.Deserialize<GetHighScoreResponse>(infoRecvived.mJson);
+
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_HIGHSCORE_RESPONSE_CODE))
             {
-                return this;
+                var highscores = new List<(string, int)>();
+                for (int i = 0; i < result.Scores.Count; i++)
+                {
+                    highscores.Add((result.Names[i], result.Scores[i]));
+                }
+                return highscores;
             }
 
             throw new Exception();
+        }
+
+        public void Logout()
+        {
+            var data = new
+            {
+
+            };
+
+            // Serialize to JSON
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { });
+
+            mCom.Send(((int)RequestCodes.LOGOUT_REQUEST_CODE), json);
+
+            Info infoRecvived = mCom.Recv();
+
+            if (infoRecvived.mCode != ((int)ResponseCodes.LOGOUT_RESPONSE_CODE))
+            {
+                throw new Exception();
+            }
         }
     }
 }

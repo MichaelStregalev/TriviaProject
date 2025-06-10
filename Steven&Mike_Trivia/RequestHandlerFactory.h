@@ -8,6 +8,7 @@
 #include "RoomManager.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
+#include "RequestHandlerFactory.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
@@ -33,9 +34,10 @@ public:
 
 	// <-- METHODS -->
 	LoginRequestHandler* createLoginRequestHandler();
-	MenuRequestHandler* createMenuRequestHandler(LoggedUser user);
-	RoomAdminRequestHandler* createRoomAdminRequestHandler();
-	RoomMemberRequestHandler* createRoomMemberRequestHandler();
+	MenuRequestHandler* createMenuRequestHandler(const LoggedUser& user);
+
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(const LoggedUser& user, Room& room);
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(const LoggedUser& user, Room& room);
 
 	
 private:

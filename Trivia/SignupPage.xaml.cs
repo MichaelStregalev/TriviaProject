@@ -73,14 +73,14 @@ namespace Trivia
             ((PasswordBox)sender).Cursor = pointerCursor;
         }
 
-        private void ExitButton_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            ExitButton.Cursor = questionMarkCursor;
+            ((Button)sender).Cursor = questionMarkCursor;
         }
 
-        private void ExitButton_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            ExitButton.Cursor = pointerCursor;
+            ((Button)sender).Cursor = pointerCursor;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -88,57 +88,80 @@ namespace Trivia
             NavigationService.GoBack();
         }
 
+        private void SignupButton_Click(object sender, RoutedEventArgs e)
+        {
+            string username = UsernameInput.Text;
+            string password = PasswordInput.Password;
+            string email = EmailInput.Text;
+
+            bool isUsernameValid = !string.IsNullOrWhiteSpace(username);
+            bool isPasswordValid = !string.IsNullOrWhiteSpace(password);
+            bool isEmailValid = !string.IsNullOrWhiteSpace(email);
+
+            if (!isUsernameValid || !isPasswordValid || !isEmailValid)
+            {
+                ValidityMessageBlock.Text = "Please fill in all fields.";
+
+                UsernameValidIcon.Source = invalid;
+                PasswordValidIcon.Source = invalid;
+                EmailValidIcon.Source = invalid;
+
+                return;
+            }
+
+            try
+            {
+                BackendTrivia.Menu menuController = loginController.signup(username, password, email);
+                NavigationService.Navigate(new MenuPage(username, menuController));
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message.ToLower();
+
+                ValidityMessageBlock.Text = ex.Message;
+
+                // Adjust icons based on error content
+                UsernameValidIcon.Source = message.Contains("username") ? invalid : valid;
+                PasswordValidIcon.Source = message.Contains("password") ? invalid : valid;
+                EmailValidIcon.Source = message.Contains("email") ? invalid : valid;
+            }
+        }
+
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                if (e.Key == Key.Enter)
+
+                string username = UsernameInput.Text;
+                string password = PasswordInput.Password;
+                string email = EmailInput.Text;
+
+                bool isUsernameValid = !string.IsNullOrWhiteSpace(username);
+                bool isPasswordValid = !string.IsNullOrWhiteSpace(password);
+                bool isEmailValid = !string.IsNullOrWhiteSpace(email);
+
+                if (!isUsernameValid || !isPasswordValid || !isEmailValid)
                 {
-                    try
-                    {
-                        if (string.IsNullOrWhiteSpace(UsernameInput.Text) || string.IsNullOrWhiteSpace(PasswordInput.Password) ||
-                            string.IsNullOrWhiteSpace(EmailInput.Text))
-                        {
-                            ValidityMessageBlock.Text = "Please fill in all fields.";
+                    ValidityMessageBlock.Text = "Please fill in all fields.";
+                    
+                    return;
+                }
 
-                            if (string.IsNullOrWhiteSpace(UsernameInput.Text))
-                            {
-                                UsernameValidIcon.Source = invalid;
-                            }
-                            else
-                            {
-                                UsernameValidIcon.Source = valid;
-                            }
+                try
+                {
+                    BackendTrivia.Menu menuController = loginController.signup(username, password, email);
+                    NavigationService.Navigate(new MenuPage(username, menuController));
+                }
+                catch (Exception ex)
+                {
+                    string message = ex.Message.ToLower();
 
-                            if (string.IsNullOrWhiteSpace(PasswordInput.Password))
-                            {
-                                PasswordValidIcon.Source = invalid;
-                            }
-                            else
-                            {
-                                PasswordValidIcon.Source = valid;
-                            }
+                    ValidityMessageBlock.Text = ex.Message;
 
-                            if (string.IsNullOrWhiteSpace(EmailInput.Text))
-                            {
-                                EmailValidIcon.Source = invalid;
-                            }
-                            else
-                            {
-                                EmailValidIcon.Source = valid;
-                            }
-
-                            return;
-                        }
-
-                        BackendTrivia.Menu menuController = this.loginController.signup(UsernameInput.Text, PasswordInput.Password, EmailInput.Text);
-
-                        NavigationService.Navigate(new MenuPage(UsernameInput.Text, menuController));
-                    }
-                    catch (Exception)
-                    {
-                        ValidityMessageBlock.Text = "Signup failed.";
-                    }
+                    // Adjust icons based on error content
+                    UsernameValidIcon.Source = message.Contains("username") ? invalid : valid;
+                    PasswordValidIcon.Source = message.Contains("password") ? invalid : valid;
+                    EmailValidIcon.Source = message.Contains("email") ? invalid : valid;
                 }
             }
         }

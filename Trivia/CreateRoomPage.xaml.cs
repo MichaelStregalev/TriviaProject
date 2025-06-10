@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendTrivia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,14 +66,14 @@ namespace Trivia
                                 break;
                             }
 
-                            BackendTrivia.Room roomController = this.menuController.CreateRoom(
-                                RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
+                            (Room roomController, uint roomId) = this.menuController.CreateRoom(
+                            RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
 
-                            NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true, roomController));
+                            NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));
                         }
-                        catch(Exception)
+                        catch(Exception ex)
                         {
-                            ValidityMessageBlock.Text = "Room Creation failed.";
+                            ValidityMessageBlock.Text = ex.Message;
                         }
                         
                         break;
@@ -140,14 +141,14 @@ namespace Trivia
                         return;
                     }
 
-                    BackendTrivia.Room roomController = this.menuController.CreateRoom(
-                        RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
+                    (Room roomController, uint roomId) = this.menuController.CreateRoom(
+                            RoomNameInput.Text, PlayerCountValue.Value ?? 1, QuestionCountValue.Value ?? 3, AnswerTimeOutValue.Value ?? 10);
 
-                    NavigationService.Navigate(new RoomPage(this.username, RoomNameInput.Text, true, roomController));
+                    NavigationService.Navigate(new RoomPage(roomId, this.username, RoomNameInput.Text, true, roomController));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    ValidityMessageBlock.Text = "Room Creation failed.";
+                    ValidityMessageBlock.Text = ex.Message;
                 }
             }
         }

@@ -22,18 +22,11 @@ namespace Trivia
         private Cursor questionMarkCursor;      // Question mark cursor
         private Cursor pointerCursor;           // Pointer cursor - default
 
-        // <-- Validity Icons -->
-        private BitmapImage valid;
-        private BitmapImage invalid;
-
         // <-- LOGIN CONTROLLER -->
         private BackendTrivia.Login loginController;
         public LoginPage()
         {
             InitializeComponent();
-
-            valid = new BitmapImage(new Uri("pack://application:,,,/Images/valid.png"));
-            invalid = new BitmapImage(new Uri("pack://application:,,,/Images/invalid.png"));
 
             SelectCursor = new Cursor(Application.GetResourceStream(
                 new Uri("pack://application:,,,/Cursors/Select.cur")).Stream);
@@ -72,77 +65,70 @@ namespace Trivia
             ((PasswordBox)sender).Cursor = pointerCursor;
         }
 
-        private void ExitButton_MouseEnter(object sender, MouseEventArgs e)
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            ExitButton.Cursor = questionMarkCursor;
+            ((Button)sender).Cursor = questionMarkCursor;
         }
-
-        private void ExitButton_MouseLeave(object sender, MouseEventArgs e)
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            ExitButton.Cursor = pointerCursor;
+            ((Button)sender).Cursor = pointerCursor;
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
         }
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            string username = UsernameInput.Text;
+            string password = PasswordInput.Password;
+
+            bool isUsernameValid = !string.IsNullOrWhiteSpace(username);
+            bool isPasswordValid = !string.IsNullOrWhiteSpace(password);
+
+            if (!isUsernameValid || !isPasswordValid)
+            {
+                ValidityMessageBlock.Text = "Please fill in all fields.";
+                return;
+            }
+
+            try
+            {
+                BackendTrivia.Menu menuController = loginController.LoginAcc(UsernameInput.Text, PasswordInput.Password);
+
+                NavigationService.Navigate(new MenuPage(UsernameInput.Text, menuController));
+            }
+            catch (Exception ex)
+            {
+                ValidityMessageBlock.Text = ex.Message;
+            }
+        }
 
         private void Page_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
+                string username = UsernameInput.Text;
+                string password = PasswordInput.Password;
+
+                bool isUsernameValid = !string.IsNullOrWhiteSpace(username);
+                bool isPasswordValid = !string.IsNullOrWhiteSpace(password);
+
+                if (!isUsernameValid || !isPasswordValid)
+                {
+                    ValidityMessageBlock.Text = "Please fill in all fields.";
+                    return;
+                }
+
                 try
                 {
-                    if (string.IsNullOrWhiteSpace(UsernameInput.Text) || string.IsNullOrWhiteSpace(PasswordInput.Password))
-                    {
-                        ValidityMessageBlock.Text = "Please fill in all fields.";
-
-                        if (string.IsNullOrWhiteSpace(UsernameInput.Text))
-                        {
-                            UsernameValidIcon.Source = invalid;
-                        }
-                        else
-                        {
-                            UsernameValidIcon.Source = valid;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(PasswordInput.Password))
-                        {
-                            PasswordValidIcon.Source = invalid;
-                        }
-                        else
-                        {
-                            PasswordValidIcon.Source = valid;
-                        }
-
-                        return;
-                    }
-
-                    BackendTrivia.Menu menuController = this.loginController.LoginAcc(UsernameInput.Text, PasswordInput.Password);
+                    BackendTrivia.Menu menuController = loginController.LoginAcc(UsernameInput.Text, PasswordInput.Password);
 
                     NavigationService.Navigate(new MenuPage(UsernameInput.Text, menuController));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    ValidityMessageBlock.Text = "Login failed. Please check your username and password.";
-
-                    if (string.IsNullOrWhiteSpace(UsernameInput.Text))
-                    {
-                        UsernameValidIcon.Source = invalid;
-                    }
-                    else
-                    {
-                        UsernameValidIcon.Source = valid;
-                    }
-
-                    if (string.IsNullOrWhiteSpace(PasswordInput.Password))
-                    {
-                        PasswordValidIcon.Source = invalid;
-                    }
-                    else
-                    {
-                        PasswordValidIcon.Source = valid;
-                    }
+                    ValidityMessageBlock.Text = ex.Message;
                 }
             }
         }

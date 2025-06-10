@@ -74,6 +74,7 @@ namespace Trivia
                         break;
 
                     case "ExitButton":
+                        menuController.Logout();
                         NavigationService.Navigate(new WelcomePage());
                         break;
 

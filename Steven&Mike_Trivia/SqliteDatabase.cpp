@@ -12,6 +12,9 @@
 
 #define FIRST_INDEX			0			// the index of the first value
 
+#define SUCCESSFUL_QUERY	1
+#define UNSUCCESSFUL_QUERY	0
+
 //Class functions
 bool SqliteDatabase::open()
 {
@@ -21,6 +24,8 @@ bool SqliteDatabase::open()
 	{
 		throw OpenDatabaseErrorException();
 	}
+
+	sqlite3_exec(_db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, nullptr);
 
 	// Always attempt to create the database, will work in case the tables do not exist in the database.
 	const char* createUsersTable = R"(
@@ -64,12 +69,12 @@ bool SqliteDatabase::open()
 			averageTime FLOAT GENERATED ALWAYS AS (
 			CASE 
             WHEN totalQuestions > 0 THEN totalTime/totalQuestions 
-            ELSE NULL 
+            ELSE 0 
 			END) STORED,
 			correctAnswers INT NOT NULL DEFAULT 0,
 			totalGames INT NOT NULL DEFAULT 0,
 			score INT NOT NULL DEFAULT 0,
-			FOREIGN KEY (userID) REFERENCES Users(ID),
+			FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE,
 			PRIMARY KEY (userID)
 		);
     )";
@@ -129,8 +134,21 @@ int SqliteDatabase::addNewUser(const std::string& username, const std::string& p
 	std::string query = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?);";
 	std::vector<std::string> params = { username, password, email };
 
-	// Use executeQuery helper with isSelectQuery = false to add the new user
-	return executeQuery(query, params, false);
+	// Insert user
+	int result = executeQuery(query, params, false);
+	if (result != SUCCESSFUL_QUERY)
+	{
+		return UNSUCCESSFUL_QUERY; // failed to insert user
+	}
+
+	// Get the last inserted row ID (userID)
+	int userID = static_cast<int>(sqlite3_last_insert_rowid(_db));
+
+	// Insert into Statistics table with zero values
+	std::string statQuery = "INSERT INTO Statistics (userID, totalTime, totalQuestions, correctAnswers, totalGames, score) VALUES (?, 0, 0, 0, 0, 0);";
+	std::vector<std::string> statParams = { std::to_string(userID) };
+
+	return executeQuery(statQuery, statParams, false); // Return result of statistics insertion
 }
 
 // <-- SATISTIC MANAGER FUNCTIONS -->
@@ -187,7 +205,7 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) co
 	std::string query = "SELECT averageTime FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "');";
 	float result = 0;
 
-	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
+	int res = sqlite3_exec(_db, query.c_str(), callbackFloatValue, &result, nullptr);
 
 	if (res != SQLITE_OK)
 	{
@@ -351,11 +369,11 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 	// If the query is a SELECT query, check for rows
 	if (isSelectQuery)
 	{
-		return (result == SQLITE_ROW) ? 1 : 0; // Return 1 if a row was found, 0 if not
+		return (result == SQLITE_ROW) ? SUCCESSFUL_QUERY : UNSUCCESSFUL_QUERY; // Return 1 if a row was found, 0 if not
 	}
 	else	// If the query is a non select query - check if it was executed successfully..
 	{
-		return (result == SQLITE_DONE) ? 1 : 0; // Return 1 if the query was successful
+		return (result == SQLITE_DONE) ? SUCCESSFUL_QUERY : UNSUCCESSFUL_QUERY; // Return 1 if the query was successful
 	}
 }
 
@@ -386,6 +404,18 @@ int SqliteDatabase::callbackIntValue(void* data, int len, char** values, char** 
 	if (len > 0)
 	{
 		(*returnValue) = std::stoi(values[FIRST_INDEX]);
+	}
+
+	return SQLITE_OK;
+}
+
+int SqliteDatabase::callbackFloatValue(void* data, int len, char** values, char** columns)
+{
+	auto returnValue = (float*)data;
+
+	if (len > 0)
+	{
+		(*returnValue) = std::stof(values[FIRST_INDEX]);
 	}
 
 	return SQLITE_OK;

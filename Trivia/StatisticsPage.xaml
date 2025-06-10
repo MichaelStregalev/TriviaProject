@@ -52,35 +52,35 @@
                                FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
                     <TextBlock Name="AvgAnswerTime" Grid.Row="0" Grid.Column="1"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,0,5"
-                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"/>
 
                     <TextBlock Text="Correct Answers:" Grid.Row="1" Grid.Column="0"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,20,5"
                                FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
                     <TextBlock Name="CorrectAnswers" Grid.Row="1" Grid.Column="1"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,0,5"
-                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"/>
 
                     <TextBlock Text="Total Answers:" Grid.Row="2" Grid.Column="0"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,20,5"
                                FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
                     <TextBlock Name="TotalAnswers" Grid.Row="2" Grid.Column="1"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,0,5"
-                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"/>
 
                     <TextBlock Text="Number of Games:" Grid.Row="3" Grid.Column="0"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,20,5"
                                FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
                     <TextBlock Name="NumGames" Grid.Row="3" Grid.Column="1"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,0,5"
-                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"/>
 
                     <TextBlock Text="Score:" Grid.Row="4" Grid.Column="0"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}" Margin="0,0,20,0"
                                FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
                     <TextBlock Name="Score" Grid.Row="4" Grid.Column="1"
                                FontSize="20" Foreground="{StaticResource MidnightPurple}"
-                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium"/>
+                               FontFamily="pack://application:,,,/Trivia;component/Fonts/#Anomalia 1.0 AAA UltraBold"/>
                 </Grid>
             </Border>
 

@@ -80,6 +80,8 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request)
 {
 	RequestResult result;
 
+	std::cout << "LOGIN REQUEST HANDELR: LOGIN" << std::endl;
+
 	// Use the deserializer in order to get the info from the request
 	LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(request.buffer);
 
@@ -88,7 +90,10 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request)
 	// If the login was successful..
 	try
 	{
-		if (m_handlerFactory.getLoginManager().login(loginRequest.userName, loginRequest.password))
+		// in case an exception is thrown - the user does not exist.
+		int codeOfLogin = m_handlerFactory.getLoginManager().login(loginRequest.userName, loginRequest.password);
+
+		if (codeOfLogin == LOGIN_SUCCESSFUL)
 		{
 			// Building the successful login response
 			LoginResponse response{ SUCCESSFUL_LOGIN };
@@ -96,10 +101,18 @@ RequestResult LoginRequestHandler::login(const RequestInfo& request)
 			result.newHandler = m_handlerFactory.createMenuRequestHandler(LoggedUser(loginRequest.userName));		
 			// The new handler will be the menu request handler!
 		}
+		else if (codeOfLogin == PASSWORD_DONT_MATCH)
+		{
+			// Building the unsuccessful login response - if login returned PASSWORD_DONT_MATCH - passwords do not match.
+			ErrorResponse response{ "The password does not match the user." };
+			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
+			result.newHandler = this;	// The new handler will be a login request handler, once again since an error occurred!
+		}
 		else
 		{
-			// Building the unsuccessful login response
-			ErrorResponse response{ "Login was unsuccessful! Check that username and password are correct, or that the user isn't already connected." };
+			// Building the unsuccessful login response - if login returned anything else (ALREADY_CONNECTED) - 
+			// the user is already connected to the server.
+			ErrorResponse response{ "The user is already connected to the server." };
 			result.response = JsonResponsePacketSerializer::serializeResponse(response);	// Serializing the response
 			result.newHandler = this;	// The new handler will be a login request handler, once again since an error occurred!
 		}

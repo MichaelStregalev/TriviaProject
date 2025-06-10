@@ -18,11 +18,14 @@ class MenuRequestHandler : public IRequestHandler
 public:
 
 	// CONSTRUCTOR
-	MenuRequestHandler(LoggedUser user, RequestHandlerFactory handler);
+	MenuRequestHandler(const LoggedUser& user, RequestHandlerFactory& handler);
 	virtual ~MenuRequestHandler() = default;
 
 	bool isRequestRelevant(const RequestInfo& request) const override;				// Is the request relevant?
 	RequestResult handleRequest(const RequestInfo& request) override;				// Handle the request
+
+	// USER GETTER
+	LoggedUser getUser() const;
 
 private:
 
