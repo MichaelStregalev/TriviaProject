@@ -158,6 +158,7 @@
     <ClInclude Include="Byte.h" />
     <ClInclude Include="Codes.h" />
     <ClInclude Include="Communicator.h" />
+    <ClInclude Include="GameData.h" />
     <ClInclude Include="GameRequestHandler.h" />
     <ClInclude Include="IDatabase.h" />
     <ClInclude Include="IRequestHandler.h" />
