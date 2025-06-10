@@ -1,5 +1,6 @@
 #include "SqliteDatabase.h"
 #include "TriviaExceptions.h"
+//#include "Question.h"
 
 // <-- DEFINE CONSTS -->
 
@@ -169,15 +170,15 @@ std::list<Question> SqliteDatabase::getQuestions(int num) const
 			{
 				if (std::string(columns[i]) == QUESTIONS_FIELD)
 				{
-					q.question = values[i];
+					q.setQuestion(values[i]);
 				}
 				if (std::string(columns[i]) == ANSWERS_FIELD)
 				{
-					q.wrong = splitStringByComma(values[i]);
+					q.addAnswers(splitStringByComma(values[i]));
 				}
 				if (std::string(columns[i]) == CORRECT_FIELD)
 				{
-					q.correct = values[i];
+					q.addAnswer(values[i], true);
 				}
 			}
 

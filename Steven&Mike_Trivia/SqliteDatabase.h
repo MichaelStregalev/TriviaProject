@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IDatabase.h"
+#include "Question.h"
 
 // DEFINE CONSTS
 #define DB_PATH "TriviaDB.db"
