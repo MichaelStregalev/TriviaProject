@@ -9,11 +9,13 @@
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
 #include "RequestHandlerFactory.h"
+#include "GameRequestHandler.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
+class GameRequestHandler;
 
 /*
 								RequestHandlerFactory
