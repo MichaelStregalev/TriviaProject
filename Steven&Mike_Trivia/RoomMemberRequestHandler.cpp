@@ -144,8 +144,11 @@ RequestResult RoomMemberRequestHandler::startGame()
 		// of the users has noticed hasGameBegun == true!!
 		// So, this function will be the same as the startGame in the RoomAdminRequestHandler but - won't change the roomdata.
 
+		// Getting the new Game
+		Game* newGame = m_handlerFactory.getGameManager().getGame(m_roomId);
+
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// needs to change to game request handler!!
+		result.newHandler = m_handlerFactory.createGameRequestHandler(m_user, *newGame);
 	}
 	catch (const std::exception& e)
 	{

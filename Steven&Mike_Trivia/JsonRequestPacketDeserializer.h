@@ -17,6 +17,7 @@
 #define ANSWER_TIMEOUT_FIELD	"answerTimeout"
 
 #define ANSWER_ID_FIELD			"answerId"
+#define ANSWER_TIME_FIELD		"answerTime"
 
 
 /*

@@ -34,6 +34,9 @@ public:
 	void addAnswers(const std::vector<std::string>& answers);
 	void addAnswer(const std::string& answer, bool isCorrect);
 
+	// OPERATORS
+	bool operator==(const Question& other) const;
+
 private:
 
 	// <-- FIELDS -->

@@ -154,15 +154,15 @@ int SqliteDatabase::addNewUser(const std::string& username, const std::string& p
 
 // <-- SATISTIC MANAGER FUNCTIONS -->
 
-std::list<Question> SqliteDatabase::getQuestions(int num) const
+std::vector<Question> SqliteDatabase::getQuestions(int num) const
 {
 	// The query that will let us get <num> questions
 	std::string query = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + std::to_string(num) + ";";
-	std::list<Question> questions;	// The list of questions
+	std::vector<Question> questions;	// The list of questions
 
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
-			auto returnValue = (std::list<Question>*)data;
+			auto returnValue = (std::vector<Question>*)data;
 			Question q;		// Presenting the question
 
 			// Going through the data
@@ -182,7 +182,7 @@ std::list<Question> SqliteDatabase::getQuestions(int num) const
 				}
 			}
 
-			// Push the question onto the list of questions
+			// Push the question onto the vector of questions
 			returnValue->push_back(q);
 			return SQLITE_OK;
 		}, &questions, nullptr);

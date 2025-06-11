@@ -34,7 +34,7 @@ public:
 	// <-- STATISTIC MANAGER FUNCTIONS -->
 
 	// Get Questions
-	virtual std::list<Question> getQuestions(int num) const = 0;
+	virtual std::vector<Question> getQuestions(int num) const = 0;
 	// Get player's average answer time
 	virtual float getPlayerAverageAnswerTime(const std::string& username) const = 0;
 	// Get the player's number of correct answers
