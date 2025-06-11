@@ -371,6 +371,24 @@ public:
 	NoMoreQuestionsException() : GameException("No more questions left!") {}
 };
 
+class GameDoesNotExistException : public GameException
+{
+public:
+	GameDoesNotExistException(unsigned int gameId) : GameException("Game with id " + std::to_string(gameId) + " does not exist.") {}
+};
+
+class InvalidQuestionCountException : public GameException
+{
+public:
+	InvalidQuestionCountException() : GameException("Game must consist of at least 3 questions, and at maximum 20.") {}
+};
+
+class GameDidNotFinishException : public GameException
+{
+public:
+	GameDidNotFinishException() : GameException("Game did not finish, can't get results!") {}
+};
+
 // <-- HIERARCHY -->
 
 /*

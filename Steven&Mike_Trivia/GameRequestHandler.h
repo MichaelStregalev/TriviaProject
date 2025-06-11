@@ -1,9 +1,10 @@
 #pragma once
-#include "IRequestHandler.h"
-#include "LoginManager.h"
-#include "RequestHandlerFactory.h"
 
-class RequestHandlerFactory;
+#include "IRequestHandler.h"
+#include "Game.h"
+#include "LoggedUser.h"
+#include "GameManager.h"
+#include "RequestHandlerFactory.h"
 
 /*
 						GameRequestHandler
@@ -11,12 +12,14 @@ class RequestHandlerFactory;
 	it represents the handler of all that is related to the game system.
 */
 
+class RequestHandlerFactory;
+
 class GameRequestHandler : public IRequestHandler
 {
 public:
 
 	// CONSTRUCTOR & DECONSTRUCTOR
-	GameRequestHandler(RequestHandlerFactory& handler);
+	GameRequestHandler(Game& game, LoggedUser user, GameManager& gameManager, RequestHandlerFactory& handler);
 	virtual ~GameRequestHandler() = default;
 
 	// METHODS
@@ -27,6 +30,14 @@ public:
 private:
 
 	// <-- FIELDS -->
+	Game& m_game;
+	LoggedUser m_user;
+	GameManager& m_gameManager;
 	RequestHandlerFactory& m_handlerFactory;
 
+	// <-- PRIVATE METHODS -->
+	RequestResult getQuestionForUser();
+	RequestResult submitAnswer(const RequestInfo& request);
+	RequestResult getGameResults();
+	RequestResult leaveGame();
 };

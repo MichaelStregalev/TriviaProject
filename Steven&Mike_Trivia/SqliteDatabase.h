@@ -32,7 +32,7 @@ public:
 	// <-- STATISTIC MANAGER FUNCTIONS -->
 
 	// Get Questions
-	std::list<Question> getQuestions(int num) const override;
+	std::vector<Question> getQuestions(int num) const override;
 	// Get player's average answer time
 	float getPlayerAverageAnswerTime(const std::string& username) const override;
 	// Get the player's number of correct answers

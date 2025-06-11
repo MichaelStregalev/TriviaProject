@@ -129,6 +129,7 @@ SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerReques
         // Create and populate SubmitAnswerRequest
         SubmitAnswerRequest request;
         request.answerId = jsonData[ANSWER_ID_FIELD].get<unsigned int>();
+        request.answerTime = jsonData[ANSWER_TIME_FIELD].get<double>();
 
         return request;
     }

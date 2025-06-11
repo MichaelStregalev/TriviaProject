@@ -2,7 +2,12 @@
 #include "TriviaExceptions.h"
 #include "RoomManager.h"
 
-Game::Game(const Room& room, std::vector<Question> questions) : m_gameId(room.getRoomData().id)
+Game::Game()
+{
+
+}
+
+Game::Game(const Room& room, std::vector<Question> questions)
 {
 	m_questions = questions;
 
@@ -20,6 +25,34 @@ Question Game::getCurrentQuestionForUser(const LoggedUser& user)
 	}
 
 	return m_players[user].currentQuestion;
+}
+
+std::vector<PlayerResult> Game::getGameResults()
+{
+	if (!gameFinished())
+	{
+		throw GameDidNotFinishException();
+	}
+
+	std::vector<PlayerResult> results;
+
+	// Getting the results of all the ACTIVE players!
+	for (const auto& pair : m_players)
+	{
+		PlayerResult result = PlayerResult{ pair.first.getUsername(), pair.second.correctAnswerCount, pair.second.wrongAnswerCount, pair.second.averageAnswerTime };
+
+		results.push_back(result);
+	}
+
+	// Getting the results of all the players who left early...
+	for (const auto& pair : m_playersLeft)
+	{
+		PlayerResult result = PlayerResult{ pair.first.getUsername(), pair.second.correctAnswerCount, pair.second.wrongAnswerCount, pair.second.averageAnswerTime };
+
+		results.push_back(result);
+	}
+
+	return results;
 }
 
 void Game::getNextQuestionForUser(const LoggedUser& user)
@@ -72,7 +105,34 @@ void Game::removeUser(const LoggedUser& user)
 
 	GameData data = it->second;
 	m_players.erase(it);
-	m_playersLeft[user] = data;
+	m_playersLeft[user] = data;		// Add the user to the players that left, in the end - the data will be added onto the statistics.
+}
 
-	submitGameStatsToDatabase(data, user);
+bool Game::gameFinished()
+{
+	// A game is finished when all active players (that did not leave the game in the middle) have answered all their questions.
+
+	for (const auto& pair : m_players)
+	{
+		// Getting the total answers answered by the user
+		unsigned int totalAnswers = pair.second.correctAnswerCount + pair.second.wrongAnswerCount;
+		if (totalAnswers < m_questions.size())
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Game::moreQuestionsForUser(const LoggedUser& user)
+{
+	// Check if the user exists in the game data
+	auto it = m_players.find(user.getUsername());
+	if (it == m_players.end())
+	{
+		throw UserNotInGameException(user.getUsername());
+	}
+
+	return (it->second.wrongAnswerCount + it->second.correctAnswerCount) < m_questions.size();
 }
