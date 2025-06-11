@@ -345,6 +345,32 @@ public:
 	RoomNameInvalidException() : RoomException("Room name must be within 2 to 12 characters.") {};
 };
 
+/*
+									GAMEEXCEPTION
+		GameException is the father class of all exceptions that are involved with
+							the games in our server.
+
+		USED IN GAME.CPP && GAMEMANAGER.CPP
+*/
+
+class GameException : public ProjectException
+{
+public:
+	GameException(const std::string& message) : ProjectException(message) {}
+};
+
+class UserNotInGameException : public GameException
+{
+public:
+	UserNotInGameException(const std::string& username) : GameException("User " + username + " not in the game.") {}
+};
+
+class NoMoreQuestionsException : public GameException
+{
+public:
+	NoMoreQuestionsException() : GameException("No more questions left!") {}
+};
+
 // <-- HIERARCHY -->
 
 /*

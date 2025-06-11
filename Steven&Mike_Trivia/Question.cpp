@@ -107,6 +107,13 @@ void Question::addAnswer(const std::string& answer, bool isCorrect)
     m_allAnswers = std::move(newMapAnswers);
 }
 
+bool Question::operator==(const Question& other) const
+{
+    return m_question == other.m_question &&
+           m_allAnswers == other.m_allAnswers &&
+           m_correctId == other.m_correctId;
+}
+
 void Question::randomizeAnswers(const std::vector<std::string>& wrong, const std::string& correct)
 {
     // Getting a vector of all the possible answers, wrong and correct.
