@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static Trivia.Codes;
+using static Trivia.Responses;
 
 /*
     RESPONSES
@@ -11,6 +12,29 @@ namespace Trivia
 {
     public class Responses
     {
+        public class SubmitAnswerResponse
+        {
+            public uint status { get; set; }
+            public uint correctAnswerId { get; set; }
+        };
+        public class GetGameResultsResponse
+        {
+            public uint status { get; set; }
+            public List<PlayerResult> results { get; set; }
+        };
+        public class GetQuestionResponse
+        {
+            public uint status { get; set; }
+            public string question { get; set; }
+            public Dictionary<uint, string> answers { get; set; }
+        };
+        public class PlayerResult
+        {
+            public string username { get; set; }
+            public uint correctAnswerCount { get; set; }
+            public uint wrongAnswerCount { get; set; }
+            public double averageAnswerTime { get; set; }
+        };
         public class RoomData
         {
             public uint id { get; set; }
