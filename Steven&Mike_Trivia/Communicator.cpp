@@ -11,6 +11,11 @@
 #include "Responses.h"
 #include "TriviaExceptions.h"
 #include "JsonResponsePacketSerializer.h"
+#include "RoomAdminRequestHandler.h"
+#include "RoomMemberRequestHandler.h"
+//#include "GameRequestHandler.h"
+#include "LoginRequestHandler.h"
+#include "MenuRequestHandler.h"
 
 // DEFINE
 #define MAX_BUFFER_SIZE	1024

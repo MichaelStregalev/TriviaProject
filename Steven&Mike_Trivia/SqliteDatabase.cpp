@@ -1,5 +1,6 @@
 #include "SqliteDatabase.h"
 #include "TriviaExceptions.h"
+//#include "Question.h"
 
 // <-- DEFINE CONSTS -->
 
@@ -153,15 +154,15 @@ int SqliteDatabase::addNewUser(const std::string& username, const std::string& p
 
 // <-- SATISTIC MANAGER FUNCTIONS -->
 
-std::list<Question> SqliteDatabase::getQuestions(int num) const
+std::vector<Question> SqliteDatabase::getQuestions(int num) const
 {
 	// The query that will let us get <num> questions
 	std::string query = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + std::to_string(num) + ";";
-	std::list<Question> questions;	// The list of questions
+	std::vector<Question> questions;	// The list of questions
 
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
-			auto returnValue = (std::list<Question>*)data;
+			auto returnValue = (std::vector<Question>*)data;
 			Question q;		// Presenting the question
 
 			// Going through the data
@@ -169,19 +170,19 @@ std::list<Question> SqliteDatabase::getQuestions(int num) const
 			{
 				if (std::string(columns[i]) == QUESTIONS_FIELD)
 				{
-					q.question = values[i];
+					q.setQuestion(values[i]);
 				}
 				if (std::string(columns[i]) == ANSWERS_FIELD)
 				{
-					q.wrong = splitStringByComma(values[i]);
+					q.addAnswers(splitStringByComma(values[i]));
 				}
 				if (std::string(columns[i]) == CORRECT_FIELD)
 				{
-					q.correct = values[i];
+					q.addAnswer(values[i], true);
 				}
 			}
 
-			// Push the question onto the list of questions
+			// Push the question onto the vector of questions
 			returnValue->push_back(q);
 			return SQLITE_OK;
 		}, &questions, nullptr);
@@ -338,6 +339,46 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 	return result;
 }
 
+int SqliteDatabase::submitGameStatistics(PlayerResult result) const
+{
+	if (!doesUserExist(result.username))
+	{
+		throw UserDoesNotExistException(result.username);
+	}
+
+	// Get the total questions answered by the user
+	int totalQuestions = result.correctAnswerCount + result.wrongAnswerCount;
+
+	// Get the total time that the user spent answering
+	double totalTime = result.averageAnswerTime * totalQuestions;
+
+	// Get the score to add..
+	int scoreToAdd = calculateScore();
+
+	if (scoreToAdd < 0)
+	{
+		scoreToAdd = 0;
+	}
+
+	// Construct update query
+	std::string query = "UPDATE Statistics SET "
+		"totalTime = totalTime + " + std::to_string(totalTime) + ", "
+		"totalQuestions = totalQuestions + " + std::to_string(totalQuestions) + ", "
+		"correctAnswers = correctAnswers + " + std::to_string(result.correctAnswerCount) + ", "
+		"totalGames = totalGames + 1, "
+		"score = score + " + std::to_string(scoreToAdd) +
+		" WHERE userID = (SELECT ID FROM Users WHERE username = " + result.username + "); ";
+
+	int res = sqlite3_exec(_db, query.c_str(), nullptr, nullptr, nullptr);
+
+	if (res != SQLITE_OK)
+	{
+		throw FailedExecutionQueryException(query);
+	}
+
+	return SUCCESSFUL_QUERY;
+}
+
 // <-- PRIVATE HELPER METHODS -->
 
 // THIS FUNCTION WILL ONLY LET US USE QUERIES THAT EITHER - CHECK IF SOMETHING EXISTS IN THE DATABASE, OR AN EXECUTION QUERY
@@ -419,4 +460,9 @@ int SqliteDatabase::callbackFloatValue(void* data, int len, char** values, char*
 	}
 
 	return SQLITE_OK;
+}
+
+int SqliteDatabase::calculateScore()
+{
+	return 0;
 }

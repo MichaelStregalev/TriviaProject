@@ -7,6 +7,8 @@
 #include <vector>
 #include "Question.h"
 #include "sqlite3.h"
+#include "GameData.h"
+#include "PlayerResult.h"
 
 /*
 								IDataBase
@@ -32,7 +34,7 @@ public:
 	// <-- STATISTIC MANAGER FUNCTIONS -->
 
 	// Get Questions
-	virtual std::list<Question> getQuestions(int num) const = 0;
+	virtual std::vector<Question> getQuestions(int num) const = 0;
 	// Get player's average answer time
 	virtual float getPlayerAverageAnswerTime(const std::string& username) const = 0;
 	// Get the player's number of correct answers
@@ -45,6 +47,10 @@ public:
 	virtual int getPlayerScore(const std::string& username) const = 0;
 	// Get the high scores
 	virtual std::map<std::string, int> getHighScores() const = 0;
+	// Update the DataBase according to Game Data
+	virtual int submitGameStatistics(PlayerResult result) const = 0;
+
 
 private:
+
 };

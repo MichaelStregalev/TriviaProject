@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IDatabase.h"
+#include "Question.h"
 
 // DEFINE CONSTS
 #define DB_PATH "TriviaDB.db"
@@ -31,7 +32,7 @@ public:
 	// <-- STATISTIC MANAGER FUNCTIONS -->
 
 	// Get Questions
-	std::list<Question> getQuestions(int num) const override;
+	std::vector<Question> getQuestions(int num) const override;
 	// Get player's average answer time
 	float getPlayerAverageAnswerTime(const std::string& username) const override;
 	// Get the player's number of correct answers
@@ -44,6 +45,8 @@ public:
 	int getPlayerScore(const std::string& username) const override;
 	// Get the high scores
 	std::map<std::string, int> getHighScores() const override;
+	// Update the DataBase according to Game Data
+	int submitGameStatistics(PlayerResult result) const override;
 
 private:
 
@@ -67,4 +70,7 @@ private:
 
 	// Callback function for float results in the database
 	static int callbackFloatValue(void* data, int len, char** values, char** columns);
+
+	// Calculate the score for a user based on statistics
+	int calculateScore();
 };
