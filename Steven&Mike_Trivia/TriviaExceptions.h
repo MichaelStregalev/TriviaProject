@@ -375,6 +375,7 @@ class GameDoesNotExistException : public GameException
 {
 public:
 	GameDoesNotExistException(unsigned int gameId) : GameException("Game with id " + std::to_string(gameId) + " does not exist.") {}
+	GameDoesNotExistException() : GameException("The game does not exist!") {}
 };
 
 class InvalidQuestionCountException : public GameException

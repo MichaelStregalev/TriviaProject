@@ -46,7 +46,7 @@ public:
 	// Get the high scores
 	std::map<std::string, int> getHighScores() const override;
 	// Update the DataBase according to Game Data
-	int submitGameStatistics(PlayerResult result) const override;
+	int submitGameStatistics(const PlayerResult& result) const override;
 
 private:
 
@@ -72,5 +72,5 @@ private:
 	static int callbackFloatValue(void* data, int len, char** values, char** columns);
 
 	// Calculate the score for a user based on statistics
-	int calculateScore();
+	int calculateScore(const std::string& username);
 };

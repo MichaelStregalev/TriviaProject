@@ -128,7 +128,7 @@ RequestResult GameRequestHandler::getGameResults()
 	RequestResult result;
 
 	try
-	{		
+	{
 		// If the game has not finished, an exception will be thrown.
 		std::vector<PlayerResult> gameResults = m_game.getGameResults();
 
@@ -136,7 +136,6 @@ RequestResult GameRequestHandler::getGameResults()
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = this;	// Keep in the game
-
 	}
 	catch (const std::exception& e)
 	{
@@ -156,9 +155,22 @@ RequestResult GameRequestHandler::leaveGame()
 	{
 		LeaveGameResponse response{ LEAVE_GAME_RESPONSE_CODE };
 
+		// Check if game still exists in GameManager
+		if (m_gameManager.doesGameExist(m_game))
+		{
+			if (m_game.gameFinished())	// If the game exists, we will check if it has finished..
+			{
+				m_gameManager.deleteGame(m_game);  // If the game has finished, we will delete it!
+			}
+			else
+			{
+				m_game.removeUser(m_user);  // Safe to remove user from the game
+			}
+		}
+		// Else: game no longer exists — just continue without crashing
+
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// When leaving the game - return to the menu
-
 	}
 	catch (const std::exception& e)
 	{

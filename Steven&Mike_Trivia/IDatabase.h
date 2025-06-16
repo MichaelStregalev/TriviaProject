@@ -48,7 +48,7 @@ public:
 	// Get the high scores
 	virtual std::map<std::string, int> getHighScores() const = 0;
 	// Update the DataBase according to Game Data
-	virtual int submitGameStatistics(PlayerResult result) const = 0;
+	virtual int submitGameStatistics(const PlayerResult& result) const = 0;
 
 
 private:

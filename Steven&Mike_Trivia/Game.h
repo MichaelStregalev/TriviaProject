@@ -37,6 +37,10 @@ public:
 	bool gameFinished();
 	bool moreQuestionsForUser(const LoggedUser& user);
 
+	// OPERATORS
+
+	bool operator==(const Game& other) const;
+
 private:
 
 	// <-- FIELDS -->

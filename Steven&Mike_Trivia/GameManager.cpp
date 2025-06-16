@@ -1,7 +1,7 @@
 #include "GameManager.h"
 #include "TriviaExceptions.h"
 
-GameManager::GameManager(IDatabase* db) : m_database(db)
+GameManager::GameManager(IDatabase* db, RoomManager& manager) : m_database(db), m_roomManager(manager)
 {
 }
 
@@ -34,6 +34,21 @@ Game GameManager::createGame(const Room& room, int questionCount)
     return m_games[room.getRoomData().id];
 }
 
+void GameManager::deleteGame(const Game& game)
+{
+    // Try and find the game, and delete it!
+    for (const auto& pair : m_games)
+    {
+        if (pair.second == game)
+        {
+            deleteGame(pair.first);
+            return;
+        }
+    }
+
+    throw GameDoesNotExistException();
+}
+
 void GameManager::deleteGame(unsigned int gameId)
 {
     auto it = m_games.find(gameId);
@@ -53,10 +68,11 @@ void GameManager::deleteGame(unsigned int gameId)
 
         for (int i = 0; i < results.size(); ++i)
         {
-            submitGameStatsToDatabase(results[i], results[i].username);
+            submitGameStatsToDatabase(results[i]);
         }
 
         m_games.erase(it);
+        m_roomManager.deleteRoom(gameId);
     }
     else
     {
@@ -64,7 +80,19 @@ void GameManager::deleteGame(unsigned int gameId)
     }
 }
 
-void GameManager::submitGameStatsToDatabase(const PlayerResult& playerResult, const LoggedUser& user)
+bool GameManager::doesGameExist(const Game& game)
 {
+    for (const auto& pair : m_games)
+    {
+        if (pair.second == game)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
+void GameManager::submitGameStatsToDatabase(const PlayerResult& playerResult)
+{
+    m_database->submitGameStatistics(playerResult);
 }

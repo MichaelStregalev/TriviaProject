@@ -339,7 +339,7 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 	return result;
 }
 
-int SqliteDatabase::submitGameStatistics(PlayerResult result) const
+int SqliteDatabase::submitGameStatistics(const PlayerResult& result) const
 {
 	if (!doesUserExist(result.username))
 	{
@@ -352,28 +352,37 @@ int SqliteDatabase::submitGameStatistics(PlayerResult result) const
 	// Get the total time that the user spent answering
 	double totalTime = result.averageAnswerTime * totalQuestions;
 
-	// Get the score to add..
-	int scoreToAdd = calculateScore();
+	// Construct update query - to all new stats EXCEPT the score
+	std::string updateStatsQuery = "UPDATE Statistics SET "
+								   "totalTime = totalTime + " + std::to_string(totalTime) + ", "
+								   "totalQuestions = totalQuestions + " + std::to_string(totalQuestions) + ", "
+								   "correctAnswers = correctAnswers + " + std::to_string(result.correctAnswerCount) + ", "
+								   "totalGames = totalGames + 1 "
+								   "WHERE userID = (SELECT ID FROM Users WHERE username = '" + result.username + "');";
 
-	if (scoreToAdd < 0)
-	{
-		scoreToAdd = 0;
-	}
-
-	// Construct update query
-	std::string query = "UPDATE Statistics SET "
-		"totalTime = totalTime + " + std::to_string(totalTime) + ", "
-		"totalQuestions = totalQuestions + " + std::to_string(totalQuestions) + ", "
-		"correctAnswers = correctAnswers + " + std::to_string(result.correctAnswerCount) + ", "
-		"totalGames = totalGames + 1, "
-		"score = score + " + std::to_string(scoreToAdd) +
-		" WHERE userID = (SELECT ID FROM Users WHERE username = " + result.username + "); ";
-
-	int res = sqlite3_exec(_db, query.c_str(), nullptr, nullptr, nullptr);
+	int res = sqlite3_exec(_db, updateStatsQuery.c_str(), nullptr, nullptr, nullptr);
 
 	if (res != SQLITE_OK)
 	{
-		throw FailedExecutionQueryException(query);
+		throw FailedExecutionQueryException(updateStatsQuery);
+	}
+
+	// Now, we will calculate the new score of the user..
+	int newScore = 0;//calculateScore(result.username);
+
+	if (newScore < 0)
+	{
+		newScore = 0;
+	}
+
+	// Update only the score
+	std::string updateScoreQuery = "UPDATE Statistics SET score = " + std::to_string(newScore) + " WHERE userID = (SELECT ID FROM Users WHERE username = '" + result.username + "');";
+
+	res = sqlite3_exec(_db, updateScoreQuery.c_str(), nullptr, nullptr, nullptr);
+
+	if (res != SQLITE_OK)
+	{
+		throw FailedExecutionQueryException(updateScoreQuery);
 	}
 
 	return SUCCESSFUL_QUERY;
@@ -462,7 +471,7 @@ int SqliteDatabase::callbackFloatValue(void* data, int len, char** values, char*
 	return SQLITE_OK;
 }
 
-int SqliteDatabase::calculateScore()
+int SqliteDatabase::calculateScore(const std::string& username)
 {
 	return 0;
 }
