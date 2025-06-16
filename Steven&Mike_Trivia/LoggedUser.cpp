@@ -14,3 +14,8 @@ bool LoggedUser::operator<(const LoggedUser& other) const
 {
     return m_username < other.m_username;
 }
+
+bool LoggedUser::operator==(const LoggedUser& other) const
+{
+    return m_username == other.m_username;
+}

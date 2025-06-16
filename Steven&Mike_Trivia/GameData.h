@@ -16,4 +16,13 @@ struct GameData
 	unsigned int correctAnswerCount;
 	unsigned int wrongAnswerCount;
 	double averageAnswerTime;
+
+	// operator ==
+	bool operator==(const GameData& other) const 
+	{
+		return currentQuestion == other.currentQuestion &&
+			   correctAnswerCount == other.correctAnswerCount &&
+		 	   wrongAnswerCount == other.wrongAnswerCount &&
+			   averageAnswerTime == other.averageAnswerTime;
+	}
 };
