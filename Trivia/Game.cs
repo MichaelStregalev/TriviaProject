@@ -41,7 +41,7 @@ namespace Trivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.GET_GAME_RESULTS_RESPONSE_CODE) && result != null)
             {
-                return result.results;
+                return result.Results;
             }
 
             throw new Exception();
@@ -66,7 +66,7 @@ namespace Trivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.SUBMIT_ANSWER_RESPONSE_CODE) && result != null)
             {
-                return (int)result.correctAnswerId;
+                return (int)result.CorrectAnswerId;
             }
 
             throw new Exception();

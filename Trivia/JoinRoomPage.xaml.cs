@@ -105,7 +105,7 @@ namespace Trivia
                     // Room name
                     TextBlock nameBlock = new TextBlock
                     {
-                        Text = room.name,
+                        Text = room.Name,
                         Width = 200,
                         Foreground = (Brush)FindResource("HotPink"),
                         FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
@@ -115,7 +115,7 @@ namespace Trivia
                     // Room ID
                     TextBlock idBlock = new TextBlock
                     {
-                        Text = $"ID: {room.id}",
+                        Text = $"ID: {room.Id}",
                         Width = 100,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
@@ -124,7 +124,7 @@ namespace Trivia
                     };
 
                     // Get the amount of current players in the room
-                    int currentPlayers = roomBackend.GetPlayersInRoom(room.id).Count;
+                    int currentPlayers = roomBackend.GetPlayersInRoom(room.Id).Count;
 
                     // Players count
                     TextBlock playersCountBlock = new TextBlock
@@ -140,7 +140,7 @@ namespace Trivia
                         Foreground = (Brush)FindResource("MidnightPurple"),
                     });
 
-                    playersCountBlock.Inlines.Add(new Run($"{room.maxPlayers}")
+                    playersCountBlock.Inlines.Add(new Run($"{room.MaxPlayers}")
                     {
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
@@ -151,7 +151,7 @@ namespace Trivia
                     Button joinButton = new Button
                     {
                         Content = "Join",
-                        Tag = new { Id = room.id, Name = room.name },
+                        Tag = new { Id = room.Id, Name = room.Name },
                         Width = 90,
                         Height = 30,
                         Margin = new Thickness(80, 0, 0, 0),
