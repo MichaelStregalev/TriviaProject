@@ -82,5 +82,10 @@ namespace Trivia
             GAME_STARTED,
             GAME_ENDED
         }
+        public enum GameCodes 
+        { 
+            MORE_QUESTIONS = 90, 
+            NO_MORE_QUESTIONS
+        }
     }
 }

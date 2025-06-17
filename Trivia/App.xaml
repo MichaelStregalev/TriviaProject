@@ -15,6 +15,7 @@
         <SolidColorBrush x:Key="MidnightPurple" Color="#640D5F" />
         <SolidColorBrush x:Key="HotPink" Color="#D91656" />
         <SolidColorBrush x:Key="OrangeSoda" Color="#EB5B00" />
+        <SolidColorBrush x:Key="ApricotJuice" Color="#EB9310"/>
         <SolidColorBrush x:Key="SunnySideup" Color="#FFB200" />
         <SolidColorBrush x:Key="Eggshell" Color="#f7f2e4" />
 
@@ -106,6 +107,45 @@
 
         </Style>
 
+        <!-- Radio Button for Trivia style -->
+        <Style x:Key="TriviaRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="{StaticResource Eggshell}" />
+            <Setter Property="Foreground" Value="{StaticResource MidnightPurple}" />
+            <Setter Property="BorderBrush" Value="{StaticResource OrangeSoda}" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="FontFamily" Value="pack://application:,,,/Trivia;component/Fonts/#Anomalia v2 AAA Medium" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Height" Value="80" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="20"
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource OrangeSoda}" />
+                                <Setter Property="Foreground" Value="{StaticResource Eggshell}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ApricotJuice}"/>
+                                <Setter Property="Foreground" Value="{StaticResource Eggshell}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     </Application.Resources>
+    
 </Application>

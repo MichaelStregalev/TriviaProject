@@ -144,8 +144,7 @@ namespace Trivia
                 if (state.HasGameBegun)
                 {
                     // Navigate to game page
-                    // NavigationService.Navigate(new GamePage(username, roomName, isAdmin, roomController));
-                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, new BackendTrivia.Game(roomController.GetCommunicator())));
                 }
             }
             catch
@@ -258,11 +257,13 @@ namespace Trivia
                 LoadPlayers();      // Last time, we will try and laod the players
 
                 roomController.StartRoom();
+                // Get the state of the room
+                var state = roomController.GetRoomState();
+
                 // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
                 StartGameButton.IsEnabled = false;
 
-                // Later we will change to GamePage
-                NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, new BackendTrivia.Game(roomController.GetCommunicator())));
             }
             catch (Exception ex)
             {

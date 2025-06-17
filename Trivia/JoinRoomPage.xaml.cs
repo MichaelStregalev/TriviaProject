@@ -106,7 +106,7 @@ namespace Trivia
                     TextBlock nameBlock = new TextBlock
                     {
                         Text = room.Name,
-                        Width = 200,
+                        Width = 150,
                         Foreground = (Brush)FindResource("HotPink"),
                         FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                         FontSize = 20,
@@ -116,7 +116,7 @@ namespace Trivia
                     TextBlock idBlock = new TextBlock
                     {
                         Text = $"ID: {room.Id}",
-                        Width = 100,
+                        Width = 80,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
@@ -129,7 +129,7 @@ namespace Trivia
                     // Players count
                     TextBlock playersCountBlock = new TextBlock
                     {
-                        Width = 100,
+                        Width = 140,
                         Margin = new Thickness(0, 0, 40, 0)
                     };
 

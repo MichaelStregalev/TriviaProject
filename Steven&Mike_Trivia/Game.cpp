@@ -93,7 +93,7 @@ void Game::submitAnswer(const LoggedUser& user, unsigned int answerId, double an
 	// Update average answer time
 	unsigned int totalAnswers = m_players[user].correctAnswerCount + m_players[user].wrongAnswerCount;
 
-	if (totalAnswers != 0)
+	if (totalAnswers > 0)
 	{
 		m_players[user].averageAnswerTime = ((m_players[user].averageAnswerTime * (totalAnswers - 1)) + answerTime) / totalAnswers;
 	}
