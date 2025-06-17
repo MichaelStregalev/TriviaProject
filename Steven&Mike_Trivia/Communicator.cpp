@@ -260,6 +260,14 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 					m_handlerFactory.getLoginManager().logout(currentUser.getUsername());
 					roomHandler->handleRequest(RequestInfo(CLOSE_ROOM_REQUEST_CODE, ""));
 				}
+
+				else if (GameRequestHandler* gameHandler = dynamic_cast<GameRequestHandler*>(handler))
+				{
+					LoggedUser currentUser = gameHandler->getUser();
+					gameHandler->getGame().removeUser(currentUser);
+
+					m_handlerFactory.getLoginManager().logout(currentUser.getUsername());
+				}
 			}
 
 			break;

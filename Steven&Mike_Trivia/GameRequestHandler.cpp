@@ -45,6 +45,16 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
+LoggedUser GameRequestHandler::getUser() const
+{
+	return m_user;
+}
+
+Game& GameRequestHandler::getGame()
+{
+	return m_game;
+}
+
 RequestResult GameRequestHandler::getQuestionForUser()
 {
 	RequestResult result;
