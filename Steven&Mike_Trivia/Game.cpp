@@ -145,9 +145,14 @@ bool Game::moreQuestionsForUser(const LoggedUser& user)
 	return (it->second.wrongAnswerCount + it->second.correctAnswerCount) < m_questions.size();
 }
 
+bool Game::thereAreActivePlayers()
+{
+	return !m_players.empty();
+}
+
 bool Game::operator==(const Game& other) const
 {
 	return m_questions == other.m_questions &&
-		   m_players == other.m_players &&
-		   m_playersLeft == other.m_playersLeft;
+		m_players == other.m_players &&
+		m_playersLeft == other.m_playersLeft;
 }

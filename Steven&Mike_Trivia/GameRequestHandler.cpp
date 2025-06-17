@@ -165,6 +165,12 @@ RequestResult GameRequestHandler::leaveGame()
 			else
 			{
 				m_game.removeUser(m_user);  // Safe to remove user from the game
+
+				// Now - if after removing the user there are no current active users in the game - we should just delete the game!
+				if (!m_game.thereAreActivePlayers())
+				{
+					m_gameManager.deleteGame(m_game);
+				}
 			}
 		}
 		// Else: game no longer exists — just continue without crashing
