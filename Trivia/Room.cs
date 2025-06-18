@@ -48,7 +48,7 @@ namespace BackendTrivia
             throw new Exception();
         }
 
-        public Room StartRoom()
+        public Game StartRoom()
         {
             var data = new
             {
@@ -64,7 +64,7 @@ namespace BackendTrivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.START_ROOM_RESPONSE_CODE))
             {
-                return this;
+                return new Game(mCom);
             }
 
             throw new Exception();

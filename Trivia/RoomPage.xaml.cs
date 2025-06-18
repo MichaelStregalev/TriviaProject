@@ -112,8 +112,9 @@ namespace Trivia
                 FontSize = 16,
                 FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                 Foreground = (Brush)FindResource("MidnightPurple"),
-                Margin = new Thickness(10, 0, 10, 0),
-                VerticalAlignment = VerticalAlignment.Center
+                Margin = new Thickness(20, 0, 20, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center
             };
         }
         private void SetupTimers()
@@ -143,8 +144,11 @@ namespace Trivia
 
                 if (state.HasGameBegun)
                 {
+                    playersUpdateTimer.Stop();
+                    BackendTrivia.Game gameController = roomController.StartRoom();
+
                     // Navigate to game page
-                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, new BackendTrivia.Game(roomController.GetCommunicator())));
+                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, gameController));
                 }
             }
             catch
@@ -225,7 +229,7 @@ namespace Trivia
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to close the room: " + ex.Message);
+                    new StyledMessageBox("Failed to close the room: " + ex.Message).Show();
                 }
             }
             else
@@ -243,7 +247,7 @@ namespace Trivia
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to leave the room: " + ex.Message);
+                    new StyledMessageBox("Failed to leave the room: " + ex.Message).Show();
                 }
             }
         }
@@ -256,18 +260,19 @@ namespace Trivia
 
                 LoadPlayers();      // Last time, we will try and laod the players
 
-                roomController.StartRoom();
                 // Get the state of the room
                 var state = roomController.GetRoomState();
+
+                BackendTrivia.Game gameController = roomController.StartRoom();
 
                 // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
                 StartGameButton.IsEnabled = false;
 
-                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, new BackendTrivia.Game(roomController.GetCommunicator())));
+                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, gameController));
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to start the game: " + ex.Message);
+                new StyledMessageBox("Failed to start the game: " + ex.Message).Show();
             }
         }
         private void Button_MouseEnter(object sender, MouseEventArgs e)

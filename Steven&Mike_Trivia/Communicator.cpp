@@ -263,9 +263,9 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 				else if (GameRequestHandler* gameHandler = dynamic_cast<GameRequestHandler*>(handler))
 				{
-					LoggedUser currentUser = gameHandler->getUser();
-					gameHandler->getGame().removeUser(currentUser);
+					gameHandler->handleRequest(RequestInfo(LEAVE_GAME_REQUEST_CODE, ""));
 
+					LoggedUser currentUser = gameHandler->getUser();
 					m_handlerFactory.getLoginManager().logout(currentUser.getUsername());
 				}
 			}

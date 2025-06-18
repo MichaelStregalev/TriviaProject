@@ -37,8 +37,10 @@
 
                 <StackPanel>
                     <!-- Room Info Panel -->
-                    <StackPanel Name="RoomInfoPanel" Orientation="Horizontal" Margin="0,5,0,5" HorizontalAlignment="Center" 
-                                Width="600" Height="20"/>
+                    <WrapPanel Name="RoomInfoPanel"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0,5,0,5" />
 
                     <!-- Player List Scroll -->
                     <ScrollViewer VerticalScrollBarVisibility="Auto"

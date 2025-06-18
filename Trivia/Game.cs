@@ -37,13 +37,13 @@ namespace BackendTrivia
 
             Info infoRecvived = mCom.Recv();
 
-            GetGameResultsResponse result = JsonSerializer.Deserialize<GetGameResultsResponse>(infoRecvived.mJson);
-
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_GAME_RESULTS_RESPONSE_CODE) && result != null)
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_GAME_RESULTS_RESPONSE_CODE))
             {
-                return result.Results;
+                GetGameResultsResponse result = JsonSerializer.Deserialize<GetGameResultsResponse>(infoRecvived.mJson);
+                return result?.Results ?? new List<PlayerResult>();
             }
 
+            // Will be thrown in case the game has not finished.
             throw new Exception();
         }
 

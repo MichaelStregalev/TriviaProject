@@ -37,7 +37,7 @@
                    MaxWidth="750"/>
 
         <!-- Answers Grid -->
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,160,0,100">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,120,0,100">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="30"/>
@@ -46,7 +46,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="60"/>
                 <!-- Spacer -->
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
@@ -54,7 +54,7 @@
             <RadioButton x:Name="AnswerRadio1"
                          Grid.Row="0" Grid.Column="0"
                          Content="Answer A"
-                         Tag="1"
+                         Tag="1u"
                          GroupName="Answers"
                          Style="{StaticResource TriviaRadioButtonStyle}"
                          MouseEnter="RadioButton_MouseEnter"
@@ -63,7 +63,7 @@
             <RadioButton x:Name="AnswerRadio2"
                          Grid.Row="0" Grid.Column="2"
                          Content="Answer B"
-                         Tag="2"
+                         Tag="2u"
                          GroupName="Answers"
                          Style="{StaticResource TriviaRadioButtonStyle}"
                          MouseEnter="RadioButton_MouseEnter"
@@ -72,7 +72,7 @@
             <RadioButton x:Name="AnswerRadio3"
                          Grid.Row="2" Grid.Column="0"
                          Content="Answer C"
-                         Tag="3"
+                         Tag="3u"
                          GroupName="Answers"
                          Style="{StaticResource TriviaRadioButtonStyle}"
                          MouseEnter="RadioButton_MouseEnter"
@@ -81,7 +81,7 @@
             <RadioButton x:Name="AnswerRadio4"
                          Grid.Row="2" Grid.Column="2"
                          Content="Answer D"
-                         Tag="4"
+                         Tag="4u"
                          GroupName="Answers"
                          Style="{StaticResource TriviaRadioButtonStyle}"
                          MouseEnter="RadioButton_MouseEnter"
@@ -93,7 +93,7 @@
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
-                    Margin="0,0,0,30">
+                    Margin="0,0,0,40">
             <Button x:Name="ExitButton"
                     Content="Exit"
                     Width="150" Height="50"

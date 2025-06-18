@@ -40,18 +40,35 @@ namespace Trivia
         };
         public class PlayerResult
         {
+            [JsonPropertyName("username")]
             public required string Username { get; set; }
+
+            [JsonPropertyName("correctAnswerCount")]
             public uint CorrectAnswerCount { get; set; }
+
+
+            [JsonPropertyName("wrongAnswerCount")]
             public uint WrongAnswerCount { get; set; }
+
+            [JsonPropertyName("averageAnswerTime")]
             public double AverageAnswerTime { get; set; }
         };
 
         public class RoomData
         {
+            [JsonPropertyName("id")]
             public uint Id { get; set; }
+
+            [JsonPropertyName("name")]
             public required string Name { get; set; }
+
+            [JsonPropertyName("maxPlayers")]
             public uint MaxPlayers { get; set; }
+
+            [JsonPropertyName("numOfQuestionsInGame")]
             public uint NumOfQuestionsInGame { get; set; }
+
+            [JsonPropertyName("timePerQuestion")]
             public uint TimePerQuestion { get; set; }
         }
         public class LoginResponse

@@ -91,7 +91,7 @@ RequestResult RoomAdminRequestHandler::startGame()
 		m_room.getRoomData().roomStatus = GAME_STARTED;
 
 		// Getting the new Game
-		Game newGame = m_handlerFactory.getGameManager().createGame(m_room, m_room.getRoomData().numOfQuestionsInGame);
+		Game& newGame = m_handlerFactory.getGameManager().createGame(m_room, m_room.getRoomData().numOfQuestionsInGame);
 
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
 		result.newHandler = m_handlerFactory.createGameRequestHandler(m_user, newGame);

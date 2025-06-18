@@ -31,8 +31,6 @@ public:
 	// SETTERS
 	void setQuestion(const std::string& question);
 	void setAnswers(const std::vector<std::string>& wrong, const std::string& correct);
-	void addAnswers(const std::vector<std::string>& answers);
-	void addAnswer(const std::string& answer, bool isCorrect);
 
 	// OPERATORS
 	bool operator==(const Question& other) const;

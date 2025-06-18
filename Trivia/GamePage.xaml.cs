@@ -82,6 +82,20 @@ namespace Trivia
             var question = gameController.GetQuestion();
             QuestionText.Text = question.Question;
 
+            // Dynamically adjust font size based on question length
+            int length = question.Question.Length;
+
+            if (length > 50)
+                QuestionText.FontSize = 24;
+            else if (length > 30)
+                QuestionText.FontSize = 28;
+            else if (length > 20)
+                QuestionText.FontSize = 32;
+            else if (length > 10)
+                QuestionText.FontSize = 38;
+            else
+                QuestionText.FontSize = 46;
+
             // Put the radio buttons in a list for easier access
             var answerButtons = new List<RadioButton> { AnswerRadio1, AnswerRadio2, AnswerRadio3, AnswerRadio4 };
 
@@ -90,10 +104,21 @@ namespace Trivia
             {
                 if (i < question.Answers.Count)
                 {
-                    answerButtons[i].Content = question.Answers[(uint)i];
-                    answerButtons[i].Tag = (i + 1).ToString();              // ID: 1-based index
+                    // 1-based index in question.Answers
+                    answerButtons[i].Content = question.Answers[(uint)i + 1];
+                    answerButtons[i].Tag = (uint)(i + 1);
                     answerButtons[i].Visibility = Visibility.Visible;
                     answerButtons[i].IsEnabled = true;
+
+                    // Adjust font size dynamically based on answer length
+                    if (question.Answers[(uint)i + 1].Length > 30)
+                        answerButtons[i].FontSize = 16;
+                    else if (question.Answers[(uint)i + 1].Length > 20)
+                        answerButtons[i].FontSize = 20;
+                    else if (question.Answers[(uint)i + 1].Length > 10)
+                        answerButtons[i].FontSize = 26;
+                    else
+                        answerButtons[i].FontSize = 30; // default
                 }
                 else
                 {
@@ -114,13 +139,27 @@ namespace Trivia
         {
             var response = gameController.SubmitAnswer(answerId, answerTime);
 
+            if (response.CorrectAnswerId == answerId)
+            {
+                new StyledMessageBox("Correct answer!").Show();
+            }
+            else if (answerId == 0)
+            {
+                new StyledMessageBox("Didn't answer!").Show();
+            }
+            else
+            {
+                new StyledMessageBox("Wrong answer!").Show();
+            }
+
             if (response.Status == (uint)Codes.GameCodes.MORE_QUESTIONS)
             {
                 LoadNextQuestion();
             }
             else if (response.Status == (uint)Codes.GameCodes.NO_MORE_QUESTIONS)
             {
-                //NavigationService.Navigate(new GameResultsPage(username, gameController));
+                answerTimer.Stop();
+                NavigationService.Navigate(new GameResultsPage(username, gameController));
             }
         }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
@@ -129,7 +168,7 @@ namespace Trivia
 
             if (selectedAnswerId == 0)
             {
-                MessageBox.Show("Please select an answer before submitting.");
+                new StyledMessageBox("Please select an answer before submitting.").Show();
                 return;
             }
 
@@ -137,7 +176,7 @@ namespace Trivia
             answerTimer.Stop();
 
             // Calculate time taken to answer
-            double timeTaken = (uint)(DateTime.Now - questionStartTime).TotalSeconds;
+            double timeTaken = (DateTime.Now - questionStartTime).TotalSeconds;
 
             // Submit the answer
             SubmitAnswer(selectedAnswerId, timeTaken);
@@ -163,7 +202,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while trying to leave the game: " + ex.Message);
+                new StyledMessageBox("An error occurred while trying to leave the game: " + ex.Message).Show();
             }
 
             // Navigate back to menu (replace MenuPage with your actual menu page)

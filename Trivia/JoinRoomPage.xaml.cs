@@ -172,7 +172,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load rooms: " + ex.Message);
+                new StyledMessageBox("Failed to load rooms: " + ex.Message).Show();
             }
         }
         private void JoinButton_Click(object sender, RoutedEventArgs e)
@@ -197,7 +197,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to join room: {ex.Message}", "Join Room Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new StyledMessageBox("Failed to join room.").Show();
             }
         }
         private void Button_MouseEnter(object sender, MouseEventArgs e)
