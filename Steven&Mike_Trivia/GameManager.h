@@ -26,7 +26,7 @@ public:
 	Game* getGame(unsigned int gameId);
 
 	// METHODS
-	Game createGame(const Room& room, int questionCount);
+	Game& createGame(const Room& room, int questionCount);
 	void deleteGame(const Game& game);
 	void deleteGame(unsigned int gameId);
 

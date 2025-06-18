@@ -36,6 +36,11 @@ RequestResult LoginRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
+// We won't do anything if the user unexpectedly leaves the Login/Signup
+void LoginRequestHandler::userLeftUnexpectedly()
+{
+}
+
 RequestResult LoginRequestHandler::signup(const RequestInfo& request)
 {
 	RequestResult result;

@@ -60,7 +60,7 @@ namespace Trivia
             }
             catch
             {
-                MessageBox.Show("Failed to load high scores.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new StyledMessageBox("Failed to load high scores.").Show();
                 return;
             }
 

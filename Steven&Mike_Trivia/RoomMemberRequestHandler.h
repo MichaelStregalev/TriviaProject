@@ -20,9 +20,7 @@ public:
 	bool isRequestRelevant(const RequestInfo& request) const override;				// Is the request relevant?
 	RequestResult handleRequest(const RequestInfo& request) override;				// Handle the request
 
-	// GETTER
-	LoggedUser getUser() const;
-	Room getRoom() const;
+	void userLeftUnexpectedly() override;											// User left unexpectedly
 
 private:
 

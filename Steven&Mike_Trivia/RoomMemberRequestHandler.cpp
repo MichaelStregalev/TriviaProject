@@ -45,21 +45,10 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 	return result;
 }
 
-LoggedUser RoomMemberRequestHandler::getUser() const
+void RoomMemberRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
-}
-
-Room RoomMemberRequestHandler::getRoom() const
-{
-	Room* room = m_roomManager.getRoom(m_roomId);
-
-	if (room)
-	{
-		return *room;
-	}
-
-	throw RoomDoesNotExistException(m_roomId);
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
+	m_roomManager.getRoom(m_roomId)->removeUser(m_user);
 }
 
 RequestResult RoomMemberRequestHandler::leaveRoom()

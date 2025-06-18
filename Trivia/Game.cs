@@ -9,9 +9,9 @@ using static BackendTrivia.Communicator;
 using static Trivia.Codes;
 using static Trivia.Responses;
 
-namespace Trivia
+namespace BackendTrivia
 {
-    internal class Game
+    public class Game
     {
         private Communicator mCom;
         public Game(Communicator c)
@@ -37,17 +37,17 @@ namespace Trivia
 
             Info infoRecvived = mCom.Recv();
 
-            GetGameResultsResponse result = JsonSerializer.Deserialize<GetGameResultsResponse>(infoRecvived.mJson);
-
-            if (infoRecvived.mCode == ((int)ResponseCodes.GET_GAME_RESULTS_RESPONSE_CODE) && result != null)
+            if (infoRecvived.mCode == ((int)ResponseCodes.GET_GAME_RESULTS_RESPONSE_CODE))
             {
-                return result.results;
+                GetGameResultsResponse result = JsonSerializer.Deserialize<GetGameResultsResponse>(infoRecvived.mJson);
+                return result?.Results ?? new List<PlayerResult>();
             }
 
+            // Will be thrown in case the game has not finished.
             throw new Exception();
         }
 
-        public int SubmitAnswer(uint answerId, double answerTime)
+        public SubmitAnswerResponse SubmitAnswer(uint answerId, double answerTime)
         {
             var data = new
             {
@@ -66,7 +66,7 @@ namespace Trivia
 
             if (infoRecvived.mCode == ((int)ResponseCodes.SUBMIT_ANSWER_RESPONSE_CODE) && result != null)
             {
-                return (int)result.correctAnswerId;
+                return result;
             }
 
             throw new Exception();

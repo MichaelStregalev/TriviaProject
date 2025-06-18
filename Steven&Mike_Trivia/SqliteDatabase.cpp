@@ -1,6 +1,9 @@
 #include "SqliteDatabase.h"
 #include "TriviaExceptions.h"
-//#include "Question.h"
+#include "Question.h"
+#include <sstream>     // for std::ostringstream
+#include <iomanip>     // for std::fixed and std::setprecision
+#include <cmath>
 
 // <-- DEFINE CONSTS -->
 
@@ -19,6 +22,8 @@
 //Class functions
 bool SqliteDatabase::open()
 {
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	// Try and open/create the database (will create in case it doesn't exist)
 	int result = sqlite3_open(DB_PATH, &_db);
 	if (result != SQLITE_OK)	// If the database couldn't open...
@@ -93,6 +98,8 @@ bool SqliteDatabase::open()
 
 bool SqliteDatabase::close()
 {
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	// If the database is opened...
 	if (_db)
 	{
@@ -112,7 +119,7 @@ bool SqliteDatabase::close()
 	return true; // Database was already closed
 }
 
-int SqliteDatabase::doesUserExist(const std::string& username) const
+int SqliteDatabase::doesUserExist(const std::string& username)
 {
 	std::string query = "SELECT 1 FROM Users WHERE username = ?;";
 	std::vector<std::string> params = { username };
@@ -121,7 +128,7 @@ int SqliteDatabase::doesUserExist(const std::string& username) const
 	return executeQuery(query, params, true);
 }
 
-int SqliteDatabase::doesPasswordMatch(const std::string& username, const std::string& password) const
+int SqliteDatabase::doesPasswordMatch(const std::string& username, const std::string& password)
 {
 	std::string query = "SELECT 1 FROM Users WHERE username = ? AND password = ?;";
 	std::vector<std::string> params = { username, password };
@@ -154,33 +161,39 @@ int SqliteDatabase::addNewUser(const std::string& username, const std::string& p
 
 // <-- SATISTIC MANAGER FUNCTIONS -->
 
-std::vector<Question> SqliteDatabase::getQuestions(int num) const
+std::vector<Question> SqliteDatabase::getQuestions(int num)
 {
 	// The query that will let us get <num> questions
 	std::string query = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + std::to_string(num) + ";";
 	std::vector<Question> questions;	// The list of questions
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
 			auto returnValue = (std::vector<Question>*)data;
-			Question q;		// Presenting the question
 
-			// Going through the data
+			Question q;						// Presenting the question
+			std::string correctAnswer;		// Presenting the correct answer
+			std::vector<std::string> wrongAnswers;	// Presenting the wrong answers
+
 			for (int i = 0; i < len; i++)
 			{
 				if (std::string(columns[i]) == QUESTIONS_FIELD)
 				{
 					q.setQuestion(values[i]);
 				}
-				if (std::string(columns[i]) == ANSWERS_FIELD)
+				else if (std::string(columns[i]) == ANSWERS_FIELD)
 				{
-					q.addAnswers(splitStringByComma(values[i]));
+					wrongAnswers = splitStringByComma(values[i]);
 				}
-				if (std::string(columns[i]) == CORRECT_FIELD)
+				else if (std::string(columns[i]) == CORRECT_FIELD)
 				{
-					q.addAnswer(values[i], true);
+					correctAnswer = values[i];
 				}
 			}
+
+			q.setAnswers(wrongAnswers, correctAnswer);
 
 			// Push the question onto the vector of questions
 			returnValue->push_back(q);
@@ -195,7 +208,7 @@ std::vector<Question> SqliteDatabase::getQuestions(int num) const
 	return questions;
 }
 
-float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) const
+float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{
@@ -205,6 +218,8 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) co
 	// Query to find the average time of the user
 	std::string query = "SELECT averageTime FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "');";
 	float result = 0;
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	int res = sqlite3_exec(_db, query.c_str(), callbackFloatValue, &result, nullptr);
 
@@ -216,7 +231,7 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username) co
 	return result;
 }
 
-int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
+int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{
@@ -226,6 +241,8 @@ int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
 	std::string query = "SELECT correctAnswers FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
 
 	if (res != SQLITE_OK)
@@ -236,7 +253,7 @@ int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username) const
 	return result;
 }
 
-int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
+int SqliteDatabase::getNumOfTotalAnswers(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{
@@ -246,6 +263,8 @@ int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
 	std::string query = "SELECT totalQuestions FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
 
 	if (res != SQLITE_OK)
@@ -256,12 +275,14 @@ int SqliteDatabase::getNumOfTotalAnswers(const std::string& username) const
 	return result;
 }
 
-int SqliteDatabase::getNumOfPlayerGames(const std::string& username) const
+int SqliteDatabase::getNumOfPlayerGames(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{
 		throw UserDoesNotExistException(username);
 	}
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	std::string query = "SELECT totalGames FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
@@ -276,15 +297,17 @@ int SqliteDatabase::getNumOfPlayerGames(const std::string& username) const
 	return result;
 }
 
-int SqliteDatabase::getPlayerScore(const std::string& username) const
+int SqliteDatabase::getPlayerScore(const std::string& username)
 {
 	if (!doesUserExist(username))
 	{
 		throw UserDoesNotExistException(username);
 	}
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	std::string query = "SELECT score FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
-	int result;
+	int result = 0;
 
 	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
 
@@ -296,7 +319,7 @@ int SqliteDatabase::getPlayerScore(const std::string& username) const
 	return result;
 }
 
-std::map< std::string, int > SqliteDatabase::getHighScores() const
+std::map< std::string, int > SqliteDatabase::getHighScores()
 {
 	// Query of getting all of the high scores
 	std::string query = R"(
@@ -308,6 +331,8 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 		)";
 
 	std::map<std::string, int> result;
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
@@ -339,7 +364,7 @@ std::map< std::string, int > SqliteDatabase::getHighScores() const
 	return result;
 }
 
-int SqliteDatabase::submitGameStatistics(const PlayerResult& result) const
+int SqliteDatabase::submitGameStatistics(const PlayerResult& result)
 {
 	if (!doesUserExist(result.username))
 	{
@@ -351,38 +376,79 @@ int SqliteDatabase::submitGameStatistics(const PlayerResult& result) const
 
 	// Get the total time that the user spent answering
 	double totalTime = result.averageAnswerTime * totalQuestions;
+	float roundedTime = roundf(totalTime * 100.0f) / 100.0f;
 
-	// Construct update query - to all new stats EXCEPT the score
-	std::string updateStatsQuery = "UPDATE Statistics SET "
-								   "totalTime = totalTime + " + std::to_string(totalTime) + ", "
-								   "totalQuestions = totalQuestions + " + std::to_string(totalQuestions) + ", "
-								   "correctAnswers = correctAnswers + " + std::to_string(result.correctAnswerCount) + ", "
-								   "totalGames = totalGames + 1 "
-								   "WHERE userID = (SELECT ID FROM Users WHERE username = '" + result.username + "');";
+	std::ostringstream timeStream;
+	timeStream << std::fixed << std::setprecision(2) << roundedTime;
+	std::string roundedTimeStr = timeStream.str();
 
-	int res = sqlite3_exec(_db, updateStatsQuery.c_str(), nullptr, nullptr, nullptr);
+	std::cout << "[DEBUG] Starting transaction..." << std::endl;
 
-	if (res != SQLITE_OK)
+	// Now, we will calculate the new score of the user..
+	int newScore = calculateScore(result.username, result);
+
+	std::cout << "[DEBUG] Calculated new score: " << newScore << std::endl;
+
 	{
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
+		int res = sqlite3_exec(_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+		if (res != SQLITE_OK)
+		{
+			std::cerr << "[ERROR] Failed to begin transaction: " << sqlite3_errmsg(_db) << std::endl;
+			throw FailedExecutionQueryException("BEGIN TRANSACTION;");
+		}
+	}
+	
+	std::string updateStatsQuery = "UPDATE Statistics SET "
+								   "totalTime = totalTime + ?, "
+								   "totalQuestions = totalQuestions + ?, "
+								   "correctAnswers = correctAnswers + ?, "
+								   "totalGames = totalGames + 1 "
+								   "WHERE userID = (SELECT ID FROM Users WHERE username = ?);";
+
+	std::vector<std::string> params = 
+	{
+		roundedTimeStr,
+		std::to_string(totalQuestions),
+		std::to_string(result.correctAnswerCount),
+		result.username
+	};
+
+	std::cout << "[DEBUG] Running stats update query:\n" << updateStatsQuery << std::endl;
+	int updateResult = executeQuery(updateStatsQuery, params, false);
+
+	if (updateResult != SUCCESSFUL_QUERY)
+	{
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+		std::cerr << "[ERROR] SQLite error: " << sqlite3_errmsg(_db) << std::endl;
+		sqlite3_exec(_db, "ROLLBACK;", nullptr, nullptr, nullptr);
 		throw FailedExecutionQueryException(updateStatsQuery);
 	}
 
-	// Now, we will calculate the new score of the user..
-	int newScore = 0;//calculateScore(result.username);
+	// Update only the score
+	std::string updateScoreQuery = "UPDATE Statistics SET score = ? WHERE userID = (SELECT ID FROM Users WHERE username = ?);";
+	std::vector<std::string> scoreParams = { std::to_string(newScore), result.username };
 
-	if (newScore < 0)
+	std::cout << "[DEBUG] Running score update query:\n" << updateScoreQuery << std::endl;
+	int scoreResult = executeQuery(updateScoreQuery, scoreParams, false);	
+
+	if (scoreResult != SUCCESSFUL_QUERY)
 	{
-		newScore = 0;
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+		sqlite3_exec(_db, "ROLLBACK;", nullptr, nullptr, nullptr);
+		throw FailedExecutionQueryException(updateScoreQuery);
 	}
 
-	// Update only the score
-	std::string updateScoreQuery = "UPDATE Statistics SET score = " + std::to_string(newScore) + " WHERE userID = (SELECT ID FROM Users WHERE username = '" + result.username + "');";
-
-	res = sqlite3_exec(_db, updateScoreQuery.c_str(), nullptr, nullptr, nullptr);
-
-	if (res != SQLITE_OK)
 	{
-		throw FailedExecutionQueryException(updateScoreQuery);
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
+		int res = sqlite3_exec(_db, "COMMIT;", nullptr, nullptr, nullptr);
+		if (res != SQLITE_OK)
+		{
+			std::cerr << "[ERROR] Failed to commit transaction: " << sqlite3_errmsg(_db) << std::endl;
+			throw FailedExecutionQueryException("COMMIT;");
+		}
 	}
 
 	return SUCCESSFUL_QUERY;
@@ -391,7 +457,7 @@ int SqliteDatabase::submitGameStatistics(const PlayerResult& result) const
 // <-- PRIVATE HELPER METHODS -->
 
 // THIS FUNCTION WILL ONLY LET US USE QUERIES THAT EITHER - CHECK IF SOMETHING EXISTS IN THE DATABASE, OR AN EXECUTION QUERY
-int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std::string>& params, bool isSelectQuery) const
+int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std::string>& params, bool isSelectQuery)
 {
 	if (!_db)
 	{
@@ -399,6 +465,8 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 	}
 
 	sqlite3_stmt* stmt;
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(_db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK)
@@ -423,7 +491,7 @@ int SqliteDatabase::executeQuery(const std::string& query, const std::vector<std
 	}
 	else	// If the query is a non select query - check if it was executed successfully..
 	{
-		return (result == SQLITE_DONE) ? SUCCESSFUL_QUERY : UNSUCCESSFUL_QUERY; // Return 1 if the query was successful
+		return (result == SQLITE_DONE || result == SQLITE_OK) ? SUCCESSFUL_QUERY : UNSUCCESSFUL_QUERY; // Return 1 if the query was successful
 	}
 }
 
@@ -449,9 +517,9 @@ std::vector<std::string> SqliteDatabase::splitStringByComma(const std::string& s
 
 int SqliteDatabase::callbackIntValue(void* data, int len, char** values, char** columns)
 {
-	auto returnValue = (int*)data;
+	auto returnValue = static_cast<int*>(data);
 
-	if (len > 0)
+	if (len > 0 && values[0] != nullptr)
 	{
 		(*returnValue) = std::stoi(values[FIRST_INDEX]);
 	}
@@ -461,9 +529,9 @@ int SqliteDatabase::callbackIntValue(void* data, int len, char** values, char** 
 
 int SqliteDatabase::callbackFloatValue(void* data, int len, char** values, char** columns)
 {
-	auto returnValue = (float*)data;
+	auto returnValue = static_cast<float*>(data);
 
-	if (len > 0)
+	if (len > 0 && values[0] != nullptr)
 	{
 		(*returnValue) = std::stof(values[FIRST_INDEX]);
 	}
@@ -471,7 +539,43 @@ int SqliteDatabase::callbackFloatValue(void* data, int len, char** values, char*
 	return SQLITE_OK;
 }
 
-int SqliteDatabase::calculateScore(const std::string& username)
+int SqliteDatabase::calculateScore(const std::string& username, const PlayerResult& result)
 {
-	return 0;
+	if (!doesUserExist(username))
+	{
+		throw UserDoesNotExistException(username);
+	}
+
+	int correctAnswers = getNumOfCorrectAnswers(username) + result.correctAnswerCount;
+	int totalAnswersOld = getNumOfTotalAnswers(username);
+	int totalAnswersNew = totalAnswersOld + result.correctAnswerCount + result.wrongAnswerCount;
+	int totalGames = getNumOfPlayerGames(username) + 1;
+	float averageTime = ((getPlayerAverageAnswerTime(username) * totalAnswersOld) + 
+						result.averageAnswerTime * (result.correctAnswerCount + result.wrongAnswerCount)) / totalAnswersNew;
+
+	if (totalAnswersNew == 0 || totalGames == 0)
+	{
+		return 0; // Avoid division by zero or meaningless scores
+	}
+
+	// Get the amount of wrong answers
+	int wrongAnswers = totalAnswersNew - correctAnswers;
+
+	// Get the base points of the user - 
+	// 10 GAINED FOR EACH CORRECT ANSWER, 2 LOST FOR EACH WRONG ANSWER
+	int basePoints = (correctAnswers * SCORE_GAIN_CORRECT) - (wrongAnswers * SCORE_LOSE_WRONG);
+
+	// Accuracy component: higher is better
+	float accuracyRatio = 1.0f + (static_cast<float>(correctAnswers) / totalAnswersNew);
+
+	// Speed component: faster is better, but clamp minimum time to avoid division by 0
+	float speedScore = 1.0f + (1.0f / std::max(averageTime, 1.0f));
+
+	// Games multiplier: experience gives small bonus
+	float gameBonus = 1.0f + (std::log10(totalGames) * 0.25f);
+
+	// FINAL SCORE
+	int finalScore = static_cast<int>(std::round(basePoints * accuracyRatio * speedScore * gameBonus));
+
+	return std::max(0, finalScore);		// Never return negative score
 }

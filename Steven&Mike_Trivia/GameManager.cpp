@@ -20,7 +20,7 @@ Game* GameManager::getGame(unsigned int gameId)
     throw RoomDoesNotExistException(gameId);
 }
 
-Game GameManager::createGame(const Room& room, int questionCount)
+Game& GameManager::createGame(const Room& room, int questionCount)
 {
     if (questionCount < MIN_QUESTION_COUNT || questionCount > MAX_QUESTION_COUNT)
     {

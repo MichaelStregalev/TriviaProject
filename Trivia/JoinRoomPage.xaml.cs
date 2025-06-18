@@ -105,8 +105,8 @@ namespace Trivia
                     // Room name
                     TextBlock nameBlock = new TextBlock
                     {
-                        Text = room.name,
-                        Width = 200,
+                        Text = room.Name,
+                        Width = 150,
                         Foreground = (Brush)FindResource("HotPink"),
                         FontFamily = (FontFamily)FindResource("AnomaliaUltraBoldFont"),
                         FontSize = 20,
@@ -115,8 +115,8 @@ namespace Trivia
                     // Room ID
                     TextBlock idBlock = new TextBlock
                     {
-                        Text = $"ID: {room.id}",
-                        Width = 100,
+                        Text = $"ID: {room.Id}",
+                        Width = 80,
                         Foreground = (Brush)FindResource("MidnightPurple"),
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
@@ -124,12 +124,12 @@ namespace Trivia
                     };
 
                     // Get the amount of current players in the room
-                    int currentPlayers = roomBackend.GetPlayersInRoom(room.id).Count;
+                    int currentPlayers = roomBackend.GetPlayersInRoom(room.Id).Count;
 
                     // Players count
                     TextBlock playersCountBlock = new TextBlock
                     {
-                        Width = 100,
+                        Width = 140,
                         Margin = new Thickness(0, 0, 40, 0)
                     };
 
@@ -140,7 +140,7 @@ namespace Trivia
                         Foreground = (Brush)FindResource("MidnightPurple"),
                     });
 
-                    playersCountBlock.Inlines.Add(new Run($"{room.maxPlayers}")
+                    playersCountBlock.Inlines.Add(new Run($"{room.MaxPlayers}")
                     {
                         FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                         FontSize = 16,
@@ -151,7 +151,7 @@ namespace Trivia
                     Button joinButton = new Button
                     {
                         Content = "Join",
-                        Tag = new { Id = room.id, Name = room.name },
+                        Tag = new { Id = room.Id, Name = room.Name },
                         Width = 90,
                         Height = 30,
                         Margin = new Thickness(80, 0, 0, 0),
@@ -172,7 +172,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load rooms: " + ex.Message);
+                new StyledMessageBox("Failed to load rooms: " + ex.Message).Show();
             }
         }
         private void JoinButton_Click(object sender, RoutedEventArgs e)
@@ -197,7 +197,7 @@ namespace Trivia
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to join room: {ex.Message}", "Join Room Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new StyledMessageBox("Failed to join room.").Show();
             }
         }
         private void Button_MouseEnter(object sender, MouseEventArgs e)
