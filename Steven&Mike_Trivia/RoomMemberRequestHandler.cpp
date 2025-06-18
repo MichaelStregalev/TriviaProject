@@ -45,21 +45,10 @@ RequestResult RoomMemberRequestHandler::handleRequest(const RequestInfo& request
 	return result;
 }
 
-LoggedUser RoomMemberRequestHandler::getUser() const
+void RoomMemberRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
-}
-
-Room RoomMemberRequestHandler::getRoom() const
-{
-	Room* room = m_roomManager.getRoom(m_roomId);
-
-	if (room)
-	{
-		return *room;
-	}
-
-	throw RoomDoesNotExistException(m_roomId);
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
+	m_roomManager.getRoom(m_roomId)->removeUser(m_user);
 }
 
 RequestResult RoomMemberRequestHandler::leaveRoom()
@@ -144,8 +133,11 @@ RequestResult RoomMemberRequestHandler::startGame()
 		// of the users has noticed hasGameBegun == true!!
 		// So, this function will be the same as the startGame in the RoomAdminRequestHandler but - won't change the roomdata.
 
+		// Getting the new Game
+		Game* newGame = m_handlerFactory.getGameManager().getGame(m_roomId);
+
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// needs to change to game request handler!!
+		result.newHandler = m_handlerFactory.createGameRequestHandler(m_user, *newGame);
 	}
 	catch (const std::exception& e)
 	{

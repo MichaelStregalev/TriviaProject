@@ -85,7 +85,7 @@ namespace Trivia
             try
             {
                 var roomState = roomController.GetRoomState();
-                var questionCount = roomState.AnswerCount;
+                var questionCount = roomState.QuestionCount;
                 var answerTimeout = roomState.AnswerTimeOut;
 
                 RoomInfoPanel.Children.Add(CreateInfoBlock($"Room ID: {roomId}"));
@@ -112,8 +112,9 @@ namespace Trivia
                 FontSize = 16,
                 FontFamily = (FontFamily)FindResource("AnomaliaMediumFont"),
                 Foreground = (Brush)FindResource("MidnightPurple"),
-                Margin = new Thickness(10, 0, 10, 0),
-                VerticalAlignment = VerticalAlignment.Center
+                Margin = new Thickness(20, 0, 20, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center
             };
         }
         private void SetupTimers()
@@ -143,9 +144,11 @@ namespace Trivia
 
                 if (state.HasGameBegun)
                 {
+                    playersUpdateTimer.Stop();
+                    BackendTrivia.Game gameController = roomController.StartRoom();
+
                     // Navigate to game page
-                    // NavigationService.Navigate(new GamePage(username, roomName, isAdmin, roomController));
-                    NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, state.QuestionCount, gameController));
                 }
             }
             catch
@@ -226,7 +229,7 @@ namespace Trivia
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to close the room: " + ex.Message);
+                    new StyledMessageBox("Failed to close the room: " + ex.Message).Show();
                 }
             }
             else
@@ -244,7 +247,7 @@ namespace Trivia
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Failed to leave the room: " + ex.Message);
+                    new StyledMessageBox("Failed to leave the room: " + ex.Message).Show();
                 }
             }
         }
@@ -257,16 +260,19 @@ namespace Trivia
 
                 LoadPlayers();      // Last time, we will try and laod the players
 
-                roomController.StartRoom();
+                // Get the state of the room
+                var state = roomController.GetRoomState();
+
+                BackendTrivia.Game gameController = roomController.StartRoom();
+
                 // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
                 StartGameButton.IsEnabled = false;
 
-                // Later we will change to GamePage
-                NavigationService.Navigate(new MenuPage(username, new BackendTrivia.Menu(roomController.GetCommunicator())));
+                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, state.QuestionCount, gameController));
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to start the game: " + ex.Message);
+                new StyledMessageBox("Failed to start the game: " + ex.Message).Show();
             }
         }
         private void Button_MouseEnter(object sender, MouseEventArgs e)

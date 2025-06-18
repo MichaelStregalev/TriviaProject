@@ -43,14 +43,12 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
-LoggedUser RoomAdminRequestHandler::getUser() const
+void RoomAdminRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
-}
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
 
-Room RoomAdminRequestHandler::getRoom() const
-{
-	return m_room;
+	// Close the room
+	RequestResult closeRoomResult = closeRoom();
 }
 
 RequestResult RoomAdminRequestHandler::closeRoom()
@@ -90,8 +88,11 @@ RequestResult RoomAdminRequestHandler::startGame()
 		// Setting the rooms status to GAME_STARTED
 		m_room.getRoomData().roomStatus = GAME_STARTED;
 
+		// Getting the new Game
+		Game& newGame = m_handlerFactory.getGameManager().createGame(m_room, m_room.getRoomData().numOfQuestionsInGame);
+
 		result.response = JsonResponsePacketSerializer::serializeResponse(response);
-		result.newHandler = m_handlerFactory.createMenuRequestHandler(m_user);	// needs to change to game request handler!!
+		result.newHandler = m_handlerFactory.createGameRequestHandler(m_user, newGame);
 	}
 	catch (const std::exception& e)
 	{

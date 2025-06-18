@@ -22,6 +22,9 @@ public:
 	// operator < is needed in order to use the algorithm find()
 	bool operator<(const LoggedUser& other) const;
 
+	// operator ==
+	bool operator==(const LoggedUser& other) const;
+
 private:
 
 	// <-- FIELDS -->

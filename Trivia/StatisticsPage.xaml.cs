@@ -68,12 +68,12 @@ namespace Trivia
                 }
                 else
                 {
-                    MessageBox.Show("Failed to load all statistics.", "Statistics Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    new StyledMessageBox("Failed to load all statistics.").Show();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while loading statistics:\n" + ex.Message, "Statistics Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                new StyledMessageBox("\"An error occurred while loading statistics.").Show();
             }
         }
 

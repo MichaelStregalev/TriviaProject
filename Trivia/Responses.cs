@@ -11,17 +11,65 @@ namespace Trivia
 {
     public class Responses
     {
+        public class SubmitAnswerResponse
+        {
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("correctAnswerId")]
+            public uint CorrectAnswerId { get; set; }
+        };
+        public class GetGameResultsResponse
+        {
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("results")]
+            public required List<PlayerResult> Results { get; set; }
+        };
+        public class GetQuestionResponse
+        {
+            [JsonPropertyName("status")]
+            public uint Status { get; set; }
+
+            [JsonPropertyName("question")]
+            public required string Question { get; set; }
+
+            [JsonPropertyName("answers")]
+            public required Dictionary<uint, string> Answers { get; set; }
+        };
+        public class PlayerResult
+        {
+            [JsonPropertyName("username")]
+            public required string Username { get; set; }
+
+            [JsonPropertyName("correctAnswerCount")]
+            public uint CorrectAnswerCount { get; set; }
+
+
+            [JsonPropertyName("wrongAnswerCount")]
+            public uint WrongAnswerCount { get; set; }
+
+            [JsonPropertyName("averageAnswerTime")]
+            public double AverageAnswerTime { get; set; }
+        };
+
         public class RoomData
         {
-            public uint id { get; set; }
-            public required string name { get; set; }
-            public uint maxPlayers { get; set; }
-            public uint numOfQuestionsInGame { get; set; }
-            public uint timePerQuestion { get; set; }
-        }
-        public enum RoomStatus
-        {
-            RoomStatus
+            [JsonPropertyName("id")]
+            public uint Id { get; set; }
+
+            [JsonPropertyName("name")]
+            public required string Name { get; set; }
+
+            [JsonPropertyName("maxPlayers")]
+            public uint MaxPlayers { get; set; }
+
+            [JsonPropertyName("numOfQuestionsInGame")]
+            public uint NumOfQuestionsInGame { get; set; }
+
+            [JsonPropertyName("timePerQuestion")]
+            public uint TimePerQuestion { get; set; }
         }
         public class LoginResponse
         {
@@ -128,10 +176,12 @@ namespace Trivia
             public required List<string> Players { get; set; }
 
             [JsonPropertyName("questionCount")]
-            public uint AnswerCount { get; set; }
+            public uint QuestionCount { get; set; }
 
             [JsonPropertyName("answerTimeout")]
             public uint AnswerTimeOut { get; set; }
         }
+
+
     }
 }

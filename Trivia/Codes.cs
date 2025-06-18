@@ -12,10 +12,10 @@ namespace Trivia
         public enum ResponseCodes
         {
             ERROR_RESPONSE_CODE = 0,
-            SIGNUP_RESPONSE_CODE = 11,
+            SIGNUP_RESPONSE_CODE = 20,
             LOGIN_RESPONSE_CODE = 21,
             LOGOUT_RESPONSE_CODE = 31,
-            GET_ROOMS_RESPONSE_CODE = 12,
+            GET_ROOMS_RESPONSE_CODE = 23,
             GET_PLAYERS_IN_ROOMS_RESPONSE_CODE = 22,
             JOIN_ROOM_RESPONSE_CODE = 32,
             CLOSE_ROOM_RESPONSE_CODE = 33,
@@ -24,7 +24,11 @@ namespace Trivia
             GET_ROOM_STATE_RESPONSE_CODE = 36,
             CREATE_ROOM_RESPONSE_CODE = 42,
             GET_HIGHSCORE_RESPONSE_CODE = 52,
-            GET_STATISTICS_RESPONSE_CODE = 62
+            GET_STATISTICS_RESPONSE_CODE = 62,
+            GET_GAME_RESULTS_RESPONSE_CODE = 71, 
+            SUBMIT_ANSWER_RESPONSE_CODE = 72,
+            GET_QUESTION_RESPONSE_CODE = 73, 
+            LEAVE_GAME_RESPONSE_CODE = 74
         }
 
         public enum RequestCodes
@@ -41,7 +45,11 @@ namespace Trivia
             GET_ROOM_STATE_REQUEST_CODE,
             CREATE_ROOM_REQUEST_CODE,
             GET_HIGHSCORE_REQUEST_CODE,
-            GET_STATISTICS_REQUEST_CODE
+            GET_STATISTICS_REQUEST_CODE,
+            GET_GAME_RESULTS_REQUEST_CODE, 
+            SUBMIT_ANSWER_REQUEST_CODE,
+            GET_QUESTION_REQUEST_CODE, 
+            LEAVE_GAME_REQUEST_CODE
         }
 
         public const int SUCCESSFUL_LOGIN = 99;
@@ -71,7 +79,13 @@ namespace Trivia
         public enum RoomStatus
         {
             ROOM_OPEN = 200,
-            GAME_STARTED
+            GAME_STARTED,
+            GAME_ENDED
+        }
+        public enum GameCodes 
+        { 
+            MORE_QUESTIONS = 90, 
+            NO_MORE_QUESTIONS
         }
     }
 }

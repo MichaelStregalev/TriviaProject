@@ -1,19 +1,21 @@
 #pragma once
 
-#include "LoginManager.h"
 #include "IDatabase.h"
-#include "LoginRequestHandler.h"
-#include "MenuRequestHandler.h"
+#include "LoginManager.h"
 #include "StatisticManager.h"
 #include "RoomManager.h"
+#include "GameManager.h"
 #include "RoomAdminRequestHandler.h"
 #include "RoomMemberRequestHandler.h"
-#include "RequestHandlerFactory.h"
+#include "GameRequestHandler.h"
+#include "LoginRequestHandler.h"
+#include "MenuRequestHandler.h"
 
 class LoginRequestHandler;
 class MenuRequestHandler;
 class RoomAdminRequestHandler;
 class RoomMemberRequestHandler;
+class GameRequestHandler;
 
 /*
 								RequestHandlerFactory
@@ -31,6 +33,7 @@ public:
 	LoginManager& getLoginManager();
 	RoomManager& getRoomManager();
 	StatisticManager& getStatisticManager();
+	GameManager& getGameManager();
 
 	// <-- METHODS -->
 	LoginRequestHandler* createLoginRequestHandler();
@@ -39,7 +42,8 @@ public:
 	RoomAdminRequestHandler* createRoomAdminRequestHandler(const LoggedUser& user, Room& room);
 	RoomMemberRequestHandler* createRoomMemberRequestHandler(const LoggedUser& user, Room& room);
 
-	
+	GameRequestHandler* createGameRequestHandler(const LoggedUser& user, Game& game);
+
 private:
 
 	// <-- FIELDS -->
@@ -47,6 +51,7 @@ private:
 	IDatabase* m_database;
 	RoomManager m_roomManager;
 	StatisticManager m_statisticsManager;
+	GameManager m_gameManager;
 
 
 };

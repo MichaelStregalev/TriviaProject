@@ -7,6 +7,8 @@
 #include <vector>
 #include "Question.h"
 #include "sqlite3.h"
+#include "GameData.h"
+#include "PlayerResult.h"
 
 /*
 								IDataBase
@@ -23,28 +25,32 @@ public:
 	// Close the database
 	virtual bool close() = 0;												
 	// Check if a user exists
-	virtual int doesUserExist(const std::string& username) const = 0;		
+	virtual int doesUserExist(const std::string& username) = 0;		
 	// Check if a password matches to the user
-	virtual int doesPasswordMatch(const std::string& username, const std::string& password) const = 0;
+	virtual int doesPasswordMatch(const std::string& username, const std::string& password) = 0;
 	// Add a new user to the database
 	virtual int addNewUser(const std::string& username, const std::string& password, const std::string& email) = 0;
 
 	// <-- STATISTIC MANAGER FUNCTIONS -->
 
 	// Get Questions
-	virtual std::list<Question> getQuestions(int num) const = 0;
+	virtual std::vector<Question> getQuestions(int num) = 0;
 	// Get player's average answer time
-	virtual float getPlayerAverageAnswerTime(const std::string& username) const = 0;
+	virtual float getPlayerAverageAnswerTime(const std::string& username) = 0;
 	// Get the player's number of correct answers
-	virtual int getNumOfCorrectAnswers(const std::string& username) const = 0;
+	virtual int getNumOfCorrectAnswers(const std::string& username) = 0;
 	// Get the total amount of questions the player answered
-	virtual int getNumOfTotalAnswers(const std::string& username) const = 0;
+	virtual int getNumOfTotalAnswers(const std::string& username) = 0;
 	// Get the total amount of games the player played
-	virtual int getNumOfPlayerGames(const std::string& username) const = 0;
+	virtual int getNumOfPlayerGames(const std::string& username) = 0;
 	// Get the player's score
-	virtual int getPlayerScore(const std::string& username) const = 0;
+	virtual int getPlayerScore(const std::string& username) = 0;
 	// Get the high scores
-	virtual std::map<std::string, int> getHighScores() const = 0;
+	virtual std::map<std::string, int> getHighScores() = 0;
+	// Update the DataBase according to Game Data
+	virtual int submitGameStatistics(const PlayerResult& result) = 0;
+
 
 private:
+
 };

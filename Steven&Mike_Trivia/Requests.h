@@ -71,3 +71,9 @@ struct CreateRoomRequest
 	unsigned int questionCount;
 	unsigned int answerTimeout;
 };
+
+struct SubmitAnswerRequest
+{
+	unsigned int answerId;
+	double answerTime;
+};

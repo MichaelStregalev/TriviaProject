@@ -116,3 +116,25 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(co
         throw std::invalid_argument("Invalid CreateRoomRequest JSON format!");
     }
 }
+
+SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(const Byte::Buffer& buffer)
+{
+    std::string jsonString = Byte::deserializeBytesToString(buffer);
+
+    try
+    {
+        // Parse the JSON string onto a JSON object
+        nlohmann::json jsonData = nlohmann::json::parse(jsonString);
+
+        // Create and populate SubmitAnswerRequest
+        SubmitAnswerRequest request;
+        request.answerId = jsonData[ANSWER_ID_FIELD].get<unsigned int>();
+        request.answerTime = jsonData[ANSWER_TIME_FIELD].get<double>();
+
+        return request;
+    }
+    catch (const nlohmann::json::exception& e)
+    {
+        throw std::invalid_argument("Invalid SubmitAnswerRequest JSON format!");
+    }
+}

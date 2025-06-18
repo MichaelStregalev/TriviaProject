@@ -17,7 +17,7 @@
 #define MAXIMUM_LENGTH_ROOM_NAME		12
 
 /*
-							RoomManager
+						RoomManager
 	RoomManager allows us to manage ALL rooms in our server!
 */
 
