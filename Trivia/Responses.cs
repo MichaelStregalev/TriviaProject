@@ -176,7 +176,7 @@ namespace Trivia
             public required List<string> Players { get; set; }
 
             [JsonPropertyName("questionCount")]
-            public uint AnswerCount { get; set; }
+            public uint QuestionCount { get; set; }
 
             [JsonPropertyName("answerTimeout")]
             public uint AnswerTimeOut { get; set; }

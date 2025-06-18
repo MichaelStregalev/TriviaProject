@@ -85,7 +85,7 @@ namespace Trivia
             try
             {
                 var roomState = roomController.GetRoomState();
-                var questionCount = roomState.AnswerCount;
+                var questionCount = roomState.QuestionCount;
                 var answerTimeout = roomState.AnswerTimeOut;
 
                 RoomInfoPanel.Children.Add(CreateInfoBlock($"Room ID: {roomId}"));
@@ -148,7 +148,7 @@ namespace Trivia
                     BackendTrivia.Game gameController = roomController.StartRoom();
 
                     // Navigate to game page
-                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, gameController));
+                    NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, state.QuestionCount, gameController));
                 }
             }
             catch
@@ -268,7 +268,7 @@ namespace Trivia
                 // disable the start button after pressing - will prevent from pressing multiple times while the game is starting
                 StartGameButton.IsEnabled = false;
 
-                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, gameController));
+                NavigationService.Navigate(new GamePage(username, state.AnswerTimeOut, state.QuestionCount, gameController));
             }
             catch (Exception ex)
             {

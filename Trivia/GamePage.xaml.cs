@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendTrivia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,10 @@ namespace Trivia
         private uint answerTimeout;
         private uint timeLeft;
 
+        // <-- The current question count -->
+        private uint currentQuestionNumber;
+        private uint amountOfQuestions;
+
         // <-- GAME CONTROLLER -->
         private BackendTrivia.Game gameController;
 
@@ -39,7 +44,7 @@ namespace Trivia
         private DateTime questionStartTime;
 
 
-        public GamePage(string username, uint answerTime, BackendTrivia.Game gameController)
+        public GamePage(string username, uint answerTime, uint amountOfQuestions, BackendTrivia.Game gameController)
         {
             InitializeComponent();
 
@@ -55,6 +60,9 @@ namespace Trivia
             this.username = username;                    // Username of user
             this.answerTimeout = answerTime;             // Answer timeout
             this.timeLeft = answerTime;                  // Time left for user to answer
+
+            this.currentQuestionNumber = 1;             // The current question the user is on
+            this.amountOfQuestions = amountOfQuestions; // The amount of questions in the game
 
             // The game controller
             this.gameController = gameController;
@@ -130,6 +138,9 @@ namespace Trivia
                 answerButtons[i].IsChecked = false;
             }
 
+            // Update the question progression text
+            QuestionProgressionText.Text = $"{currentQuestionNumber} / {amountOfQuestions}";
+
             timeLeft = this.answerTimeout;
             TimerText.Text = timeLeft.ToString();
             questionStartTime = DateTime.Now;
@@ -138,6 +149,8 @@ namespace Trivia
         private void SubmitAnswer(uint answerId, double answerTime)
         {
             var response = gameController.SubmitAnswer(answerId, answerTime);
+
+            this.currentQuestionNumber++; // Symbolize getting the next question..
 
             if (response.CorrectAnswerId == answerId)
             {
@@ -226,6 +239,29 @@ namespace Trivia
         private void RadioButton_MouseLeave(object sender, MouseEventArgs e)
         {
             ((RadioButton)sender).Cursor = pointerCursor;
+        }
+
+        private void Page_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                uint selectedAnswerId = GetSelectedAnswerId();
+
+                if (selectedAnswerId == 0)
+                {
+                    new StyledMessageBox("Please select an answer before submitting.").Show();
+                    return;
+                }
+
+                // Stop the timer
+                answerTimer.Stop();
+
+                // Calculate time taken to answer
+                double timeTaken = (DateTime.Now - questionStartTime).TotalSeconds;
+
+                // Submit the answer
+                SubmitAnswer(selectedAnswerId, timeTaken);
+            }
         }
     }
 }
