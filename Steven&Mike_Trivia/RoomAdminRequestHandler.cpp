@@ -43,14 +43,12 @@ RequestResult RoomAdminRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
-LoggedUser RoomAdminRequestHandler::getUser() const
+void RoomAdminRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
-}
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
 
-Room RoomAdminRequestHandler::getRoom() const
-{
-	return m_room;
+	// Close the room
+	RequestResult closeRoomResult = closeRoom();
 }
 
 RequestResult RoomAdminRequestHandler::closeRoom()

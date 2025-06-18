@@ -22,6 +22,8 @@
 //Class functions
 bool SqliteDatabase::open()
 {
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	// Try and open/create the database (will create in case it doesn't exist)
 	int result = sqlite3_open(DB_PATH, &_db);
 	if (result != SQLITE_OK)	// If the database couldn't open...
@@ -96,6 +98,8 @@ bool SqliteDatabase::open()
 
 bool SqliteDatabase::close()
 {
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	// If the database is opened...
 	if (_db)
 	{
@@ -163,6 +167,8 @@ std::vector<Question> SqliteDatabase::getQuestions(int num)
 	std::string query = "SELECT * FROM Questions ORDER BY RANDOM() LIMIT " + std::to_string(num) + ";";
 	std::vector<Question> questions;	// The list of questions
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
 			auto returnValue = (std::vector<Question>*)data;
@@ -213,6 +219,8 @@ float SqliteDatabase::getPlayerAverageAnswerTime(const std::string& username)
 	std::string query = "SELECT averageTime FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "');";
 	float result = 0;
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(), callbackFloatValue, &result, nullptr);
 
 	if (res != SQLITE_OK)
@@ -232,6 +240,8 @@ int SqliteDatabase::getNumOfCorrectAnswers(const std::string& username)
 
 	std::string query = "SELECT correctAnswers FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
 
@@ -253,6 +263,8 @@ int SqliteDatabase::getNumOfTotalAnswers(const std::string& username)
 	std::string query = "SELECT totalQuestions FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
 
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
 	int res = sqlite3_exec(_db, query.c_str(), callbackIntValue, &result, nullptr);
 
 	if (res != SQLITE_OK)
@@ -269,6 +281,8 @@ int SqliteDatabase::getNumOfPlayerGames(const std::string& username)
 	{
 		throw UserDoesNotExistException(username);
 	}
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	std::string query = "SELECT totalGames FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result;
@@ -289,6 +303,8 @@ int SqliteDatabase::getPlayerScore(const std::string& username)
 	{
 		throw UserDoesNotExistException(username);
 	}
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	std::string query = "SELECT score FROM Statistics WHERE userID = (SELECT ID FROM Users WHERE username = '" + username + "'); ";
 	int result = 0;
@@ -315,6 +331,8 @@ std::map< std::string, int > SqliteDatabase::getHighScores()
 		)";
 
 	std::map<std::string, int> result;
+
+	std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
 	int res = sqlite3_exec(_db, query.c_str(),
 		[](void* data, int len, char** values, char** columns) -> int {
@@ -371,13 +389,17 @@ int SqliteDatabase::submitGameStatistics(const PlayerResult& result)
 
 	std::cout << "[DEBUG] Calculated new score: " << newScore << std::endl;
 
-	int res = sqlite3_exec(_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
-	if (res != SQLITE_OK)
 	{
-		std::cerr << "[ERROR] Failed to begin transaction: " << sqlite3_errmsg(_db) << std::endl;
-		throw FailedExecutionQueryException("BEGIN TRANSACTION;");
-	}
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 
+		int res = sqlite3_exec(_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
+		if (res != SQLITE_OK)
+		{
+			std::cerr << "[ERROR] Failed to begin transaction: " << sqlite3_errmsg(_db) << std::endl;
+			throw FailedExecutionQueryException("BEGIN TRANSACTION;");
+		}
+	}
+	
 	std::string updateStatsQuery = "UPDATE Statistics SET "
 								   "totalTime = totalTime + ?, "
 								   "totalQuestions = totalQuestions + ?, "
@@ -398,6 +420,7 @@ int SqliteDatabase::submitGameStatistics(const PlayerResult& result)
 
 	if (updateResult != SUCCESSFUL_QUERY)
 	{
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 		std::cerr << "[ERROR] SQLite error: " << sqlite3_errmsg(_db) << std::endl;
 		sqlite3_exec(_db, "ROLLBACK;", nullptr, nullptr, nullptr);
 		throw FailedExecutionQueryException(updateStatsQuery);
@@ -412,15 +435,20 @@ int SqliteDatabase::submitGameStatistics(const PlayerResult& result)
 
 	if (scoreResult != SUCCESSFUL_QUERY)
 	{
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
 		sqlite3_exec(_db, "ROLLBACK;", nullptr, nullptr, nullptr);
 		throw FailedExecutionQueryException(updateScoreQuery);
 	}
 
-	res = sqlite3_exec(_db, "COMMIT;", nullptr, nullptr, nullptr);
-	if (res != SQLITE_OK)
 	{
-		std::cerr << "[ERROR] Failed to commit transaction: " << sqlite3_errmsg(_db) << std::endl;
-		throw FailedExecutionQueryException("COMMIT;");
+		std::lock_guard<std::mutex> lock(_dbMutex); // Ensure serialized DB access
+
+		int res = sqlite3_exec(_db, "COMMIT;", nullptr, nullptr, nullptr);
+		if (res != SQLITE_OK)
+		{
+			std::cerr << "[ERROR] Failed to commit transaction: " << sqlite3_errmsg(_db) << std::endl;
+			throw FailedExecutionQueryException("COMMIT;");
+		}
 	}
 
 	return SUCCESSFUL_QUERY;

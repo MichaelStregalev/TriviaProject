@@ -45,14 +45,10 @@ RequestResult GameRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
-LoggedUser GameRequestHandler::getUser() const
+void GameRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
-}
-
-Game& GameRequestHandler::getGame()
-{
-	return m_game;
+	RequestResult leaveGameResult = leaveGame();
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
 }
 
 RequestResult GameRequestHandler::getQuestionForUser()

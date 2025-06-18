@@ -60,9 +60,9 @@ RequestResult MenuRequestHandler::handleRequest(const RequestInfo& request)
 	return result;
 }
 
-LoggedUser MenuRequestHandler::getUser() const
+void MenuRequestHandler::userLeftUnexpectedly()
 {
-	return m_user;
+	m_handlerFactory.getLoginManager().logout(m_user.getUsername());
 }
 
 RequestResult MenuRequestHandler::signout(const RequestInfo& request)
